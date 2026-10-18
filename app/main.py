@@ -143,8 +143,7 @@ if not st.session_state.logged_in:
         import os
         
         # Get the absolute path to the image
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        img_path = os.path.join(current_dir, "images", "hero.jpg")
+                img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
         
         try:
             with open(img_path, "rb") as f:
