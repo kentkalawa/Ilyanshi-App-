@@ -1,0 +1,501 @@
+complaint_text,subject,urgency,sentiment
+I was not informed about the exclusions,Policy,Medium,Positive
+The payment amount is incorrect,Payment,High,Negative
+The policy renewal process is confusing,Policy,Medium,Neutral
+The policy terms are unclear,Policy,Medium,Neutral
+My payment is delayed by two weeks,Payment,High,Negative
+My claim was rejected without proper explanation,Claim,High,Negative
+The payment amount is incorrect,Payment,High,Negative
+I submitted my claim three weeks ago and no response,Claim,High,Positive
+The payment amount is incorrect,Payment,Medium,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+Payment was made to the wrong account,Payment,High,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+My claim was denied unfairly,Claim,Medium,Negative
+Payment was made to the wrong account,Payment,High,Negative
+I need to change my policy details,Policy,Medium,Neutral
+My payment is delayed by two weeks,Payment,Medium,Negative
+The policy renewal process is confusing,Policy,Medium,Neutral
+I am still waiting for my refund,Payment,High,Neutral
+I need to change my policy details,Policy,Medium,Positive
+No one responds to my emails,Service,Medium,Negative
+The call centre keeps transferring me,Service,High,Positive
+The call centre keeps transferring me,Service,High,Neutral
+I have been waiting for a response for days,Service,High,Neutral
+No one responds to my emails,Service,Low,Neutral
+My claim was rejected without proper explanation,Claim,High,Negative
+The premium amount is too high,Premium,Medium,Negative
+The claim amount paid was less than expected,Claim,Medium,Neutral
+I need to update my payment method,Premium,Medium,Neutral
+I need to change my policy details,Policy,Low,Neutral
+The premium amount is too high,Premium,Medium,Negative
+I have not received my payout,Payment,Medium,Negative
+The policy renewal process is confusing,Policy,Medium,Neutral
+I need to update my payment method,Premium,Low,Neutral
+I am still waiting for my refund,Payment,High,Neutral
+I need to update my payment method,Premium,Medium,Neutral
+I was not informed about the exclusions,Policy,Low,Neutral
+My claim was rejected without proper explanation,Claim,High,Negative
+The premium amount is too high,Premium,Medium,Neutral
+The payment amount is incorrect,Payment,Medium,Negative
+Payment was made to the wrong account,Payment,High,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+The call centre keeps transferring me,Service,Medium,Positive
+The policy was cancelled without notice,Policy,Medium,Neutral
+I was not informed about the exclusions,Policy,Medium,Neutral
+I was charged twice for the same month,Premium,Medium,Neutral
+I was not informed about the exclusions,Policy,Medium,Neutral
+I was not informed about the exclusions,Policy,Low,Positive
+I have been waiting for a response for days,Service,Medium,Neutral
+The call centre keeps transferring me,Service,Medium,Positive
+Customer service is very poor,Service,Low,Negative
+Premium deduction was incorrect,Premium,Low,Negative
+My claim was rejected without proper explanation,Claim,Medium,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+The claim process is taking too long,Claim,High,Negative
+Staff were rude and unhelpful,Service,Low,Negative
+The policy was cancelled without notice,Policy,Medium,Positive
+Staff were rude and unhelpful,Service,Medium,Negative
+Customer service is very poor,Service,Low,Negative
+The policy terms are unclear,Policy,Low,Neutral
+Staff were rude and unhelpful,Service,Low,Negative
+I am still waiting for my refund,Payment,High,Neutral
+Payment was made to the wrong account,Payment,High,Negative
+I need to change my policy details,Policy,Medium,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+No one responds to my emails,Service,Medium,Neutral
+The claim process is taking too long,Claim,High,Neutral
+I have not received my payout,Payment,High,Negative
+No one responds to my emails,Service,High,Negative
+Staff were rude and unhelpful,Service,Low,Negative
+No one responds to my emails,Service,Low,Positive
+Staff were rude and unhelpful,Service,High,Negative
+The claim process is taking too long,Claim,High,Neutral
+Payment was made to the wrong account,Payment,Medium,Negative
+Payment was made to the wrong account,Payment,High,Negative
+My claim was rejected without proper explanation,Claim,High,Negative
+The policy was cancelled without notice,Policy,Medium,Negative
+I need to update my payment method,Premium,Medium,Neutral
+The premium amount is too high,Premium,Medium,Negative
+I have been waiting for a response for days,Service,High,Neutral
+Premium deduction was incorrect,Premium,Medium,Negative
+Customer service is very poor,Service,High,Negative
+No one responds to my emails,Service,Low,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+The claim amount paid was less than expected,Claim,Medium,Negative
+The policy was cancelled without notice,Policy,Medium,Neutral
+The claim process is taking too long,Claim,High,Neutral
+Customer service is very poor,Service,Medium,Negative
+My premium increased without explanation,Premium,Medium,Neutral
+My premium increased without explanation,Premium,Medium,Positive
+My premium increased without explanation,Premium,Medium,Neutral
+My claim was denied unfairly,Claim,High,Negative
+Payment was made to the wrong account,Payment,High,Negative
+I have been waiting for a response for days,Service,Low,Neutral
+My payment is delayed by two weeks,Payment,Medium,Negative
+I was not informed about the exclusions,Policy,Medium,Positive
+Payment was made to the wrong account,Payment,Medium,Negative
+Premium deduction was incorrect,Premium,Medium,Negative
+Premium deduction was incorrect,Premium,Medium,Negative
+Customer service is very poor,Service,High,Negative
+I submitted my claim three weeks ago and no response,Claim,High,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+The policy was cancelled without notice,Policy,Medium,Neutral
+I need to change my policy details,Policy,Low,Neutral
+The policy terms are unclear,Policy,Medium,Neutral
+My payment is delayed by two weeks,Payment,Medium,Negative
+Staff were rude and unhelpful,Service,Low,Negative
+My claim was rejected without proper explanation,Claim,High,Negative
+The claim process is taking too long,Claim,High,Neutral
+The policy was cancelled without notice,Policy,Medium,Negative
+The policy terms are unclear,Policy,Low,Neutral
+My claim was denied unfairly,Claim,High,Negative
+Customer service is very poor,Service,Medium,Negative
+The policy was cancelled without notice,Policy,Medium,Positive
+My payment is delayed by two weeks,Payment,Medium,Negative
+I was not informed about the exclusions,Policy,Medium,Negative
+I am still waiting for my refund,Payment,Medium,Neutral
+I was charged twice for the same month,Premium,Medium,Neutral
+I need to change my policy details,Policy,Medium,Neutral
+I have been waiting for a response for days,Service,Low,Neutral
+No one responds to my emails,Service,Medium,Positive
+Premium deduction was incorrect,Premium,Medium,Negative
+The policy terms are unclear,Policy,Low,Neutral
+My premium increased without explanation,Premium,Medium,Positive
+The claim amount paid was less than expected,Claim,High,Positive
+No one responds to my emails,Service,Low,Negative
+The policy terms are unclear,Policy,Low,Neutral
+I am still waiting for my refund,Payment,High,Neutral
+Staff were rude and unhelpful,Service,High,Negative
+My claim was denied unfairly,Claim,Medium,Negative
+The claim process is taking too long,Claim,High,Positive
+I am still waiting for my refund,Payment,Medium,Neutral
+I have not received my payout,Payment,High,Positive
+The premium amount is too high,Premium,Medium,Neutral
+My premium increased without explanation,Premium,Medium,Neutral
+The call centre keeps transferring me,Service,High,Negative
+Customer service is very poor,Service,Medium,Negative
+My claim was rejected without proper explanation,Claim,High,Negative
+Staff were rude and unhelpful,Service,High,Negative
+I need to update my payment method,Premium,Medium,Neutral
+My payment is delayed by two weeks,Payment,Medium,Negative
+The policy was cancelled without notice,Policy,Medium,Positive
+Payment was made to the wrong account,Payment,High,Negative
+The premium amount is too high,Premium,Medium,Positive
+No one responds to my emails,Service,High,Neutral
+The policy terms are unclear,Policy,Medium,Neutral
+I need to update my payment method,Premium,Low,Neutral
+The policy was cancelled without notice,Policy,Low,Neutral
+Staff were rude and unhelpful,Service,Low,Negative
+I was charged twice for the same month,Premium,Medium,Negative
+I was charged twice for the same month,Premium,Medium,Neutral
+My claim was rejected without proper explanation,Claim,High,Negative
+I have been waiting for a response for days,Service,Medium,Neutral
+The policy terms are unclear,Policy,Low,Neutral
+The policy terms are unclear,Policy,Medium,Neutral
+Premium deduction was incorrect,Premium,Medium,Negative
+Premium deduction was incorrect,Premium,Low,Negative
+I was charged twice for the same month,Premium,Low,Neutral
+I have not received my payout,Payment,High,Negative
+The policy was cancelled without notice,Policy,Medium,Negative
+I am still waiting for my refund,Payment,High,Neutral
+The claim process is taking too long,Claim,Medium,Negative
+The premium amount is too high,Premium,Low,Positive
+I am still waiting for my refund,Payment,Medium,Neutral
+The claim process is taking too long,Claim,High,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+I have not received my payout,Payment,High,Negative
+The premium amount is too high,Premium,Medium,Neutral
+Staff were rude and unhelpful,Service,High,Negative
+My claim was denied unfairly,Claim,High,Negative
+I am still waiting for my refund,Payment,Medium,Neutral
+The premium amount is too high,Premium,Medium,Positive
+The policy terms are unclear,Policy,Medium,Neutral
+My premium increased without explanation,Premium,Low,Neutral
+I was not informed about the exclusions,Policy,Low,Positive
+I need to change my policy details,Policy,Low,Negative
+Premium deduction was incorrect,Premium,Low,Negative
+I need to change my policy details,Policy,Low,Negative
+The policy was cancelled without notice,Policy,Medium,Negative
+I have not received my payout,Payment,High,Negative
+Payment was made to the wrong account,Payment,Medium,Negative
+My payment is delayed by two weeks,Payment,Medium,Negative
+I have been waiting for a response for days,Service,Medium,Neutral
+The claim process is taking too long,Claim,Medium,Negative
+I was not informed about the exclusions,Policy,Medium,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+My claim was rejected without proper explanation,Claim,High,Negative
+No one responds to my emails,Service,High,Neutral
+I need to change my policy details,Policy,Low,Negative
+I need to update my payment method,Premium,Medium,Negative
+I need to update my payment method,Premium,Low,Positive
+I need to update my payment method,Premium,Medium,Positive
+I am still waiting for my refund,Payment,High,Neutral
+I have not received my payout,Payment,High,Neutral
+I am still waiting for my refund,Payment,Medium,Neutral
+I was not informed about the exclusions,Policy,Medium,Negative
+Payment was made to the wrong account,Payment,High,Negative
+The claim amount paid was less than expected,Claim,Medium,Positive
+I was not informed about the exclusions,Policy,Low,Positive
+I have not received my payout,Payment,High,Neutral
+I need to update my payment method,Premium,Medium,Neutral
+The policy terms are unclear,Policy,Low,Neutral
+My claim was rejected without proper explanation,Claim,High,Negative
+I submitted my claim three weeks ago and no response,Claim,High,Neutral
+I am still waiting for my refund,Payment,High,Neutral
+I am still waiting for my refund,Payment,Medium,Neutral
+Customer service is very poor,Service,High,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+Payment was made to the wrong account,Payment,Medium,Negative
+The claim amount paid was less than expected,Claim,High,Positive
+The claim amount paid was less than expected,Claim,High,Positive
+I have not received my payout,Payment,High,Neutral
+No one responds to my emails,Service,Medium,Negative
+The policy was cancelled without notice,Policy,Low,Positive
+I submitted my claim three weeks ago and no response,Claim,Medium,Positive
+Payment was made to the wrong account,Payment,Medium,Negative
+I was charged twice for the same month,Premium,Medium,Positive
+The policy terms are unclear,Policy,Low,Neutral
+My claim was denied unfairly,Claim,Medium,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+Staff were rude and unhelpful,Service,Low,Negative
+I have not received my payout,Payment,High,Positive
+The claim amount paid was less than expected,Claim,High,Negative
+The policy terms are unclear,Policy,Low,Neutral
+The policy terms are unclear,Policy,Low,Neutral
+I need to change my policy details,Policy,Low,Neutral
+Staff were rude and unhelpful,Service,Low,Negative
+I have not received my payout,Payment,High,Negative
+Premium deduction was incorrect,Premium,Medium,Negative
+I was charged twice for the same month,Premium,Medium,Positive
+Customer service is very poor,Service,High,Negative
+I am still waiting for my refund,Payment,High,Neutral
+I was charged twice for the same month,Premium,Medium,Negative
+The policy was cancelled without notice,Policy,Medium,Positive
+The policy terms are unclear,Policy,Medium,Neutral
+Payment was made to the wrong account,Payment,High,Negative
+Customer service is very poor,Service,High,Negative
+Staff were rude and unhelpful,Service,High,Negative
+Customer service is very poor,Service,Medium,Negative
+The payment amount is incorrect,Payment,High,Negative
+Staff were rude and unhelpful,Service,High,Negative
+My premium increased without explanation,Premium,Low,Negative
+Customer service is very poor,Service,High,Negative
+Premium deduction was incorrect,Premium,Low,Negative
+Payment was made to the wrong account,Payment,High,Negative
+My premium increased without explanation,Premium,Medium,Negative
+I have not received my payout,Payment,High,Neutral
+My premium increased without explanation,Premium,Low,Neutral
+The payment amount is incorrect,Payment,High,Negative
+The payment amount is incorrect,Payment,Medium,Negative
+The policy terms are unclear,Policy,Low,Neutral
+I was not informed about the exclusions,Policy,Low,Negative
+Staff were rude and unhelpful,Service,Low,Negative
+My claim was denied unfairly,Claim,High,Negative
+I am still waiting for my refund,Payment,High,Neutral
+I am still waiting for my refund,Payment,High,Neutral
+The payment amount is incorrect,Payment,High,Negative
+I submitted my claim three weeks ago and no response,Claim,Medium,Negative
+The policy terms are unclear,Policy,Low,Neutral
+Customer service is very poor,Service,Low,Negative
+My premium increased without explanation,Premium,Medium,Negative
+The call centre keeps transferring me,Service,Low,Positive
+The premium amount is too high,Premium,Medium,Neutral
+My claim was denied unfairly,Claim,High,Negative
+I was not informed about the exclusions,Policy,Low,Negative
+I am still waiting for my refund,Payment,High,Neutral
+The policy renewal process is confusing,Policy,Medium,Neutral
+I have not received my payout,Payment,Medium,Neutral
+The policy terms are unclear,Policy,Low,Neutral
+Customer service is very poor,Service,Low,Negative
+Customer service is very poor,Service,Medium,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+The policy was cancelled without notice,Policy,Low,Negative
+The policy renewal process is confusing,Policy,Medium,Neutral
+I need to change my policy details,Policy,Low,Negative
+I was charged twice for the same month,Premium,Low,Positive
+The premium amount is too high,Premium,Low,Neutral
+Premium deduction was incorrect,Premium,Medium,Negative
+The claim process is taking too long,Claim,High,Negative
+The policy renewal process is confusing,Policy,Low,Neutral
+The call centre keeps transferring me,Service,Medium,Neutral
+My premium increased without explanation,Premium,Low,Neutral
+The claim amount paid was less than expected,Claim,High,Neutral
+The call centre keeps transferring me,Service,High,Positive
+The claim process is taking too long,Claim,High,Positive
+I have been waiting for a response for days,Service,High,Neutral
+I need to update my payment method,Premium,Medium,Neutral
+I need to update my payment method,Premium,Low,Negative
+The claim process is taking too long,Claim,High,Positive
+No one responds to my emails,Service,Medium,Positive
+I was not informed about the exclusions,Policy,Low,Positive
+I submitted my claim three weeks ago and no response,Claim,High,Positive
+The payment amount is incorrect,Payment,High,Negative
+Customer service is very poor,Service,Medium,Negative
+Premium deduction was incorrect,Premium,Medium,Negative
+I was charged twice for the same month,Premium,Medium,Neutral
+My premium increased without explanation,Premium,Medium,Positive
+I was charged twice for the same month,Premium,Medium,Positive
+The claim amount paid was less than expected,Claim,High,Neutral
+The claim amount paid was less than expected,Claim,Medium,Neutral
+The call centre keeps transferring me,Service,Low,Positive
+I have not received my payout,Payment,High,Neutral
+I have been waiting for a response for days,Service,Medium,Neutral
+I need to update my payment method,Premium,Medium,Positive
+No one responds to my emails,Service,Low,Negative
+Payment was made to the wrong account,Payment,High,Negative
+The call centre keeps transferring me,Service,Low,Positive
+The claim amount paid was less than expected,Claim,Medium,Positive
+My claim was rejected without proper explanation,Claim,High,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+Staff were rude and unhelpful,Service,Medium,Negative
+The claim process is taking too long,Claim,High,Negative
+I have not received my payout,Payment,High,Neutral
+I have not received my payout,Payment,High,Neutral
+My premium increased without explanation,Premium,Medium,Positive
+No one responds to my emails,Service,High,Positive
+The policy was cancelled without notice,Policy,Medium,Negative
+I am still waiting for my refund,Payment,High,Neutral
+I have been waiting for a response for days,Service,Low,Neutral
+I was not informed about the exclusions,Policy,Medium,Positive
+My claim was rejected without proper explanation,Claim,High,Negative
+Staff were rude and unhelpful,Service,High,Negative
+The policy was cancelled without notice,Policy,Medium,Neutral
+I need to update my payment method,Premium,Medium,Negative
+I need to update my payment method,Premium,Low,Neutral
+My premium increased without explanation,Premium,Medium,Positive
+My premium increased without explanation,Premium,Low,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+Premium deduction was incorrect,Premium,Medium,Negative
+My claim was denied unfairly,Claim,High,Negative
+My payment is delayed by two weeks,Payment,Medium,Negative
+My claim was rejected without proper explanation,Claim,High,Negative
+Staff were rude and unhelpful,Service,High,Negative
+The call centre keeps transferring me,Service,High,Positive
+Customer service is very poor,Service,Medium,Negative
+I was charged twice for the same month,Premium,Medium,Negative
+The premium amount is too high,Premium,Medium,Positive
+My premium increased without explanation,Premium,Medium,Negative
+My claim was denied unfairly,Claim,High,Negative
+Payment was made to the wrong account,Payment,Medium,Negative
+Customer service is very poor,Service,Medium,Negative
+My claim was rejected without proper explanation,Claim,Medium,Negative
+I submitted my claim three weeks ago and no response,Claim,Medium,Neutral
+I am still waiting for my refund,Payment,Medium,Neutral
+I need to update my payment method,Premium,Medium,Positive
+The claim process is taking too long,Claim,Medium,Negative
+My premium increased without explanation,Premium,Low,Positive
+I was not informed about the exclusions,Policy,Low,Negative
+I was charged twice for the same month,Premium,Medium,Positive
+The call centre keeps transferring me,Service,High,Negative
+The claim amount paid was less than expected,Claim,Medium,Negative
+Staff were rude and unhelpful,Service,Medium,Negative
+Payment was made to the wrong account,Payment,High,Negative
+The payment amount is incorrect,Payment,Medium,Negative
+My payment is delayed by two weeks,Payment,Medium,Negative
+My premium increased without explanation,Premium,Medium,Positive
+My claim was rejected without proper explanation,Claim,Medium,Negative
+I submitted my claim three weeks ago and no response,Claim,Medium,Positive
+The premium amount is too high,Premium,Medium,Negative
+The policy renewal process is confusing,Policy,Medium,Neutral
+The premium amount is too high,Premium,Medium,Negative
+I need to update my payment method,Premium,Medium,Neutral
+I have been waiting for a response for days,Service,High,Neutral
+I am still waiting for my refund,Payment,High,Neutral
+Payment was made to the wrong account,Payment,Medium,Negative
+My premium increased without explanation,Premium,Medium,Neutral
+The policy renewal process is confusing,Policy,Medium,Neutral
+The policy was cancelled without notice,Policy,Medium,Positive
+Staff were rude and unhelpful,Service,High,Negative
+I am still waiting for my refund,Payment,Medium,Neutral
+Customer service is very poor,Service,Low,Negative
+I submitted my claim three weeks ago and no response,Claim,Medium,Negative
+The claim amount paid was less than expected,Claim,High,Negative
+My premium increased without explanation,Premium,Medium,Positive
+Premium deduction was incorrect,Premium,Medium,Negative
+My premium increased without explanation,Premium,Low,Negative
+The claim process is taking too long,Claim,Medium,Negative
+The policy was cancelled without notice,Policy,Low,Neutral
+I have been waiting for a response for days,Service,High,Neutral
+The policy was cancelled without notice,Policy,Medium,Neutral
+I have been waiting for a response for days,Service,Low,Neutral
+The premium amount is too high,Premium,Low,Negative
+Payment was made to the wrong account,Payment,High,Negative
+Premium deduction was incorrect,Premium,Medium,Negative
+The claim process is taking too long,Claim,High,Negative
+The payment amount is incorrect,Payment,High,Negative
+I was charged twice for the same month,Premium,Medium,Positive
+The claim amount paid was less than expected,Claim,High,Positive
+My premium increased without explanation,Premium,Medium,Neutral
+I was charged twice for the same month,Premium,Low,Positive
+My payment is delayed by two weeks,Payment,High,Negative
+I was not informed about the exclusions,Policy,Medium,Neutral
+The premium amount is too high,Premium,Medium,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+Staff were rude and unhelpful,Service,High,Negative
+Premium deduction was incorrect,Premium,Low,Negative
+I was charged twice for the same month,Premium,Low,Neutral
+I have been waiting for a response for days,Service,High,Neutral
+The call centre keeps transferring me,Service,Medium,Positive
+I need to change my policy details,Policy,Medium,Negative
+Payment was made to the wrong account,Payment,High,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+The claim process is taking too long,Claim,High,Neutral
+I was charged twice for the same month,Premium,Medium,Negative
+I am still waiting for my refund,Payment,Medium,Neutral
+Staff were rude and unhelpful,Service,Low,Negative
+Premium deduction was incorrect,Premium,Medium,Negative
+The claim process is taking too long,Claim,Medium,Positive
+Premium deduction was incorrect,Premium,Medium,Negative
+I have been waiting for a response for days,Service,Low,Neutral
+I am still waiting for my refund,Payment,High,Neutral
+The policy was cancelled without notice,Policy,Medium,Neutral
+No one responds to my emails,Service,High,Neutral
+Customer service is very poor,Service,Low,Negative
+The call centre keeps transferring me,Service,Medium,Neutral
+The claim amount paid was less than expected,Claim,High,Positive
+The policy was cancelled without notice,Policy,Medium,Positive
+I was charged twice for the same month,Premium,Medium,Neutral
+I have not received my payout,Payment,Medium,Positive
+I need to update my payment method,Premium,Low,Neutral
+Staff were rude and unhelpful,Service,Low,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+I submitted my claim three weeks ago and no response,Claim,Medium,Negative
+I need to change my policy details,Policy,Medium,Positive
+I have been waiting for a response for days,Service,Low,Neutral
+No one responds to my emails,Service,Medium,Positive
+I was not informed about the exclusions,Policy,Medium,Negative
+I was not informed about the exclusions,Policy,Medium,Negative
+The claim process is taking too long,Claim,High,Positive
+The policy renewal process is confusing,Policy,Low,Neutral
+My claim was denied unfairly,Claim,High,Negative
+The premium amount is too high,Premium,Medium,Neutral
+My claim was denied unfairly,Claim,High,Negative
+I need to update my payment method,Premium,Medium,Neutral
+Staff were rude and unhelpful,Service,High,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+My claim was denied unfairly,Claim,High,Negative
+I have been waiting for a response for days,Service,Medium,Neutral
+My claim was denied unfairly,Claim,High,Negative
+My claim was rejected without proper explanation,Claim,High,Negative
+The policy was cancelled without notice,Policy,Low,Negative
+The claim process is taking too long,Claim,Medium,Positive
+My claim was denied unfairly,Claim,High,Negative
+I submitted my claim three weeks ago and no response,Claim,High,Neutral
+The policy was cancelled without notice,Policy,Low,Positive
+I submitted my claim three weeks ago and no response,Claim,High,Neutral
+The call centre keeps transferring me,Service,High,Neutral
+The call centre keeps transferring me,Service,Low,Positive
+My claim was rejected without proper explanation,Claim,High,Negative
+I am still waiting for my refund,Payment,High,Neutral
+Customer service is very poor,Service,Medium,Negative
+Customer service is very poor,Service,High,Negative
+I am still waiting for my refund,Payment,Medium,Neutral
+I have not received my payout,Payment,High,Neutral
+The claim amount paid was less than expected,Claim,High,Neutral
+Staff were rude and unhelpful,Service,Medium,Negative
+I have not received my payout,Payment,High,Neutral
+Premium deduction was incorrect,Premium,Low,Negative
+I was not informed about the exclusions,Policy,Medium,Neutral
+Customer service is very poor,Service,High,Negative
+I need to update my payment method,Premium,Low,Positive
+The premium amount is too high,Premium,Medium,Positive
+The payment amount is incorrect,Payment,High,Negative
+I submitted my claim three weeks ago and no response,Claim,High,Neutral
+Premium deduction was incorrect,Premium,Medium,Negative
+I submitted my claim three weeks ago and no response,Claim,Medium,Positive
+Premium deduction was incorrect,Premium,Medium,Negative
+No one responds to my emails,Service,Low,Negative
+The policy was cancelled without notice,Policy,Medium,Negative
+I have not received my payout,Payment,High,Positive
+I need to update my payment method,Premium,Low,Positive
+I need to change my policy details,Policy,Low,Neutral
+The claim amount paid was less than expected,Claim,High,Neutral
+I submitted my claim three weeks ago and no response,Claim,High,Neutral
+The policy renewal process is confusing,Policy,Low,Neutral
+Customer service is very poor,Service,Low,Negative
+I have been waiting for a response for days,Service,Medium,Neutral
+The claim process is taking too long,Claim,Medium,Negative
+The claim amount paid was less than expected,Claim,High,Negative
+Staff were rude and unhelpful,Service,High,Negative
+The policy terms are unclear,Policy,Medium,Neutral
+Premium deduction was incorrect,Premium,Low,Negative
+I have been waiting for a response for days,Service,Medium,Neutral
+I was charged twice for the same month,Premium,Medium,Negative
+The claim process is taking too long,Claim,High,Negative
+I am still waiting for my refund,Payment,Medium,Neutral
+I have been waiting for a response for days,Service,High,Neutral
+The policy terms are unclear,Policy,Low,Neutral
+I submitted my claim three weeks ago and no response,Claim,High,Neutral
+I was charged twice for the same month,Premium,Medium,Positive
+Payment was made to the wrong account,Payment,High,Negative
+My payment is delayed by two weeks,Payment,High,Negative
+I have not received my payout,Payment,Medium,Positive
+I was charged twice for the same month,Premium,Low,Neutral
+Customer service is very poor,Service,High,Negative
+I submitted my claim three weeks ago and no response,Claim,High,Neutral
+Customer service is very poor,Service,Low,Negative
+The call centre keeps transferring me,Service,Medium,Negative
+The call centre keeps transferring me,Service,Medium,Negative
+I have not received my payout,Payment,Medium,Negative

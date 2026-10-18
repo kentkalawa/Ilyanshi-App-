@@ -1,0 +1,5 @@
+username,password,role,name
+kent,$2b$12$firwGmqHkJui8uUuwey6cuHMR2VbJ3pjzlFvLop9DssCBQIg9ckKi,Admin,Kent Kalawa
+jbanda,$2b$12$DyMq/HWjC1FigVEbfoqS2OxWAYl4V1P6c2BvWmHoDy//lPqbysQQW,Officer,John Banda
+mphiri,$2b$12$M1NkCLrFVZB/VVw8ZKNPvO78LTEaEuP3wxcjdlZjKVamFB91wNaTe,Officer,Mary Phiri
+dmwale,$2b$12$MxJKC.tSUoe760GEctsJXehRH4umiR5p7SlAyIjyZvYu6fcijBzsa,Viewer,David Mwale

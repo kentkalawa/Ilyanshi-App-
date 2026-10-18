@@ -1,0 +1,10 @@
+id,customer_name,policy_number,complaint_text,subject,urgency,sentiment,status,date_submitted
+1,kent kalawa,POL-12345,My claim was rejected without explanation,Claim,High,Negative,Open,2026-10-13 23:00
+2,kent kalawa,POL-12345,My payment is delayed by two weeks,Payment,High,Negative,Open,2026-10-13 23:01
+3,kent kalawa,POL-12345,"the policy terms are confusing
+",Policy,Medium,Neutral,Open,2026-10-13 23:02
+4,kent kalawa,POL-12345,"Premium increased without explanation
+",Premium,Medium,Negative,Open,2026-10-13 23:02
+5,kent kalawa,POL-12345,"customer service was rude and unhelpful
+",Service,High,Negative,Open,2026-10-13 23:03
+6,john banda,POL-12345,My claim was rejected without explanation,Claim,High,Negative,Open,2026-10-17 02:01

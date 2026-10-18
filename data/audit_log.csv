@@ -1,0 +1,36 @@
+timestamp,username,action,details
+2026-10-17 01:55:44,kent,LOGIN,Successful login
+2026-10-17 02:01:33,kent,SUBMIT_COMPLAINT,Complaint #6
+2026-10-17 02:04:49,kent,LOGOUT,User logged out
+2026-10-17 02:12:33,kent,LOGIN,Successful login
+2026-10-17 02:29:05,kent,LOGIN,Successful login
+2026-10-17 02:49:35,kent,LOGIN,Successful login
+2026-10-17 02:53:53,kent,LOGIN,Successful login
+2026-10-17 02:57:30,kent,LOGIN,Successful login
+2026-10-17 03:02:24,kent,LOGIN,Successful login
+2026-10-17 03:03:25,kent,LOGOUT,User logged out
+2026-10-17 09:33:18,kent,LOGIN,Successful login
+2026-10-17 11:57:27,kent,LOGIN,Successful login
+2026-10-17 12:03:18,kent,LOGOUT,User logged out
+2026-10-17 12:03:42,dmwale,LOGIN,Successful login
+2026-10-17 13:01:30,kent,LOGIN,Successful login
+2026-10-18 14:18:24,kent,LOGIN,Successful login
+2026-10-18 15:07:20,kent,LOGIN,Successful login
+2026-10-18 15:07:31,kent,LOGOUT,User logged out
+2026-10-18 17:12:59,,LOGOUT,User logged out
+2026-10-18 17:13:04,,LOGOUT,User logged out
+2026-10-18 17:21:29,,LOGOUT,User logged out
+2026-10-18 17:21:31,,LOGOUT,User logged out
+2026-10-18 17:21:32,,LOGOUT,User logged out
+2026-10-18 17:21:33,,LOGOUT,User logged out
+2026-10-18 17:23:07,,LOGOUT,User logged out
+2026-10-18 17:23:07,,LOGOUT,User logged out
+2026-10-18 17:23:09,,LOGOUT,User logged out
+2026-10-18 17:23:09,,LOGOUT,User logged out
+2026-10-18 17:23:09,,LOGOUT,User logged out
+2026-10-18 17:24:30,,LOGOUT,User logged out
+2026-10-18 17:24:34,,LOGOUT,User logged out
+2026-10-18 20:30:17,,LOGOUT,User logged out
+2026-10-18 20:32:04,,LOGOUT,User logged out
+2026-10-18 20:53:51,kent,LOGIN,Successful login
+2026-10-18 20:58:17,kent,LOGIN,Successful login
