@@ -39,16 +39,20 @@ def get_base64_image(image_path):
 # ============================================================
 # LOAD MODELS
 # ============================================================
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 @st.cache_resource
 def load_models():
-    vectorizer = joblib.load("../models/vectorizer.pkl")
-    subject_model = joblib.load("../models/subject_model.pkl")
-    urgency_model = joblib.load("../models/urgency_model.pkl")
-    sentiment_model = joblib.load("../models/sentiment_model.pkl")
+    vectorizer = joblib.load(os.path.join(BASE_DIR, "models", "vectorizer.pkl"))
+    subject_model = joblib.load(os.path.join(BASE_DIR, "models", "subject_model.pkl"))
+    urgency_model = joblib.load(os.path.join(BASE_DIR, "models", "urgency_model.pkl"))
+    sentiment_model = joblib.load(os.path.join(BASE_DIR, "models", "sentiment_model.pkl"))
     return vectorizer, subject_model, urgency_model, sentiment_model
 
-if not os.path.exists("../models/vectorizer.pkl"):
-    st.error("⚠️ Models not found. Please run `train_model.py` first.")
+if not os.path.exists(os.path.join(BASE_DIR, "models", "vectorizer.pkl")):
+    st.error("⚠️ Models not found. Please check the models folder.")
     st.stop()
 
 vectorizer, subject_model, urgency_model, sentiment_model = load_models()
@@ -56,9 +60,9 @@ vectorizer, subject_model, urgency_model, sentiment_model = load_models()
 # ============================================================
 # FILES & HELPERS
 # ============================================================
-COMPLAINTS_FILE = "../data/submitted_complaints.csv"
-USERS_FILE = "../data/users_hashed.csv"
-AUDIT_FILE = "../data/audit_log.csv"
+COMPLAINTS_FILE = os.path.join(BASE_DIR, "data", "submitted_complaints.csv")
+USERS_FILE = os.path.join(BASE_DIR, "data", "users_hashed.csv")
+AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
