@@ -142,7 +142,10 @@ if not st.session_state.logged_in:
         import base64
         import os
         
- try:
+                # Get the absolute path to the image
+        img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
+
+        try:
             with open(img_path, "rb") as f:
                 hero_b64 = base64.b64encode(f.read()).decode()
         except:
