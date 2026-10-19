@@ -139,9 +139,8 @@ if not st.session_state.logged_in:
     
     if not st.session_state.show_login:
        
-            # --- LANDING PAGE ---
+                # --- LANDING PAGE ---
         
-        # 1. Load image as base64 (This guarantees it loads full screen)
         img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
         if os.path.exists(img_path):
             with open(img_path, "rb") as f:
@@ -149,24 +148,26 @@ if not st.session_state.logged_in:
         else:
             hero_b64 = ""
 
-        # 2. Inject the Full Screen CSS
+        # Inject Full Screen CSS
         st.markdown(f"""
             <style>
-            /* Hide the header and push content to the top */
-            [data-testid="stHeader"] {{ background: transparent !important; }}
-            .main .block-container {{ padding-top: 0rem !important; max-width: 100% !important; }}
-            
-            /* The Full Screen Background */
-            .hero-fullscreen {{
-                background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('data:image/jpeg;base64,{hero_b64}');
-                background-size: cover;
-                background-position: center;
-                position: fixed;
-                top: 0; left: 0;
-                width: 100vw;
-                height: 100vh;
-                z-index: -1; /* Sends it behind the text */
+            /* Force the app background to be the image */
+            .stApp {{
+                background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('data:image/jpeg;base64,{hero_b64}') !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-attachment: fixed !important;
+                background-repeat: no-repeat !important;
             }}
+            
+            /* Make the main container transparent so the image shows through */
+            .main .block-container {{
+                background-color: transparent !important;
+                box-shadow: none !important;
+            }}
+            
+            /* Hide Streamlit header */
+            [data-testid="stHeader"] {{ background: transparent !important; }}
             
             /* Force ALL text to be white */
             .hero-text h1, .hero-text h1 * {{
@@ -200,16 +201,14 @@ if not st.session_state.logged_in:
                 -webkit-text-fill-color: #ffffff !important;
             }}
             </style>
-            
-            <!-- The Background Div -->
-            <div class="hero-fullscreen"></div>
         """, unsafe_allow_html=True)
 
-        # 3. Push the text down and display it
-        st.markdown("<br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+        # Add spacing to push text down
+        st.markdown("<br><br><br><br><br><br>", unsafe_allow_html=True)
         
+        # The Text
         st.markdown("""
-            <div class="hero-text" style='text-align: center; position: relative; z-index: 999;'>
+            <div class="hero-text" style='text-align: center;'>
                 <div class="hero-logo">🛡️ ILYASHI</div>
                 <h1>From Complaint<br>To Resolution</h1>
                 <p>The AI-powered platform that always listens. 
@@ -219,14 +218,14 @@ if not st.session_state.logged_in:
         
         st.markdown("<br><br>", unsafe_allow_html=True)
 
-        # 4. The Action Buttons
+        # The Buttons
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             if st.button("Get Started", use_container_width=True, type="primary"):
                 st.session_state.show_login = True
                 st.rerun()
                 
-            st.markdown("<p style='text-align:center; color:#ddd; margin-top:1rem;'>Already have an account? <b>Log In</b></p>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align:center; color:white; margin-top:1rem; text-shadow: 1px 1px 3px black;'>Already have an account? <b>Log In</b></p>", unsafe_allow_html=True)
             if st.button("Log In", use_container_width=True):
                 st.session_state.show_login = True
                 st.rerun()
