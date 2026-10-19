@@ -175,7 +175,8 @@ if not st.session_state.logged_in:
             
             /* Force ALL text to be white */
             .hero-text h1, .hero-text h1 * {{
-                font-size: 4.5rem !important;
+                font-size: clamp(2rem, 8vw, 4.5rem) !important;
+                white-space: nowrap !important;
                 font-weight: 800 !important;
                 line-height: 1.1 !important;
                 color: #ffffff !important;
