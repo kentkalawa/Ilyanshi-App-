@@ -139,45 +139,94 @@ if not st.session_state.logged_in:
     
     if not st.session_state.show_login:
        
-         # --- LANDING PAGE ---
+            # --- LANDING PAGE ---
         
-        # 1. Load the image
+        # 1. Load image as base64 (This guarantees it loads full screen)
         img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
-        
-        # 2. Add some spacing at the top
-        st.markdown("<br><br><br>", unsafe_allow_html=True)
-        
-        # 3. Use columns to center the content nicely
-        col1, col2, col3 = st.columns([1, 2, 1])
-        
-        with col2:
-            # Show the image inside the column
-            if os.path.exists(img_path):
-                st.image(img_path, use_container_width=True)
-            else:
-                st.warning("Image not found.")
+        if os.path.exists(img_path):
+            with open(img_path, "rb") as f:
+                hero_b64 = base64.b64encode(f.read()).decode()
+        else:
+            hero_b64 = ""
 
-            # 4. The Text directly below the image
-            st.markdown("""
-                <div style='text-align: center; margin-top: 20px;'>
-                    <div style='font-size: 1.5rem; font-weight: 900; color: #1e3c72;'>🛡️ ILYASHI</div>
-                    <h1 style='font-size: 2.5rem; font-weight: 800; color: #1e3c72 !important; border-bottom: none; margin-top: 10px;'>
-                        From Complaint<br>To Resolution
-                    </h1>
-                    <p style='font-size: 1rem; color: #555;'>
-                        The AI-powered platform that always listens. 
-                        Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.
-                    </p>
-                </div>
-            """, unsafe_allow_html=True)
+        # 2. Inject the Full Screen CSS
+        st.markdown(f"""
+            <style>
+            /* Hide the header and push content to the top */
+            [data-testid="stHeader"] {{ background: transparent !important; }}
+            .main .block-container {{ padding-top: 0rem !important; max-width: 100% !important; }}
             
-            st.markdown("<br>", unsafe_allow_html=True)
+            /* The Full Screen Background */
+            .hero-fullscreen {{
+                background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('data:image/jpeg;base64,{hero_b64}');
+                background-size: cover;
+                background-position: center;
+                position: fixed;
+                top: 0; left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: -1; /* Sends it behind the text */
+            }}
+            
+            /* Force ALL text to be white */
+            .hero-text h1, .hero-text h1 * {{
+                font-size: 4.5rem !important;
+                font-weight: 800 !important;
+                line-height: 1.1 !important;
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+                font-family: Georgia, serif !important;
+                text-shadow: 2px 2px 10px rgba(0,0,0,0.9) !important;
+                border-bottom: none !important;
+                margin: 0 !important;
+            }}
+            
+            .hero-text p {{
+                font-size: 1.2rem !important;
+                max-width: 600px !important;
+                margin: 20px auto !important;
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+                line-height: 1.5 !important;
+                text-shadow: 1px 1px 5px rgba(0,0,0,0.9) !important;
+            }}
+            
+            .hero-logo {{
+                font-size: 2rem !important;
+                font-weight: 900 !important;
+                margin-bottom: 1rem !important;
+                letter-spacing: 2px !important;
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+            }}
+            </style>
+            
+            <!-- The Background Div -->
+            <div class="hero-fullscreen"></div>
+        """, unsafe_allow_html=True)
 
-            # 5. The Buttons
+        # 3. Push the text down and display it
+        st.markdown("<br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+        
+        st.markdown("""
+            <div class="hero-text" style='text-align: center; position: relative; z-index: 999;'>
+                <div class="hero-logo">🛡️ ILYASHI</div>
+                <h1>From Complaint<br>To Resolution</h1>
+                <p>The AI-powered platform that always listens. 
+                Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br><br>", unsafe_allow_html=True)
+
+        # 4. The Action Buttons
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
             if st.button("Get Started", use_container_width=True, type="primary"):
                 st.session_state.show_login = True
                 st.rerun()
                 
+            st.markdown("<p style='text-align:center; color:#ddd; margin-top:1rem;'>Already have an account? <b>Log In</b></p>", unsafe_allow_html=True)
             if st.button("Log In", use_container_width=True):
                 st.session_state.show_login = True
                 st.rerun()
