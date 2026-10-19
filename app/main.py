@@ -142,8 +142,9 @@ if not st.session_state.logged_in:
         import base64
         import os
         
-                # Get the absolute path to the image
-        img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
+                # Get the directory where main.py is actually running
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        img_path = os.path.join(app_dir, "images", "hero.jpg")
 
         try:
             with open(img_path, "rb") as f:
