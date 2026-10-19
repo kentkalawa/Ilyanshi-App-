@@ -20,6 +20,9 @@ st.set_page_config(
 # ============================================================
 # LOAD CUSTOM CSS
 # ============================================================
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 def load_css(file_name):
     if os.path.exists(file_name):
         with open(file_name) as f:
