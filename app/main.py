@@ -14,7 +14,6 @@ st.set_page_config(
     page_title="Insurance Complaints Management",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded" # Feature C: Always show sidebar
 )
 
 # ============================================================
