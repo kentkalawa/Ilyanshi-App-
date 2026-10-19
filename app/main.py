@@ -25,8 +25,9 @@ def load_css(file_name):
         with open(file_name) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-load_css("style.css")
-
+# Use the absolute path so it works on the cloud
+css_path = os.path.join(BASE_DIR, "app", "style.css")
+load_css(css_path)
 # ============================================================
 # HELPER — Load image as base64
 # ============================================================
