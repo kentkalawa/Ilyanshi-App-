@@ -381,3 +381,22 @@ h1 {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
 }
+/* Force the mobile sidebar toggle arrow to be visible and big */
+[data-testid="collapsedControl"] {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    z-index: 999999 !important;
+    background-color: white !important;
+    border-radius: 50% !important;
+    padding: 10px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+}
+
+/* Make the arrow icon inside the button black */
+[data-testid="collapsedControl"] svg {
+    fill: black !important;
+    color: black !important;
+}
