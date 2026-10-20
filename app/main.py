@@ -13,9 +13,8 @@ from datetime import datetime
 st.set_page_config(
     page_title="Insurance Complaints Management",
     page_icon="🛡️",
-    layout="wide",
+    layout="wide"
 )
-
 # ============================================================
 # LOAD CUSTOM CSS
 # ============================================================
