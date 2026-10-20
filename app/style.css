@@ -294,24 +294,6 @@ header {visibility: hidden;}
 }
 
 /* ============================================================
-   FORCE SIDEBAR ALWAYS VISIBLE
-   ============================================================ */
-
-[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    transform: none !important;
-    min-width: 250px !important;
-}
-
-[data-testid="stSidebarCollapseButton"] {
-    display: none !important;
-}
-
-[data-testid="collapsedControl"] {
-    display: none !important;
-}
-/* ============================================================
    8-IMAGE LANDING PAGE
    ============================================================ */
 
