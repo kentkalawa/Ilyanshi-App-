@@ -143,18 +143,18 @@ if not st.session_state.logged_in:
        
                 # --- LANDING PAGE ---
         
-        img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
+                img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
         if os.path.exists(img_path):
             with open(img_path, "rb") as f:
                 hero_b64 = base64.b64encode(f.read()).decode()
         else:
             hero_b64 = ""
 
-        # Inject Full Screen CSS
+        # Inject Full Screen CSS for Landing Page
         st.markdown(f"""
             <style>
-            /* Force the app background to be the image */
-            .stApp {{
+            /* Force the app background to be the image ONLY on this page */
+            [data-testid="stAppViewContainer"] {{
                 background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('data:image/jpeg;base64,{hero_b64}') !important;
                 background-size: cover !important;
                 background-position: center !important;
@@ -245,7 +245,7 @@ if not st.session_state.logged_in:
                 st.rerun()
                 
             st.markdown("""
-                <h1 style='text-align: center; border-bottom: none; font-size: 2rem; font-weight: 800; color: #1e3c72 !important; margin-top: 2rem;'>
+                <h1 style='text-align: center; border-bottom: none; font-size: 2rem; font-weight: 800; color: white !important; margin-top: 2rem;'>
                     Welcome Back
                 </h1>
             """, unsafe_allow_html=True)
