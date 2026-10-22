@@ -396,3 +396,53 @@ header {visibility: hidden;}
     width: 24px !important;
     height: 24px !important;
 }
+/* ============================================================
+   RESPONSIVE MOBILE SIDEBAR
+   ============================================================ */
+
+/* If the screen is smaller than 768px (phones/tablets) */
+@media (max-width: 768px) {
+    /* Hide the sidebar completely */
+    [data-testid="stSidebar"] {
+        display: none !important;
+        transform: translateX(-100%) !important;
+    }
+    
+    /* Show the toggle arrow (the > button) */
+    [data-testid="collapsedControl"] {
+        display: block !important;
+        visibility: visible !important;
+        position: fixed !important;
+        top: 15px !important;
+        left: 15px !important;
+        z-index: 9999999 !important;
+        background-color: #ff4b4b !important; /* Big pink button so you can't miss it */
+        border-radius: 50% !important;
+        padding: 10px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+    }
+    
+    /* Make the arrow white */
+    [data-testid="collapsedControl"] svg {
+        fill: white !important;
+        color: white !important;
+        width: 24px !important;
+        height: 24px !important;
+    }
+}
+
+/* If the screen is bigger than 768px (laptops) */
+@media (min-width: 769px) {
+    /* Force the sidebar to always show */
+    [data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+        transform: none !important;
+        min-width: 250px !important;
+    }
+    
+    /* Hide the toggle arrow because the sidebar is already open */
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+}
