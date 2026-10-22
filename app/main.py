@@ -143,7 +143,7 @@ if not st.session_state.logged_in:
        
                 # --- LANDING PAGE ---
         
-                img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
+        img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
         if os.path.exists(img_path):
             with open(img_path, "rb") as f:
                 hero_b64 = base64.b64encode(f.read()).decode()
