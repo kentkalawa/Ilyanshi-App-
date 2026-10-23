@@ -235,7 +235,7 @@ if not st.session_state.logged_in:
                 
         st.stop()
 
-     else:
+      else:
         # --- SPLIT SCREEN LOGIN FORM ---
         
         # Create two columns: Left (Image), Right (Login)
