@@ -235,26 +235,52 @@ if not st.session_state.logged_in:
                 
         st.stop()
 
-    else:
-        # --- LOGIN FORM ---
-        col1, col2, col3 = st.columns([1, 1.5, 1])
-        with col2:
+     else:
+        # --- SPLIT SCREEN LOGIN FORM ---
+        
+        # Create two columns: Left (Image), Right (Login)
+        left_col, right_col = st.columns([1.2, 1], gap="large")
+
+        with left_col:
+            # Load and show the image on the left
+            login_img_path = os.path.join(BASE_DIR, "app", "images", "login_image.jpg")
+            if os.path.exists(login_img_path):
+                st.image(login_img_path, use_container_width=True)
+            else:
+                # Fallback if image isn't uploaded yet
+                st.markdown("<div style='height: 400px; background: #1e3c72; border-radius: 15px; display: flex; align-items: center; justify-content: center;'><h2 style='color: white;'>🛡️ ILYASHI</h2></div>", unsafe_allow_html=True)
+            
+            st.markdown("""
+                <div style='margin-top: 20px;'>
+                    <h2 style='color: white !important; font-size: 1.8rem; margin-bottom: 10px;'>Welcome to ILYASHI</h2>
+                    <p style='color: #ddd; font-size: 1rem; line-height: 1.5;'>
+                        Your AI-powered insurance complaint management platform. 
+                        Log in to submit complaints, track resolutions, and view analytics.
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        with right_col:
             # Back button
             if st.button("← Back to Home"):
                 st.session_state.show_login = False
                 st.rerun()
                 
+            # White card for the login form
             st.markdown("""
-                <h1 style='text-align: center; border-bottom: none; font-size: 2rem; font-weight: 800; color: white !important; margin-top: 2rem;'>
-                    Welcome Back
-                </h1>
+                <div style='background-color: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-top: 20px;'>
+                    <h2 style='color: #1e3c72; margin-top: 0;'>Welcome back</h2>
+                    <p style='color: #666; font-size: 0.9rem; margin-bottom: 20px;'>Log in to your account</p>
+                </div>
             """, unsafe_allow_html=True)
 
+            # The actual Streamlit form
             with st.form("login_form"):
                 username = st.text_input("👤 Username", placeholder="Enter your username")
                 password = st.text_input("🔑 Password", type="password", placeholder="Enter your password")
+                
                 st.markdown("<br>", unsafe_allow_html=True)
-                login_btn = st.form_submit_button("🚀 Sign In", use_container_width=True)
+                login_btn = st.form_submit_button("Log In", use_container_width=True, type="primary")
 
                 if login_btn:
                     users = load_users()
