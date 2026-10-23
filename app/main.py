@@ -232,7 +232,8 @@ if not st.session_state.logged_in:
             if st.button("Log In", use_container_width=True):
                 st.session_state.show_login = True
                 st.rerun()
-         st.stop()
+            
+             st.stop()
 
     else:
         # --- SPLIT SCREEN LOGIN FORM ---
