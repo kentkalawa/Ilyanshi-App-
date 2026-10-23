@@ -233,7 +233,7 @@ if not st.session_state.logged_in:
                 st.session_state.show_login = True
                 st.rerun()
             
-         st.stop()
+          st.stop()
         else:
         # --- SPLIT SCREEN LOGIN FORM ---
         
