@@ -140,8 +140,7 @@ if "show_login" not in st.session_state:
 if not st.session_state.logged_in:
     
     if not st.session_state.show_login:
-       
-                # --- LANDING PAGE ---
+        # --- LANDING PAGE ---
         
         img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
         if os.path.exists(img_path):
@@ -233,8 +232,9 @@ if not st.session_state.logged_in:
                 st.session_state.show_login = True
                 st.rerun()
             
-           st.stop()
-        else:
+        st.stop() # Stop the app here so the login form doesn't show yet
+
+    else:
         # --- SPLIT SCREEN LOGIN FORM ---
         
         # Create two columns: Left (Image), Right (Login)
@@ -263,7 +263,7 @@ if not st.session_state.logged_in:
             # Back button
             if st.button("← Back to Home"):
                 st.session_state.show_login = False
-      st.rerun()
+                st.rerun()
                 
             # White card for the login form
             st.markdown("""
@@ -308,7 +308,7 @@ if not st.session_state.logged_in:
                     | **Viewer** | dmwale | viewer123 |
                 """)
         st.stop()
-# ============================================================
+  ===========================================
 # SIDEBAR
 # ============================================================
 with st.sidebar:
