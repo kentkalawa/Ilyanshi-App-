@@ -149,10 +149,8 @@ if not st.session_state.logged_in:
         else:
             hero_b64 = ""
 
-        # Inject Full Screen CSS for Landing Page
         st.markdown(f"""
             <style>
-            /* Force the app background to be the image ONLY on this page */
             [data-testid="stAppViewContainer"] {{
                 background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('data:image/jpeg;base64,{hero_b64}') !important;
                 background-size: cover !important;
@@ -160,17 +158,12 @@ if not st.session_state.logged_in:
                 background-attachment: fixed !important;
                 background-repeat: no-repeat !important;
             }}
-            
-            /* Make the main container transparent so the image shows through */
             .main .block-container {{
                 background-color: transparent !important;
                 box-shadow: none !important;
             }}
-            
-            /* Hide Streamlit header */
             [data-testid="stHeader"] {{ background: transparent !important; }}
             
-            /* Force ALL text to be white */
             .hero-text h1, .hero-text h1 * {{
                 font-size: clamp(2rem, 8vw, 4.5rem) !important;
                 white-space: nowrap !important;
@@ -183,7 +176,6 @@ if not st.session_state.logged_in:
                 border-bottom: none !important;
                 margin: 0 !important;
             }}
-            
             .hero-text p {{
                 font-size: 1.2rem !important;
                 max-width: 600px !important;
@@ -193,7 +185,6 @@ if not st.session_state.logged_in:
                 line-height: 1.5 !important;
                 text-shadow: 1px 1px 5px rgba(0,0,0,0.9) !important;
             }}
-            
             .hero-logo {{
                 font-size: 2rem !important;
                 font-weight: 900 !important;
@@ -205,10 +196,8 @@ if not st.session_state.logged_in:
             </style>
         """, unsafe_allow_html=True)
 
-        # Add spacing to push text down
         st.markdown("<br><br><br><br><br><br>", unsafe_allow_html=True)
         
-        # The Text
         st.markdown("""
             <div class="hero-text" style='text-align: center;'>
                 <div class="hero-logo">🛡️ ILYASHI</div>
@@ -220,7 +209,6 @@ if not st.session_state.logged_in:
         
         st.markdown("<br><br>", unsafe_allow_html=True)
 
-        # The Buttons
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             if st.button("Get Started", use_container_width=True, type="primary"):
@@ -232,54 +220,27 @@ if not st.session_state.logged_in:
                 st.session_state.show_login = True
                 st.rerun()
             
-        st.stop() # Stop the app here so the login form doesn't show yet
+        st.stop()
 
     else:
-        # --- SPLIT SCREEN LOGIN FORM ---
-        
-        # Create two columns: Left (Image), Right (Login)
-        left_col, right_col = st.columns([1.2, 1], gap="large")
-
-        with left_col:
-            # Load and show the image on the left
-            login_img_path = os.path.join(BASE_DIR, "app", "images", "login_image.jpg")
-            if os.path.exists(login_img_path):
-                st.image(login_img_path, use_container_width=True)
-            else:
-                # Fallback if image isn't uploaded yet
-                st.markdown("<div style='height: 400px; background: #1e3c72; border-radius: 15px; display: flex; align-items: center; justify-content: center;'><h2 style='color: white;'>🛡️ ILYASHI</h2></div>", unsafe_allow_html=True)
-            
-            st.markdown("""
-                <div style='margin-top: 20px;'>
-                    <h2 style='color: white !important; font-size: 1.8rem; margin-bottom: 10px;'>Welcome to ILYASHI</h2>
-                    <p style='color: #ddd; font-size: 1rem; line-height: 1.5;'>
-                        Your AI-powered insurance complaint management platform. 
-                        Log in to submit complaints, track resolutions, and view analytics.
-                    </p>
-                </div>
-            """, unsafe_allow_html=True)
-
-        with right_col:
-            # Back button
+        # --- LOGIN FORM ---
+        col1, col2, col3 = st.columns([1, 1.5, 1])
+        with col2:
             if st.button("← Back to Home"):
                 st.session_state.show_login = False
                 st.rerun()
                 
-            # White card for the login form
             st.markdown("""
-                <div style='background-color: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-top: 20px;'>
-                    <h2 style='color: #1e3c72; margin-top: 0;'>Welcome back</h2>
-                    <p style='color: #666; font-size: 0.9rem; margin-bottom: 20px;'>Log in to your account</p>
-                </div>
+                <h1 style='text-align: center; border-bottom: none; font-size: 2rem; font-weight: 800; color: white !important; margin-top: 2rem;'>
+                    Welcome Back
+                </h1>
             """, unsafe_allow_html=True)
 
-            # The actual Streamlit form
             with st.form("login_form"):
                 username = st.text_input("👤 Username", placeholder="Enter your username")
                 password = st.text_input("🔑 Password", type="password", placeholder="Enter your password")
-                
                 st.markdown("<br>", unsafe_allow_html=True)
-                login_btn = st.form_submit_button("Log In", use_container_width=True, type="primary")
+                login_btn = st.form_submit_button("🚀 Sign In", use_container_width=True)
 
                 if login_btn:
                     users = load_users()
