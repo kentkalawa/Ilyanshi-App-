@@ -234,8 +234,7 @@ if not st.session_state.logged_in:
                 st.rerun()
             
              st.stop()
-
-    else:
+        else:
         # --- SPLIT SCREEN LOGIN FORM ---
         
         # Create two columns: Left (Image), Right (Login)
@@ -264,7 +263,7 @@ if not st.session_state.logged_in:
             # Back button
             if st.button("← Back to Home"):
                 st.session_state.show_login = False
-                st.rerun()
+      st.rerun()
                 
             # White card for the login form
             st.markdown("""
