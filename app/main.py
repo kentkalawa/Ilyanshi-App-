@@ -521,8 +521,9 @@ elif page == "📊 Dashboard":
             fig = px.bar(
                 urgency_counts, x="Urgency", y="Count", color="Urgency",
                 color_discrete_map={"High": "#e74c3c", "Medium": "#f39c12", "Low": "#27ae60"},
-                text="Count"
+                text="Count"  # <-- THIS ADDS THE NUMBERS
             )
+            fig.update_traces(textposition='outside') # <-- THIS POSITIONS THEM NEATLY
             fig.update_traces(textposition='outside', textfont_size=14, marker_line_width=0)
             fig.update_layout(
                 font=dict(family="Inter, Segoe UI", size=13),
@@ -558,8 +559,9 @@ elif page == "📊 Dashboard":
             fig = px.bar(
                 status_counts, x="Status", y="Count", color="Status",
                 color_discrete_map={"Open": "#f39c12", "In Progress": "#3498db", "Resolved": "#27ae60"},
-                text="Count"
+                text="Count"  # <-- THIS ADDS THE NUMBERS
             )
+            fig.update_traces(textposition='outside') # <-- THIS POSITIONS THEM NEATLY
             fig.update_traces(textposition='outside', textfont_size=14, marker_line_width=0)
             fig.update_layout(
                 font=dict(family="Inter, Segoe UI", size=13),
