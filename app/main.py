@@ -344,10 +344,16 @@ if page == "📝 Submit Complaint":
         if submitted:
             if complaint_text and customer_name:
                 text_vec = vectorizer.transform([complaint_text])
+                
+                # 1. Get the predictions
                 subject = subject_model.predict(text_vec)[0]
                 urgency = urgency_model.predict(text_vec)[0]
                 sentiment = sentiment_model.predict(text_vec)[0]
-
+                
+                # 2. Get the confidence scores (probabilities)
+                subj_conf = round(max(subject_model.predict_proba(text_vec)[0]) * 100, 1)
+                urg_conf = round(max(urgency_model.predict_proba(text_vec)[0]) * 100, 1)
+                sent_conf = round(max(sentiment_model.predict_proba(text_vec)[0]) * 100, 1)
                 complaint = {
                     "customer_name": customer_name,
                     "policy_number": policy_number,
