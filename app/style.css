@@ -1,22 +1,20 @@
 /* ============================================================
-   GLOBAL STYLES
+   GLOBAL STYLES (AWS DARK THEME)
    ============================================================ */
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 40%, #764ba2 100%) !important;
+    background: #0f1b2a !important; /* AWS Dark Navy */
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-.stApp {
-    background: transparent !important;
+/* Make the Sidebar slightly lighter navy */
+[data-testid="stSidebar"] {
+    background: #16283d !important;
+    border-right: 1px solid #2c3e50;
 }
-.main .block-container {
-    background-color: rgba(255, 255, 255, 0.97);
-    border-radius: 20px;
-    padding: 2.5rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+
+/* Make sure text is white by default */
+h1, h2, h3, p, label {
+    color: #ffffff !important;
 }
 
 /* ============================================================
