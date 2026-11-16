@@ -443,4 +443,17 @@ header {visibility: hidden;}
     [data-testid="collapsedControl"] {
         display: none !important;
     }
+}    
+
+/* Force Dashboard titles to be white */
+h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
+
+/* Fix the welcome text color */
+.stMarkdown p {
+    color: #94a3b8 !important;
+}
+
+
