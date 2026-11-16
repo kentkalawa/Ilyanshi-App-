@@ -260,14 +260,6 @@ if not st.session_state.logged_in:
                     else:
                         st.error("❌ User not found")
 
-            with st.expander("🔍 View Demo Accounts"):
-                st.markdown("""
-                    | Role | Username | Password |
-                    |------|----------|----------|
-                    | **Admin** | kent | admin2026 |
-                    | **Officer** | jbanda | officer123 |
-                    | **Viewer** | dmwale | viewer123 |
-                """)
         st.stop()
 # ===========================================================
 # SIDEBAR
