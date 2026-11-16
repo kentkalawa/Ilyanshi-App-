@@ -444,9 +444,15 @@ elif page == "📊 Dashboard":
     col1, col2, col3 = st.columns([1, 8, 1])
     
     with col2:
-        # Clean, unified header (No separate box)
-        st.title("Analytics Dashboard")
-        st.markdown(f"<div style='color: #94a3b8; font-size: 0.95rem; margin-top: -15px; margin-bottom: 30px; border: none !important; outline: none !important;'>Welcome back, <b>{st.session_state.name}</b> | {datetime.now().strftime('%d %B %Y')}</div>", unsafe_allow_html=True)
+     # Professional Welcome Header (Matching the Login Page Size)
+        st.markdown(f"""
+            <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                Welcome, {st.session_state.name}
+            </h1>
+            <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+                {st.session_state.role} Dashboard | {datetime.now().strftime('%d %B %Y')}
+            </p>
+        """, unsafe_allow_html=True)
 
         df = load_complaints()
 
