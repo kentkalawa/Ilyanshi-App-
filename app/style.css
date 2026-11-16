@@ -518,44 +518,4 @@ hr {
 .stMarkdown p {
     border-bottom: none !important;
 }
-/* ============================================================
-   FORCE KPI CARDS TO BE DARK (Targeting Streamlit's internal DOM)
-   ============================================================ */
-
-/* Target the outer container */
-div[data-testid="stMetric"] {
-    background-color: #1a2638 !important;
-    border: 1px solid #2d3748 !important;
-    border-top: 4px solid #3b82f6 !important;
-    border-radius: 8px !important;
-    padding: 15px !important;
-}
-
-/* Target the inner wrapper that Streamlit uses for the background */
-div[data-testid="stMetric"] > div {
-    background-color: #1a2638 !important;
-    border-radius: 8px !important;
-}
-
-/* Force the label text to be grey */
-div[data-testid="stMetricLabel"] {
-    color: #94a3b8 !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 1px !important;
-}
-
-/* Force the value text to be white */
-div[data-testid="stMetricValue"] {
-    color: #ffffff !important;
-    font-size: 2rem !important;
-    font-weight: 600 !important;
-}
-
-/* In case Streamlit uses a generic div for the metric container */
-[data-testid="metric-container"] {
-    background-color: #1a2638 !important;
-    border: 1px solid #2d3748 !important;
-    border-top: 4px solid #3b82f6 !important;
-    border-radius: 8px !important;
-}
 
