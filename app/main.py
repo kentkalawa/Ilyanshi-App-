@@ -284,7 +284,7 @@ with st.sidebar:
         st.markdown("<h1 style='text-align:center; font-size:3rem; border:none;'>🛡️</h1>",
                     unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align:center; border:none;'>ICMS</h3>",
+        st.markdown("<h3 style='text-align:center; border:none;'>ILYASHI</h3>", 
                 unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(255,255,255,0.2);'>",
                 unsafe_allow_html=True)
