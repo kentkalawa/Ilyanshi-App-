@@ -449,27 +449,19 @@ elif page == "📋 View Complaints":
 elif page == "📊 Dashboard":
     
     # Center the dashboard content
-    col1, col2, col3 = st.columns([1, 6, 1])
+    col1, col2, col3 = st.columns([1, 8, 1])
     
     with col2:
-        # Clean Corporate Header
-        st.markdown(f"""
-            <div style='background-color: #1a2638; padding: 20px; border-radius: 8px; border: 1px solid #2d3748; margin-bottom: 25px;'>
-                <h2 style='color: #ffffff !important; margin: 0; font-size: 1.5rem; font-weight: 500;'>
-                    Analytics Dashboard
-                </h2>
-                <p style='color: #94a3b8; margin-top: 5px; font-size: 0.9rem; margin-bottom: 0;'>
-                    Logged in as: <b>{st.session_state.name}</b> ({st.session_state.role}) | {datetime.now().strftime("%d %B %Y")}
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
+        # Clean, unified header (No separate box)
+        st.title("Analytics Dashboard")
+        st.markdown(f"<p style='color: #94a3b8; font-size: 0.95rem; margin-top: -15px; margin-bottom: 30px;'>Welcome back, <b>{st.session_state.name}</b> | {datetime.now().strftime('%d %B %Y')}</p>", unsafe_allow_html=True)
 
         df = load_complaints()
 
         if len(df) == 0:
             st.info("No complaints yet. Submit some first.")
         else:
-            # KPI Cards (Clean, no emojis)
+            # KPI Cards
             c1, c2, c3, c4 = st.columns(4)
             with c1:
                 st.metric("TOTAL COMPLAINTS", len(df))
@@ -480,9 +472,9 @@ elif page == "📊 Dashboard":
             with c4:
                 st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
 
-            st.divider()
+            st.markdown("<br>", unsafe_allow_html=True) # Add some breathing room
 
-            # Charts
+            # Charts Row 1
             chart_col1, chart_col2 = st.columns(2)
 
             with chart_col1:
@@ -490,20 +482,14 @@ elif page == "📊 Dashboard":
                 subject_counts = df["subject"].value_counts().reset_index()
                 subject_counts.columns = ["Subject", "Count"]
                 fig = px.pie(
-                    subject_counts, 
-                    names="Subject", 
-                    values="Count", 
-                    hole=0.5, 
+                    subject_counts, names="Subject", values="Count", hole=0.5, 
                     color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b']
                 )
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
                 fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), 
-                    height=300,
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"),
-                    showlegend=False
+                    margin=dict(l=10, r=10, t=30, b=10), height=350,
+                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="#e2e8f0"), showlegend=False
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
@@ -512,26 +498,19 @@ elif page == "📊 Dashboard":
                 urgency_counts = df["urgency"].value_counts().reset_index()
                 urgency_counts.columns = ["Urgency", "Count"]
                 fig = px.bar(
-                    urgency_counts, 
-                    x="Urgency", 
-                    y="Count", 
-                    color="Urgency",
-                    color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"},
-                    text="Count"
+                    urgency_counts, x="Urgency", y="Count", color="Urgency",
+                    color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count"
                 )
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), 
-                    height=300,
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"),
-                    showlegend=False,
-                    xaxis=dict(showgrid=False),
-                    yaxis=dict(showgrid=True, gridcolor="#2d3748")
+                    margin=dict(l=10, r=10, t=30, b=10), height=350,
+                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="#e2e8f0"), showlegend=False,
+                    xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748")
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
+            # Charts Row 2
             chart_col3, chart_col4 = st.columns(2)
 
             with chart_col3:
@@ -539,21 +518,14 @@ elif page == "📊 Dashboard":
                 sentiment_counts = df["sentiment"].value_counts().reset_index()
                 sentiment_counts.columns = ["Sentiment", "Count"]
                 fig = px.pie(
-                    sentiment_counts, 
-                    names="Sentiment", 
-                    values="Count", 
-                    hole=0.5,
-                    color="Sentiment", 
+                    sentiment_counts, names="Sentiment", values="Count", hole=0.5, color="Sentiment", 
                     color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"}
                 )
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
                 fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), 
-                    height=300,
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"),
-                    showlegend=False
+                    margin=dict(l=10, r=10, t=30, b=10), height=350,
+                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="#e2e8f0"), showlegend=False
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
@@ -562,35 +534,25 @@ elif page == "📊 Dashboard":
                 status_counts = df["status"].value_counts().reset_index()
                 status_counts.columns = ["Status", "Count"]
                 fig = px.bar(
-                    status_counts, 
-                    x="Status", 
-                    y="Count", 
-                    color="Status",
-                    color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"},
-                    text="Count"
+                    status_counts, x="Status", y="Count", color="Status",
+                    color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count"
                 )
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), 
-                    height=300,
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"),
-                    showlegend=False,
-                    xaxis=dict(showgrid=False),
-                    yaxis=dict(showgrid=True, gridcolor="#2d3748")
+                    margin=dict(l=10, r=10, t=30, b=10), height=350,
+                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="#e2e8f0"), showlegend=False,
+                    xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748")
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
-            st.divider()
+            st.markdown("<br><br>", unsafe_allow_html=True)
             
-            # Clean Export Button
+            # Export Button
             csv = df.to_csv(index=False)
             st.download_button(
-                label="Export Data (CSV)",
-                data=csv,
-                file_name="complaints_export.csv",
-                mime="text/csv"
+                label="📥 Export Data as CSV", data=csv,
+                file_name="complaints_export.csv", mime="text/csv"
             )
 
 #=============================================================
