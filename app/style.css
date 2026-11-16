@@ -456,4 +456,15 @@ h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
     color: #94a3b8 !important;
 }
 
+/* Remove the unwanted line under the Welcome text */
+hr {
+    display: none !important;
+}
+
+/* Specifically target the welcome text to ensure no borders */
+.stMarkdown p {
+    border-bottom: none !important;
+    text-decoration: none !important;
+}
+
 
