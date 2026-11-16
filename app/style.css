@@ -518,8 +518,12 @@ hr {
 .stMarkdown p {
     border-bottom: none !important;
 }
-/* Make the KPI metric cards match the dark theme */
-[data-testid="stMetric"] {
+/* ============================================================
+   FORCE KPI CARDS TO BE DARK (Targeting Streamlit's internal DOM)
+   ============================================================ */
+
+/* Target the outer container */
+div[data-testid="stMetric"] {
     background-color: #1a2638 !important;
     border: 1px solid #2d3748 !important;
     border-top: 4px solid #3b82f6 !important;
@@ -527,51 +531,31 @@ hr {
     padding: 15px !important;
 }
 
-[data-testid="stMetricLabel"] {
-    color: #94a3b8 !important;
-    font-size: 0.8rem !important;
-}
-
-[data-testid="stMetricValue"] {
-    color: #ffffff !important;
-    font-size: 2rem !important;
-}/* Make the KPI metric cards match the dark theme */
-[data-testid="stMetric"] {
+/* Target the inner wrapper that Streamlit uses for the background */
+div[data-testid="stMetric"] > div {
     background-color: #1a2638 !important;
-    border: 1px solid #2d3748 !important;
-    border-top: 4px solid #3b82f6 !important;
     border-radius: 8px !important;
-    padding: 15px !important;
 }
 
-[data-testid="stMetricLabel"] {
+/* Force the label text to be grey */
+div[data-testid="stMetricLabel"] {
     color: #94a3b8 !important;
-    font-size: 0.8rem !important;
-}
-
-[data-testid="stMetricValue"] {
-    color: #ffffff !important;
-    font-size: 2rem !important;
-}
-/* Force KPI cards to match the dark theme */
-[data-testid="stMetric"] {
-    background-color: #1a2638 !important; /* Dark navy background */
-    border: 1px solid #2d3748 !important; /* Subtle border */
-    border-top: 4px solid #3b82f6 !important; /* Blue accent line on top */
-    border-radius: 8px !important;
-    padding: 15px !important;
-}
-
-[data-testid="stMetricLabel"] {
-    color: #94a3b8 !important; /* Grey label text */
     font-size: 0.85rem !important;
     letter-spacing: 1px !important;
 }
 
-[data-testid="stMetricValue"] {
-    color: #ffffff !important; /* Bright white numbers */
+/* Force the value text to be white */
+div[data-testid="stMetricValue"] {
+    color: #ffffff !important;
     font-size: 2rem !important;
     font-weight: 600 !important;
 }
 
+/* In case Streamlit uses a generic div for the metric container */
+[data-testid="metric-container"] {
+    background-color: #1a2638 !important;
+    border: 1px solid #2d3748 !important;
+    border-top: 4px solid #3b82f6 !important;
+    border-radius: 8px !important;
+}
 
