@@ -303,11 +303,7 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h4 style='border:none;'>📋 Navigation</h4>", unsafe_allow_html=True)
-if st.button("☰ Open Menu", use_container_width=True):
-    st.info("👉 Tap the `>` arrow in the top-left corner of the screen to open the menu.")   
-
-menu_items = ["📊 Dashboard", "📝 Submit Complaint", "📋 View Complaints"]
+    menu_items = ["📊 Dashboard", "📝 Submit Complaint", "📋 View Complaints"]
 if st.session_state.role == "Admin":
     menu_items.append("👥 Manage Users")
     menu_items.append("📜 Audit Log")
