@@ -553,5 +553,25 @@ hr {
     color: #ffffff !important;
     font-size: 2rem !important;
 }
+/* Force KPI cards to match the dark theme */
+[data-testid="stMetric"] {
+    background-color: #1a2638 !important; /* Dark navy background */
+    border: 1px solid #2d3748 !important; /* Subtle border */
+    border-top: 4px solid #3b82f6 !important; /* Blue accent line on top */
+    border-radius: 8px !important;
+    padding: 15px !important;
+}
+
+[data-testid="stMetricLabel"] {
+    color: #94a3b8 !important; /* Grey label text */
+    font-size: 0.85rem !important;
+    letter-spacing: 1px !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: #ffffff !important; /* Bright white numbers */
+    font-size: 2rem !important;
+    font-weight: 600 !important;
+}
 
 
