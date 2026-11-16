@@ -454,7 +454,7 @@ elif page == "📊 Dashboard":
     with col2:
         # Clean, unified header (No separate box)
         st.title("Analytics Dashboard")
-        st.markdown(f"<p style='color: #94a3b8; font-size: 0.95rem; margin-top: -15px; margin-bottom: 30px;'>Welcome back, <b>{st.session_state.name}</b> | {datetime.now().strftime('%d %B %Y')}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color: #94a3b8; font-size: 0.95rem; margin-top: -15px; margin-bottom: 30px; border-bottom: none !important;'>Welcome back, <b>{st.session_state.name}</b> | {datetime.now().strftime('%d %B %Y')}</p>", unsafe_allow_html=True)
 
         df = load_complaints()
 
