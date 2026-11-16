@@ -467,4 +467,56 @@ hr {
     text-decoration: none !important;
 }
 
+/* ============================================================
+   DEEPSEEK STYLE SIDEBAR (Ultra Clean)
+   ============================================================ */
+
+/* Remove all borders and backgrounds from menu items */
+[data-testid="stSidebar"] .stRadio label {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    color: #9ca3af !important; /* Dim grey text */
+    font-weight: 400 !important;
+    font-size: 0.95rem !important;
+    transition: all 0.2s ease !important;
+    margin-bottom: 2px !important;
+}
+
+/* Subtle hover effect */
+[data-testid="stSidebar"] .stRadio label:hover {
+    background-color: #1f2937 !important; /* Very subtle dark grey highlight */
+    color: #ffffff !important;
+}
+
+/* The Active (selected) menu item */
+[data-testid="stSidebar"] .stRadio label[data-checked="true"] {
+    background-color: #1f2937 !important; /* Same subtle dark grey */
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}
+
+/* Remove the radio circle completely */
+[data-testid="stSidebar"] .stRadio label > div:first-child {
+    display: none !important;
+}
+
+/* Remove the "Navigation" text and extra margins */
+[data-testid="stSidebar"] h4 {
+    display: none !important;
+}
+
+/* Clean up the user profile box (make it blend in) */
+[data-testid="stSidebar"] .stMarkdown div[style*="background: rgba(255,255,255,0.12)"] {
+    background: transparent !important;
+    border: 1px solid #1f2937 !important;
+    border-radius: 8px !important;
+}
+
+/* Remove the line under the Welcome text on the dashboard */
+.stMarkdown p {
+    border-bottom: none !important;
+}
+
 
