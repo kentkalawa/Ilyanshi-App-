@@ -11,40 +11,26 @@ from datetime import datetime
 # PAGE CONFIG
 # ============================================================
 st.set_page_config(
-    page_title="Insurance Complaints Management",
+    page_title="Ilyashi Insurance Complaints",
     page_icon="🛡️",
     layout="wide"
 )
+
 # ============================================================
 # LOAD CUSTOM CSS
 # ============================================================
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 def load_css(file_name):
     if os.path.exists(file_name):
         with open(file_name) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Use the absolute path so it works on the cloud
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 css_path = os.path.join(BASE_DIR, "app", "style.css")
 load_css(css_path)
-# ============================================================
-# HELPER — Load image as base64
-# ============================================================
-def get_base64_image(image_path):
-    if os.path.exists(image_path):
-        with open(image_path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-    return None
 
 # ============================================================
 # LOAD MODELS
 # ============================================================
-import os
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 @st.cache_resource
 def load_models():
     vectorizer = joblib.load(os.path.join(BASE_DIR, "models", "vectorizer.pkl"))
@@ -69,10 +55,7 @@ AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         return pd.read_csv(COMPLAINTS_FILE)
-    return pd.DataFrame(columns=[
-        "id", "customer_name", "policy_number", "complaint_text",
-        "subject", "urgency", "sentiment", "status", "date_submitted"
-    ])
+    return pd.DataFrame(columns=["id", "customer_name", "policy_number", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment"])
 
 def save_complaint(complaint):
     df = load_complaints()
@@ -80,6 +63,8 @@ def save_complaint(complaint):
     complaint["id"] = new_id
     complaint["status"] = "Open"
     complaint["date_submitted"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+    if "attachment" not in complaint:
+        complaint["attachment"] = ""
     df = pd.concat([df, pd.DataFrame([complaint])], ignore_index=True)
     df.to_csv(COMPLAINTS_FILE, index=False)
     return new_id
@@ -105,23 +90,6 @@ def log_action(username, action, details=""):
     else:
         log_entry.to_csv(AUDIT_FILE, index=False)
 
-# Feature B: Status Badge Helper
-def status_badge(status):
-    colors = {
-        "Open": ("#f39c12", "#fff5e6"),
-        "In Progress": ("#3498db", "#e6f4ff"),
-        "Resolved": ("#27ae60", "#e6ffe6")
-    }
-    text_color, bg_color = colors.get(status, ("#666", "#f0f0f0"))
-    return f"""
-        <span style='background: {bg_color}; color: {text_color};
-                     padding: 0.3rem 0.9rem; border-radius: 20px;
-                     font-weight: 600; font-size: 0.85rem;
-                     border: 1px solid {text_color}30;'>
-            {status}
-        </span>
-    """
-
 # ============================================================
 # SESSION STATE
 # ============================================================
@@ -131,17 +99,16 @@ if "logged_in" not in st.session_state:
     st.session_state.role = None
     st.session_state.name = None
 
-# ============================================================
-# LOGIN & LANDING PAGE
-# ============================================================
 if "show_login" not in st.session_state:
     st.session_state.show_login = False
 
+# ============================================================
+# LANDING PAGE & LOGIN
+# ============================================================
 if not st.session_state.logged_in:
     
     if not st.session_state.show_login:
         # --- LANDING PAGE ---
-        
         img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
         if os.path.exists(img_path):
             with open(img_path, "rb") as f:
@@ -158,10 +125,7 @@ if not st.session_state.logged_in:
                 background-attachment: fixed !important;
                 background-repeat: no-repeat !important;
             }}
-            .main .block-container {{
-                background-color: transparent !important;
-                box-shadow: none !important;
-            }}
+            .main .block-container {{ background-color: transparent !important; box-shadow: none !important; }}
             [data-testid="stHeader"] {{ background: transparent !important; }}
             
             .hero-text h1, .hero-text h1 * {{
@@ -202,8 +166,7 @@ if not st.session_state.logged_in:
             <div class="hero-text" style='text-align: center;'>
                 <div class="hero-logo">🛡️ ILYASHI</div>
                 <h1>From Complaint<br>To Resolution</h1>
-                <p>The AI-powered platform that always listens. 
-                Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.</p>
+                <p>The AI-powered platform that always listens. Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.</p>
             </div>
         """, unsafe_allow_html=True)
         
@@ -240,7 +203,7 @@ if not st.session_state.logged_in:
                 username = st.text_input("👤 Username", placeholder="Enter your username")
                 password = st.text_input("🔑 Password", type="password", placeholder="Enter your password")
                 st.markdown("<br>", unsafe_allow_html=True)
-                login_btn = st.form_submit_button("🚀 Sign In", use_container_width=True)
+                login_btn = st.form_submit_button("Sign In", use_container_width=True)
 
                 if login_btn:
                     users = load_users()
@@ -259,13 +222,18 @@ if not st.session_state.logged_in:
                             st.error("❌ Invalid password")
                     else:
                         st.error("❌ User not found")
-
         st.stop()
-# ===========================================================
+
+# ============================================================
 # SIDEBAR
 # ============================================================
 with st.sidebar:
-    logo_b64 = get_base64_image("images/logo.png")
+    logo_b64 = None
+    logo_path = os.path.join(BASE_DIR, "app", "images", "logo.png")
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_b64 = base64.b64encode(f.read()).decode()
+            
     if logo_b64:
         st.markdown(f"""
             <div style='text-align: center; padding: 1rem 0;'>
@@ -273,30 +241,26 @@ with st.sidebar:
             </div>
         """, unsafe_allow_html=True)
     else:
-        st.markdown("<h1 style='text-align:center; font-size:3rem; border:none;'>🛡️</h1>",
-                    unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align:center; font-size:3rem; border:none;'>🛡️</h1>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align:center; border:none; letter-spacing: 4px;'>ILYASHI</h3>",
-                unsafe_allow_html=True)
-    st.markdown("<hr style='border-color: rgba(255,255,255,0.2);'>",
-                unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align:center; border:none; letter-spacing: 4px;'>ILYASHI</h3>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color: rgba(255,255,255,0.2);'>", unsafe_allow_html=True)
 
-    # User Profile Card (Clean, no emojis)
-         st.markdown(f"""
-          <div style='text-align: center; padding: 1rem;
-                        background: rgba(255,255,255,0.12);
-                        border-radius: 12px; margin-bottom: 1.5rem;
-                        border: 1px solid rgba(255,255,255,0.2);'>
-                <p style='margin: 0; font-size: 1.05rem; font-weight: 700;'>
-                    {st.session_state.name}
-                </p>
-                <p style='margin: 0.3rem 0 0 0; font-size: 0.85rem; opacity: 0.85;'>
-                    {st.session_state.role}
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
+    # User Profile Card
+    st.markdown(f"""
+        <div style='text-align: center; padding: 1rem;
+                    background: rgba(255,255,255,0.12);
+                    border-radius: 12px; margin-bottom: 1.5rem;
+                    border: 1px solid rgba(255,255,255,0.2);'>
+            <p style='margin: 0; font-size: 1.05rem; font-weight: 700;'>
+                {st.session_state.name}
+            </p>
+            <p style='margin: 0.3rem 0 0 0; font-size: 0.85rem; opacity: 0.85;'>
+                {st.session_state.role}
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
 
-    # Clean Navigation Menu (No emojis)
     menu_items = ["Dashboard", "Submit Complaint", "View Complaints"]
     if st.session_state.role == "Admin":
         menu_items.append("Manage Users")
@@ -304,7 +268,6 @@ with st.sidebar:
 
     page = st.sidebar.radio("", menu_items, label_visibility="collapsed")
 
-    # Clean Logout Button
     if st.sidebar.button("Logout", use_container_width=True):
         log_action(st.session_state.username, "LOGOUT", "User logged out")
         st.session_state.logged_in = False
@@ -312,142 +275,13 @@ with st.sidebar:
         st.session_state.role = None
         st.session_state.name = None
         st.rerun()
-        
-# ============================================================
-# PAGE 1: SUBMIT COMPLAINT
-# ============================================================
-if page == "📝 Submit Complaint":
-    st.title("📝 Submit a Complaint")
-    st.markdown("Fill in the form below. The AI will automatically classify your complaint.")
-
-    with st.form("complaint_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            customer_name = st.text_input("👤 Customer Name")
-        with col2:
-            policy_number = st.text_input("📄 Policy Number")
-
-        complaint_text = st.text_area("💬 Complaint Description", height=150,
-                                       placeholder="Describe your complaint in detail...")
-
-        submitted = st.form_submit_button("🚀 Submit Complaint", use_container_width=True)
-
-        if submitted:
-            if complaint_text and customer_name:
-                text_vec = vectorizer.transform([complaint_text])
-                
-                # 1. Get the predictions
-                subject = subject_model.predict(text_vec)[0]
-                urgency = urgency_model.predict(text_vec)[0]
-                sentiment = sentiment_model.predict(text_vec)[0]
-                
-                # 2. Get the confidence scores (probabilities)
-                subj_conf = round(max(subject_model.predict_proba(text_vec)[0]) * 100, 1)
-                urg_conf = round(max(urgency_model.predict_proba(text_vec)[0]) * 100, 1)
-                sent_conf = round(max(sentiment_model.predict_proba(text_vec)[0]) * 100, 1)
-                complaint = {
-                    "customer_name": customer_name,
-                    "policy_number": policy_number,
-                    "complaint_text": complaint_text,
-                    "subject": subject,
-                    "urgency": urgency,
-                    "sentiment": sentiment
-                }
-                new_id = save_complaint(complaint)
-                log_action(st.session_state.username, "SUBMIT_COMPLAINT", f"Complaint #{new_id}")
-
-                st.success(f"✅ Complaint #{new_id} submitted successfully!")
-                st.balloons()
-
-                st.markdown("### 🤖 AI Analysis Results")
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("📂 Subject", subject)
-                with col2:
-                    st.metric("⚡ Urgency", urgency)
-                with col3:
-                    st.metric("😊 Sentiment", sentiment)
-
-                st.markdown("### 🔀 Routing")
-                routing_map = {
-                    "Claim": "Claims Department",
-                    "Payment": "Finance Department",
-                    "Policy": "Policy Services",
-                    "Premium": "Billing Department",
-                    "Service": "Customer Service"
-                }
-                dept = routing_map.get(subject, "Customer Service")
-                st.info(f"→ Routed to: **{dept}**")
-            else:
-                st.error("Please enter customer name and complaint description.")
 
 # ============================================================
-# PAGE 2: VIEW COMPLAINTS
+# PAGE 1: DASHBOARD
 # ============================================================
-elif page == "📋 View Complaints":
-    st.title("📋 All Complaints")
-
-    df = load_complaints()
-
-    if len(df) == 0:
-        # Feature D: Empty State Illustration
-        st.markdown("""
-            <div style='text-align: center; padding: 4rem 2rem;
-                        background: #f8f9fa; border-radius: 20px;
-                        border: 2px dashed #667eea;'>
-                <div style='font-size: 5rem;'>📭</div>
-                <h3 style='color: #667eea !important;'>No complaints yet</h3>
-                <p style='color: #888;'>Submit your first complaint to see it here.</p>
-            </div>
-        """, unsafe_allow_html=True)
-    else:
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            status_filter = st.selectbox("Status", ["All"] + list(df["status"].unique()))
-        with col2:
-            subject_filter = st.selectbox("Subject", ["All"] + list(df["subject"].unique()))
-        with col3:
-            urgency_filter = st.selectbox("Urgency", ["All"] + list(df["urgency"].unique()))
-
-        filtered = df.copy()
-        if status_filter != "All":
-            filtered = filtered[filtered["status"] == status_filter]
-        if subject_filter != "All":
-            filtered = filtered[filtered["subject"] == subject_filter]
-        if urgency_filter != "All":
-            filtered = filtered[filtered["urgency"] == urgency_filter]
-
-        st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
-        
-        # Feature B: Status Badges in Table
-        display_df = filtered.copy()
-        display_df["status"] = display_df["status"].apply(status_badge)
-        st.write(display_df.to_html(escape=False, index=False), unsafe_allow_html=True)
-
-        if st.session_state.role in ["Admin", "Officer"]:
-            st.subheader("🔄 Update Complaint Status")
-            complaint_id = st.number_input("Complaint ID", min_value=1, max_value=len(df), step=1)
-            new_status = st.selectbox("New Status", ["Open", "In Progress", "Resolved"])
-
-            if st.button("Update Status"):
-                df.loc[df["id"] == complaint_id, "status"] = new_status
-                df.to_csv(COMPLAINTS_FILE, index=False)
-                log_action(st.session_state.username, "UPDATE_STATUS", f"Complaint #{complaint_id} → {new_status}")
-                st.success(f"✅ Complaint #{complaint_id} updated to **{new_status}**")
-                st.rerun()
-        else:
-            st.info("🔒 Viewers cannot update complaints.")
-            
-# ============================================================
-# PAGE 3: DASHBOARD
-# ============================================================
-elif page == "📊 Dashboard":
-    
-    # Center the dashboard content
+if page == "Dashboard":
     col1, col2, col3 = st.columns([1, 8, 1])
-    
     with col2:
-     # Professional Welcome Header (Matching the Login Page Size)
         st.markdown(f"""
             <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
                 Welcome, {st.session_state.name}
@@ -462,7 +296,6 @@ elif page == "📊 Dashboard":
         if len(df) == 0:
             st.info("No complaints yet. Submit some first.")
         else:
-            # KPI Cards
             c1, c2, c3, c4 = st.columns(4)
             with c1:
                 st.metric("TOTAL COMPLAINTS", len(df))
@@ -473,101 +306,184 @@ elif page == "📊 Dashboard":
             with c4:
                 st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
 
-            st.markdown("<br>", unsafe_allow_html=True) # Add some breathing room
+            st.markdown("<br>", unsafe_allow_html=True)
 
-            # Charts Row 1
             chart_col1, chart_col2 = st.columns(2)
-
             with chart_col1:
                 st.markdown("#### Complaints by Subject")
                 subject_counts = df["subject"].value_counts().reset_index()
                 subject_counts.columns = ["Subject", "Count"]
-                fig = px.pie(
-                    subject_counts, names="Subject", values="Count", hole=0.5, 
-                    color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b']
-                )
+                fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b'])
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
-                fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), height=350,
-                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"), showlegend=False
-                )
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False)
                 st.plotly_chart(fig, use_container_width=True)
 
             with chart_col2:
                 st.markdown("#### Complaints by Urgency")
                 urgency_counts = df["urgency"].value_counts().reset_index()
                 urgency_counts.columns = ["Urgency", "Count"]
-                fig = px.bar(
-                    urgency_counts, x="Urgency", y="Count", color="Urgency",
-                    color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count"
-                )
+                fig = px.bar(urgency_counts, x="Urgency", y="Count", color="Urgency", color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), height=350,
-                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"), showlegend=False,
-                    xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748")
-                )
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
                 st.plotly_chart(fig, use_container_width=True)
 
-            # Charts Row 2
             chart_col3, chart_col4 = st.columns(2)
-
             with chart_col3:
                 st.markdown("#### Complaints by Sentiment")
                 sentiment_counts = df["sentiment"].value_counts().reset_index()
                 sentiment_counts.columns = ["Sentiment", "Count"]
-                fig = px.pie(
-                    sentiment_counts, names="Sentiment", values="Count", hole=0.5, color="Sentiment", 
-                    color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"}
-                )
+                fig = px.pie(sentiment_counts, names="Sentiment", values="Count", hole=0.5, color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"})
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
-                fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), height=350,
-                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"), showlegend=False
-                )
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False)
                 st.plotly_chart(fig, use_container_width=True)
 
             with chart_col4:
                 st.markdown("#### Complaints by Status")
                 status_counts = df["status"].value_counts().reset_index()
                 status_counts.columns = ["Status", "Count"]
-                fig = px.bar(
-                    status_counts, x="Status", y="Count", color="Status",
-                    color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count"
-                )
+                fig = px.bar(status_counts, x="Status", y="Count", color="Status", color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10), height=350,
-                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#e2e8f0"), showlegend=False,
-                    xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748")
-                )
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
                 st.plotly_chart(fig, use_container_width=True)
 
             st.markdown("<br><br>", unsafe_allow_html=True)
-            
-            # Export Button
             csv = df.to_csv(index=False)
-            st.download_button(
-                label="📥 Export Data as CSV", data=csv,
-                file_name="complaints_export.csv", mime="text/csv"
-            )
+            st.download_button(label="Export Data as CSV", data=csv, file_name="complaints_export.csv", mime="text/csv")
 
-#=============================================================
+# ============================================================
+# PAGE 2: SUBMIT COMPLAINT
+# ============================================================
+elif page == "Submit Complaint":
+    st.title("Submit a Complaint")
+    st.markdown("Fill in the form below. The AI will automatically classify your complaint.")
+
+    with st.form("complaint_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            customer_name = st.text_input("Customer Name")
+        with col2:
+            policy_number = st.text_input("Policy Number")
+
+        complaint_text = st.text_area("Complaint Description", height=150, placeholder="Describe your complaint in detail...")
+        uploaded_file = st.file_uploader("Attach Evidence (Optional)", type=["pdf", "jpg", "png"])
+        
+        submitted = st.form_submit_button("Submit Complaint", use_container_width=True)
+
+        if submitted:
+            if complaint_text and customer_name:
+                text_vec = vectorizer.transform([complaint_text])
+                subject = subject_model.predict(text_vec)[0]
+                urgency = urgency_model.predict(text_vec)[0]
+                sentiment = sentiment_model.predict(text_vec)[0]
+                
+                subj_conf = round(max(subject_model.predict_proba(text_vec)[0]) * 100, 1)
+                urg_conf = round(max(urgency_model.predict_proba(text_vec)[0]) * 100, 1)
+                sent_conf = round(max(sentiment_model.predict_proba(text_vec)[0]) * 100, 1)
+
+                attachment_filename = ""
+                if uploaded_file is not None:
+                    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                    attachment_filename = f"{timestamp}_{uploaded_file.name}"
+                    file_path = os.path.join("uploads", attachment_filename)
+                    with open(file_path, "wb") as f:
+                        f.write(uploaded_file.getbuffer())
+
+                complaint = {
+                    "customer_name": customer_name,
+                    "policy_number": policy_number,
+                    "complaint_text": complaint_text,
+                    "subject": subject,
+                    "urgency": urgency,
+                    "sentiment": sentiment,
+                    "attachment": attachment_filename
+                }
+                new_id = save_complaint(complaint)
+                log_action(st.session_state.username, "SUBMIT_COMPLAINT", f"Complaint #{new_id}")
+
+                st.success(f"✅ Complaint #{new_id} submitted successfully!")
+                st.balloons()
+
+                st.markdown("### AI Analysis Results")
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Subject", subject, f"{subj_conf}% Confidence")
+                with col2:
+                    st.metric("Urgency", urgency, f"{urg_conf}% Confidence")
+                with col3:
+                    st.metric("Sentiment", sentiment, f"{sent_conf}% Confidence")
+
+                st.markdown("### Routing")
+                routing_map = {"Claim": "Claims Department", "Payment": "Finance Department", "Policy": "Policy Services", "Premium": "Billing Department", "Service": "Customer Service"}
+                dept = routing_map.get(subject, "Customer Service")
+                st.info(f"→ Routed to: **{dept}**")
+            else:
+                st.error("Please enter customer name and complaint description.")
+
+# ============================================================
+# PAGE 3: VIEW COMPLAINTS
+# ============================================================
+elif page == "View Complaints":
+    st.title("All Complaints")
+    df = load_complaints()
+
+    if len(df) == 0:
+        st.info("No complaints yet. Submit one first.")
+    else:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            status_filter = st.selectbox("Status", ["All"] + list(df["status"].unique()))
+        with col2:
+            subject_filter = st.selectbox("Subject", ["All"] + list(df["subject"].unique()))
+        with col3:
+            urgency_filter = st.selectbox("Urgency", ["All"] + list(df["urgency"].unique()))
+
+        filtered = df.copy()
+        if status_filter != "All": filtered = filtered[filtered["status"] == status_filter]
+        if subject_filter != "All": filtered = filtered[filtered["subject"] == subject_filter]
+        if urgency_filter != "All": filtered = filtered[filtered["urgency"] == urgency_filter]
+
+        st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
+        st.dataframe(filtered, use_container_width=True)
+
+        if st.session_state.role in ["Admin", "Officer"]:
+            st.subheader("Update Complaint Status")
+            complaint_id = st.number_input("Complaint ID", min_value=1, max_value=len(df), step=1)
+            new_status = st.selectbox("New Status", ["Open", "In Progress", "Resolved"])
+            if st.button("Update Status"):
+                df.loc[df["id"] == complaint_id, "status"] = new_status
+                df.to_csv(COMPLAINTS_FILE, index=False)
+                log_action(st.session_state.username, "UPDATE_STATUS", f"Complaint #{complaint_id} → {new_status}")
+                st.success(f"✅ Complaint #{complaint_id} updated to **{new_status}**")
+                st.rerun()
+        else:
+            st.info("Viewers cannot update complaints.")
+
+        st.subheader("Download Attachments")
+        complaints_with_files = filtered[filtered["attachment"].notna() & (filtered["attachment"] != "")]
+        if len(complaints_with_files) > 0:
+            for index, row in complaints_with_files.iterrows():
+                col_a, col_b = st.columns([3, 1])
+                with col_a:
+                    st.write(f"**Complaint #{row['id']}** - {row['customer_name']} ({row['attachment']})")
+                with col_b:
+                    file_path = os.path.join("uploads", str(row['attachment']))
+                    if os.path.exists(file_path):
+                        with open(file_path, "rb") as file:
+                            st.download_button(label="Download", data=file, file_name=str(row['attachment']), key=f"download_{row['id']}")
+        else:
+            st.info("No attachments found.")
+
+# ============================================================
 # PAGE 4: MANAGE USERS
 # ============================================================
-elif page == "👥 Manage Users":
-    st.title("👥 Manage Users")
-
+elif page == "Manage Users":
+    st.title("Manage Users")
     users = load_users()
     display_users = users.copy()
     display_users["password"] = "••••••••"
     st.dataframe(display_users, use_container_width=True)
 
-    st.subheader("➕ Add New User")
+    st.subheader("Add New User")
     with st.form("add_user_form"):
         col1, col2 = st.columns(2)
         with col1:
@@ -576,16 +492,10 @@ elif page == "👥 Manage Users":
         with col2:
             new_password = st.text_input("Password", type="password")
             new_name = st.text_input("Full Name")
-
         if st.form_submit_button("Add User"):
             if new_username and new_password and new_name:
                 hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                new_user = pd.DataFrame([{
-                    "username": new_username,
-                    "password": hashed,
-                    "role": new_role,
-                    "name": new_name
-                }])
+                new_user = pd.DataFrame([{"username": new_username, "password": hashed, "role": new_role, "name": new_name}])
                 users = pd.concat([users, new_user], ignore_index=True)
                 users.to_csv(USERS_FILE, index=False)
                 log_action(st.session_state.username, "ADD_USER", f"Added {new_username}")
@@ -597,8 +507,8 @@ elif page == "👥 Manage Users":
 # ============================================================
 # PAGE 5: AUDIT LOG
 # ============================================================
-elif page == "📜 Audit Log":
-    st.title("📜 Audit Log")
+elif page == "Audit Log":
+    st.title("Audit Log")
     if os.path.exists(AUDIT_FILE):
         logs = pd.read_csv(AUDIT_FILE)
         st.dataframe(logs.tail(100), use_container_width=True)
