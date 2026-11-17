@@ -69,12 +69,28 @@ hr {
     display: none !important;
 }
 
-/* Make the header background transparent so it blends in */
-[data-testid="stHeader"] {
-    background-color: transparent !important;
-    background: transparent !important;
+/* ============================================================
+   FORCE HIDE THE RADIO BUTTON DOTS (New Streamlit Fix)
+   ============================================================ */
+
+/* Hide the actual radio input */
+[data-testid="stSidebar"] .stRadio input[type="radio"] {
+    display: none !important;
 }
 
+/* Hide the visual dot wrapper */
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label > div:first-child {
+    display: none !important;
+}
+
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label > span:first-child {
+    display: none !important;
+}
+
+/* Ensure the text stays aligned nicely */
+[data-testid="stSidebar"] .stRadio label {
+    padding-left: 5px !important;
+}
 /* Hide the default radio circle dots in the sidebar */
 [data-testid="stSidebar"] .stRadio label > div:first-child {
     display: none !important;
