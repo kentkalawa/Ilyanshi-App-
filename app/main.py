@@ -276,40 +276,43 @@ with st.sidebar:
         st.markdown("<h1 style='text-align:center; font-size:3rem; border:none;'>🛡️</h1>",
                     unsafe_allow_html=True)
 
-        st.markdown("<h3 style='text-align:center; border:none;'>ILYASHI</h3>", 
+    st.markdown("<h3 style='text-align:center; border:none; letter-spacing: 4px;'>ILYASHI</h3>",
                 unsafe_allow_html=True)
     st.markdown("<hr style='border-color: rgba(255,255,255,0.2);'>",
                 unsafe_allow_html=True)
 
+    # User Profile Card (Clean, no emojis)
     st.markdown(f"""
         <div style='text-align: center; padding: 1rem;
                     background: rgba(255,255,255,0.12);
                     border-radius: 12px; margin-bottom: 1.5rem;
                     border: 1px solid rgba(255,255,255,0.2);'>
             <p style='margin: 0; font-size: 1.05rem; font-weight: 700;'>
-                  {st.session_state.name}
+                {st.session_state.name}
             </p>
             <p style='margin: 0.3rem 0 0 0; font-size: 0.85rem; opacity: 0.85;'>
-                  {st.session_state.role}
+                {st.session_state.role}
             </p>
         </div>
     """, unsafe_allow_html=True)
 
+    # Clean Navigation Menu (No emojis)
     menu_items = ["Dashboard", "Submit Complaint", "View Complaints"]
-if st.session_state.role == "Admin":
-    menu_items.append("Manage Users")
-    menu_items.append("Audit Log")
+    if st.session_state.role == "Admin":
+        menu_items.append("Manage Users")
+        menu_items.append("Audit Log")
 
-page = st.sidebar.radio("", menu_items, label_visibility="collapsed")
+    page = st.sidebar.radio("", menu_items, label_visibility="collapsed")
 
-if st.sidebar.button("Logout", use_container_width=True):
-    log_action(st.session_state.username, "LOGOUT", "User logged out")
-    st.session_state.logged_in = False
-    st.session_state.username = None
-    st.session_state.role = None
-    st.session_state.name = None
-    st.rerun()
-
+    # Clean Logout Button
+    if st.sidebar.button("Logout", use_container_width=True):
+        log_action(st.session_state.username, "LOGOUT", "User logged out")
+        st.session_state.logged_in = False
+        st.session_state.username = None
+        st.session_state.role = None
+        st.session_state.name = None
+        st.rerun()
+        
 # ============================================================
 # PAGE 1: SUBMIT COMPLAINT
 # ============================================================
