@@ -1,5 +1,5 @@
 /* ============================================================
-   GLOBAL STYLES
+   GLOBAL DARK THEME
    ============================================================ */
 .stApp {
     background: #0f1b2a !important;
@@ -23,7 +23,6 @@ h1, h2, h3, p, label {
     border: none !important;
     padding: 8px 15px !important;
     border-radius: 8px !important;
-    transition: background-color 0.2s ease !important;
     color: #d1d5db !important;
 }
 
@@ -42,37 +41,11 @@ h1, h2, h3, p, label {
     display: none !important;
 }
 
-/* ============================================================
-   REMOVE UNWANTED LINES AND BORDERS
-   ============================================================ */
+/* Remove the line under the Welcome text */
 .stMarkdown p {
     border-bottom: none !important;
 }
 
 hr {
     display: none !important;
-}
-
-/* Hide the Streamlit top toolbar completely */
-[data-testid="stToolbar"] {
-    display: none !important;
-    visibility: hidden !important;
-}
-/* Force the sidebar to always be visible */
-[data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    transform: none !important;
-    margin-left: 0 !important;
-    width: 250px !important; /* Keep the width normal */
-}
-
-/* Force the main content to sit next to it */
-[data-testid="stAppViewContainer"] {
-    display: flex !important;
-}
-
-/* Hide the header background */
-[data-testid="stHeader"] {
-    background-color: transparent !important;
 }
