@@ -58,6 +58,19 @@ hr {
     display: none !important;
     visibility: hidden !important;
 }
+/* Force the sidebar to always be visible */
+[data-testid="stSidebar"] {
+    display: block !important;
+    visibility: visible !important;
+    transform: none !important;
+    margin-left: 0 !important;
+    width: 250px !important; /* Keep the width normal */
+}
+
+/* Force the main content to sit next to it */
+[data-testid="stAppViewContainer"] {
+    display: flex !important;
+}
 
 /* Hide the header background */
 [data-testid="stHeader"] {
