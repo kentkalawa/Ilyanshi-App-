@@ -282,7 +282,7 @@ with st.sidebar:
                 unsafe_allow_html=True)
 
     # User Profile Card (Clean, no emojis)
-     st.markdown(f"""
+      st.markdown(f"""
           <div style='text-align: center; padding: 1rem;
                         background: rgba(255,255,255,0.12);
                         border-radius: 12px; margin-bottom: 1.5rem;
