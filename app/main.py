@@ -54,7 +54,11 @@ AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
-        return pd.read_csv(COMPLAINTS_FILE)
+        df = pd.read_csv(COMPLAINTS_FILE)
+        # If the attachment column is missing from old data, add it
+        if "attachment" not in df.columns:
+            df["attachment"] = ""
+        return df
     return pd.DataFrame(columns=["id", "customer_name", "policy_number", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment"])
 
 def save_complaint(complaint):
