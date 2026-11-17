@@ -287,22 +287,22 @@ with st.sidebar:
                     border-radius: 12px; margin-bottom: 1.5rem;
                     border: 1px solid rgba(255,255,255,0.2);'>
             <p style='margin: 0; font-size: 1.05rem; font-weight: 700;'>
-                👤 {st.session_state.name}
+                  {st.session_state.name}
             </p>
             <p style='margin: 0.3rem 0 0 0; font-size: 0.85rem; opacity: 0.85;'>
-                🎭 {st.session_state.role}
+                  {st.session_state.role}
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-    menu_items = ["📊 Dashboard", "📝 Submit Complaint", "📋 View Complaints"]
+    menu_items = ["Dashboard", "Submit Complaint", "View Complaints"]
 if st.session_state.role == "Admin":
-    menu_items.append("👥 Manage Users")
-    menu_items.append("📜 Audit Log")
+    menu_items.append("Manage Users")
+    menu_items.append("Audit Log")
 
 page = st.sidebar.radio("", menu_items, label_visibility="collapsed")
 
-if st.sidebar.button("🚪 Logout", use_container_width=True):
+if st.sidebar.button("Logout", use_container_width=True):
     log_action(st.session_state.username, "LOGOUT", "User logged out")
     st.session_state.logged_in = False
     st.session_state.username = None
