@@ -282,19 +282,19 @@ with st.sidebar:
                 unsafe_allow_html=True)
 
     # User Profile Card (Clean, no emojis)
-    st.markdown(f"""
-        <div style='text-align: center; padding: 1rem;
-                    background: rgba(255,255,255,0.12);
-                    border-radius: 12px; margin-bottom: 1.5rem;
-                    border: 1px solid rgba(255,255,255,0.2);'>
-            <p style='margin: 0; font-size: 1.05rem; font-weight: 700;'>
-                {st.session_state.name}
-            </p>
-            <p style='margin: 0.3rem 0 0 0; font-size: 0.85rem; opacity: 0.85;'>
-                {st.session_state.role}
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style='text-align: center; padding: 1rem;
+                        background: rgba(255,255,255,0.12);
+                        border-radius: 12px; margin-bottom: 1.5rem;
+                        border: 1px solid rgba(255,255,255,0.2);'>
+                <p style='margin: 0; font-size: 1.05rem; font-weight: 700;'>
+                    {st.session_state.name}
+                </p>
+                <p style='margin: 0.3rem 0 0 0; font-size: 0.85rem; opacity: 0.85;'>
+                    {st.session_state.role}
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
     # Clean Navigation Menu (No emojis)
     menu_items = ["Dashboard", "Submit Complaint", "View Complaints"]
