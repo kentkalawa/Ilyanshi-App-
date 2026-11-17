@@ -74,3 +74,8 @@ hr {
     background-color: transparent !important;
     background: transparent !important;
 }
+
+/* Hide the default radio circle dots in the sidebar */
+[data-testid="stSidebar"] .stRadio label > div:first-child {
+    display: none !important;
+}
