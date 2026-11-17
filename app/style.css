@@ -52,3 +52,14 @@ h1, h2, h3, p, label {
 hr {
     display: none !important;
 }
+
+/* Hide the Streamlit top toolbar completely */
+[data-testid="stToolbar"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide the header background */
+[data-testid="stHeader"] {
+    background-color: transparent !important;
+}
