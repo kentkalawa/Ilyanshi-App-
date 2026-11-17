@@ -428,7 +428,20 @@ elif page == "Submit Complaint":
 # ============================================================
 elif page == "View Complaints":
     st.title("All Complaints")
+    
     df = load_complaints()
+
+    # --- ROLE-BASED DATA FILTERING (Data Isolation for Officers) ---
+    if st.session_state.role == "Officer":
+        if st.session_state.username == "jbanda":
+            # John Banda only handles Claims and Payments
+            df = df[df["subject"].isin(["Claim", "Payment"])]
+            st.info("🔒 **Department Filter Active:** You are only viewing Claims and Payments.")
+        elif st.session_state.username == "mphiri":
+            # Mary Phiri only handles Policy and Premium
+            df = df[df["subject"].isin(["Policy", "Premium"])]
+            st.info("🔒 **Department Filter Active:** You are only viewing Policy and Premium.")
+    # ---------------------------------------------------------------
 
     if len(df) == 0:
         st.info("No complaints yet. Submit one first.")
@@ -442,40 +455,48 @@ elif page == "View Complaints":
             urgency_filter = st.selectbox("Urgency", ["All"] + list(df["urgency"].unique()))
 
         filtered = df.copy()
-        if status_filter != "All": filtered = filtered[filtered["status"] == status_filter]
-        if subject_filter != "All": filtered = filtered[filtered["subject"] == subject_filter]
-        if urgency_filter != "All": filtered = filtered[filtered["urgency"] == urgency_filter]
+        if status_filter != "All":
+            filtered = filtered[filtered["status"] == status_filter]
+        if subject_filter != "All":
+            filtered = filtered[filtered["subject"] == subject_filter]
+        if urgency_filter != "All":
+            filtered = filtered[filtered["urgency"] == urgency_filter]
 
         st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
         st.dataframe(filtered, use_container_width=True)
 
+        # --- RESTRICT STATUS UPDATES TO ADMIN & OFFICER ---
         if st.session_state.role in ["Admin", "Officer"]:
             st.subheader("Update Complaint Status")
             complaint_id = st.number_input("Complaint ID", min_value=1, max_value=len(df), step=1)
             new_status = st.selectbox("New Status", ["Open", "In Progress", "Resolved"])
             if st.button("Update Status"):
-                df.loc[df["id"] == complaint_id, "status"] = new_status
-                df.to_csv(COMPLAINTS_FILE, index=False)
+                # Note: We update the main file, not just the filtered view
+                full_df = load_complaints() 
+                full_df.loc[full_df["id"] == complaint_id, "status"] = new_status
+                full_df.to_csv(COMPLAINTS_FILE, index=False)
                 log_action(st.session_state.username, "UPDATE_STATUS", f"Complaint #{complaint_id} → {new_status}")
                 st.success(f"✅ Complaint #{complaint_id} updated to **{new_status}**")
                 st.rerun()
         else:
-            st.info("Viewers cannot update complaints.")
+            st.info("🔒 Viewers cannot update complaints.")
 
-        st.subheader("Download Attachments")
-        complaints_with_files = filtered[filtered["attachment"].notna() & (filtered["attachment"] != "")]
-        if len(complaints_with_files) > 0:
-            for index, row in complaints_with_files.iterrows():
-                col_a, col_b = st.columns([3, 1])
-                with col_a:
-                    st.write(f"**Complaint #{row['id']}** - {row['customer_name']} ({row['attachment']})")
-                with col_b:
-                    file_path = os.path.join("uploads", str(row['attachment']))
-                    if os.path.exists(file_path):
-                        with open(file_path, "rb") as file:
-                            st.download_button(label="Download", data=file, file_name=str(row['attachment']), key=f"download_{row['id']}")
-        else:
-            st.info("No attachments found.")
+        # --- DOWNLOAD ATTACHMENTS ---
+        if st.session_state.role in ["Admin", "Officer"]:
+            st.subheader("Download Attachments")
+            complaints_with_files = filtered[filtered["attachment"].notna() & (filtered["attachment"] != "")]
+            if len(complaints_with_files) > 0:
+                for index, row in complaints_with_files.iterrows():
+                    col_a, col_b = st.columns([3, 1])
+                    with col_a:
+                        st.write(f"**Complaint #{row['id']}** - {row['customer_name']} ({row['attachment']})")
+                    with col_b:
+                        file_path = os.path.join("uploads", str(row['attachment']))
+                        if os.path.exists(file_path):
+                            with open(file_path, "rb") as file:
+                                st.download_button(label="Download", data=file, file_name=str(row['attachment']), key=f"download_{row['id']}")
+            else:
+                st.info("No attachments found for these complaints.")
 
 # ============================================================
 # PAGE 4: MANAGE USERS
