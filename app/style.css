@@ -49,3 +49,28 @@ h1, h2, h3, p, label {
 hr {
     display: none !important;
 }
+/* ============================================================
+   HIDE TOOLBAR BUTTONS SAFELY (Keeps the sidebar arrow)
+   ============================================================ */
+
+/* Hide the 'Share' button */
+[data-testid="stToolbar"] button[kind="header"] {
+    display: none !important;
+}
+
+/* Hide the main toolbar menu (the 3 dots and the star/pen icons) */
+#MainMenu {
+    visibility: hidden !important;
+    display: none !important;
+}
+
+/* Hide the GitHub icon if it's there */
+[data-testid="stToolbar"] a {
+    display: none !important;
+}
+
+/* Make the header background transparent so it blends in */
+[data-testid="stHeader"] {
+    background-color: transparent !important;
+    background: transparent !important;
+}
