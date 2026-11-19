@@ -11,7 +11,7 @@ from datetime import datetime
 # PAGE CONFIG
 # ============================================================
 st.set_page_config(
-    page_title="Ilyashi Insurance Complaints",
+    page_title="Ilyashi Insurance Portal",
     page_icon="🛡️",
     layout="wide"
 )
@@ -55,7 +55,6 @@ AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         df = pd.read_csv(COMPLAINTS_FILE)
-        # If the attachment column is missing from old data, add it
         if "attachment" not in df.columns:
             df["attachment"] = ""
         return df
@@ -164,7 +163,17 @@ if not st.session_state.logged_in:
             </style>
         """, unsafe_allow_html=True)
 
-        st.markdown("<br><br><br><br><br><br>", unsafe_allow_html=True)
+        # Public Navbar
+        st.markdown("""
+            <div style='display: flex; justify-content: center; gap: 30px; padding: 10px; font-weight: 500; color: white;'>
+                <span>Home</span>
+                <span>Services</span>
+                <span>About Us</span>
+                <span>Contact</span>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
         
         st.markdown("""
             <div class="hero-text" style='text-align: center;'>
@@ -181,12 +190,12 @@ if not st.session_state.logged_in:
             if st.button("Get Started", use_container_width=True, type="primary"):
                 st.session_state.show_login = True
                 st.rerun()
-                
-            st.markdown("<p style='text-align:center; color:white; margin-top:1rem; text-shadow: 1px 1px 3px black;'>Already have an account? <b>Log In</b></p>", unsafe_allow_html=True)
-            if st.button("Log In", use_container_width=True):
+            if st.button("Log In to Portal", use_container_width=True):
                 st.session_state.show_login = True
                 st.rerun()
             
+        st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#888;'>© 2026 ILYASHI Insurance. All rights reserved. | Privacy Policy | Terms of Service</p>", unsafe_allow_html=True)
         st.stop()
 
     else:
@@ -265,10 +274,12 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
 
-    menu_items = ["Dashboard", "Submit Complaint", "View Complaints"]
+    # Navigation Menu (Expanded)
+    menu_items = ["Dashboard", "Submit Complaint", "View Complaints", "Analytics", "Settings", "Help Center"]
     if st.session_state.role == "Admin":
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
+        menu_items.append("Export Data")
 
     page = st.sidebar.radio("", menu_items, label_visibility="collapsed")
 
@@ -286,43 +297,50 @@ with st.sidebar:
 if page == "Dashboard":
     col1, col2, col3 = st.columns([1, 8, 1])
     with col2:
-        st.markdown(f"""
-            <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
-                Welcome, {st.session_state.name}
-            </h1>
-            <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
-                {st.session_state.role} Dashboard | {datetime.now().strftime('%d %B %Y')}
-            </p>
-        """, unsafe_allow_html=True)
+        if st.session_state.role == "Admin":
+            st.markdown(f"""
+                <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                    Admin Dashboard
+                </h1>
+                <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+                    System Administrator: {st.session_state.name} | {datetime.now().strftime('%d %B %Y')}
+                </p>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+                <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                    Welcome, {st.session_state.name}
+                </h1>
+                <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+                    {st.session_state.role} View | {datetime.now().strftime('%d %B %Y')}
+                </p>
+            """, unsafe_allow_html=True)
 
         df = load_complaints()
 
         if len(df) == 0:
             st.info("No complaints yet. Submit some first.")
         else:
-            c1, c2, c3, c4 = st.columns(4)
-            with c1:
-                st.metric("TOTAL COMPLAINTS", len(df))
-            with c2:
-                st.metric("OPEN", len(df[df["status"] == "Open"]))
-            with c3:
-                st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
-            with c4:
-                st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
+            if st.session_state.role == "Admin":
+                c1, c2, c3, c4 = st.columns(4)
+                with c1:
+                    st.metric("TOTAL COMPLAINTS", len(df))
+                with c2:
+                    st.metric("OPEN", len(df[df["status"] == "Open"]))
+                with c3:
+                    st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
+                with c4:
+                    st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
+            else:
+                c1, c2 = st.columns(2)
+                with c1:
+                    st.metric("MY OPEN TASKS", len(df[df["status"] == "Open"]))
+                with c2:
+                    st.metric("TASKS IN PROGRESS", len(df[df["status"] == "In Progress"]))
 
             st.markdown("<br>", unsafe_allow_html=True)
-
             chart_col1, chart_col2 = st.columns(2)
             with chart_col1:
-                st.markdown("#### Complaints by Subject")
-                subject_counts = df["subject"].value_counts().reset_index()
-                subject_counts.columns = ["Subject", "Count"]
-                fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b'])
-                fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False)
-                st.plotly_chart(fig, use_container_width=True)
-
-            with chart_col2:
                 st.markdown("#### Complaints by Urgency")
                 urgency_counts = df["urgency"].value_counts().reset_index()
                 urgency_counts.columns = ["Urgency", "Count"]
@@ -331,17 +349,7 @@ if page == "Dashboard":
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
                 st.plotly_chart(fig, use_container_width=True)
 
-            chart_col3, chart_col4 = st.columns(2)
-            with chart_col3:
-                st.markdown("#### Complaints by Sentiment")
-                sentiment_counts = df["sentiment"].value_counts().reset_index()
-                sentiment_counts.columns = ["Sentiment", "Count"]
-                fig = px.pie(sentiment_counts, names="Sentiment", values="Count", hole=0.5, color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"})
-                fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False)
-                st.plotly_chart(fig, use_container_width=True)
-
-            with chart_col4:
+            with chart_col2:
                 st.markdown("#### Complaints by Status")
                 status_counts = df["status"].value_counts().reset_index()
                 status_counts.columns = ["Status", "Count"]
@@ -349,10 +357,6 @@ if page == "Dashboard":
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
                 st.plotly_chart(fig, use_container_width=True)
-
-            st.markdown("<br><br>", unsafe_allow_html=True)
-            csv = df.to_csv(index=False)
-            st.download_button(label="Export Data as CSV", data=csv, file_name="complaints_export.csv", mime="text/csv")
 
 # ============================================================
 # PAGE 2: SUBMIT COMPLAINT
@@ -428,20 +432,15 @@ elif page == "Submit Complaint":
 # ============================================================
 elif page == "View Complaints":
     st.title("All Complaints")
-    
     df = load_complaints()
 
-    # --- ROLE-BASED DATA FILTERING (Data Isolation for Officers) ---
     if st.session_state.role == "Officer":
         if st.session_state.username == "jbanda":
-            # John Banda only handles Claims and Payments
             df = df[df["subject"].isin(["Claim", "Payment"])]
             st.info("🔒 **Department Filter Active:** You are only viewing Claims and Payments.")
         elif st.session_state.username == "mphiri":
-            # Mary Phiri only handles Policy and Premium
             df = df[df["subject"].isin(["Policy", "Premium"])]
             st.info("🔒 **Department Filter Active:** You are only viewing Policy and Premium.")
-    # ---------------------------------------------------------------
 
     if len(df) == 0:
         st.info("No complaints yet. Submit one first.")
@@ -465,13 +464,11 @@ elif page == "View Complaints":
         st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
         st.dataframe(filtered, use_container_width=True)
 
-        # --- RESTRICT STATUS UPDATES TO ADMIN & OFFICER ---
         if st.session_state.role in ["Admin", "Officer"]:
             st.subheader("Update Complaint Status")
             complaint_id = st.number_input("Complaint ID", min_value=1, max_value=len(df), step=1)
             new_status = st.selectbox("New Status", ["Open", "In Progress", "Resolved"])
             if st.button("Update Status"):
-                # Note: We update the main file, not just the filtered view
                 full_df = load_complaints() 
                 full_df.loc[full_df["id"] == complaint_id, "status"] = new_status
                 full_df.to_csv(COMPLAINTS_FILE, index=False)
@@ -481,7 +478,6 @@ elif page == "View Complaints":
         else:
             st.info("🔒 Viewers cannot update complaints.")
 
-        # --- DOWNLOAD ATTACHMENTS ---
         if st.session_state.role in ["Admin", "Officer"]:
             st.subheader("Download Attachments")
             complaints_with_files = filtered[filtered["attachment"].notna() & (filtered["attachment"] != "")]
@@ -499,7 +495,94 @@ elif page == "View Complaints":
                 st.info("No attachments found for these complaints.")
 
 # ============================================================
-# PAGE 4: MANAGE USERS
+# PAGE 4: ANALYTICS (New)
+# ============================================================
+elif page == "Analytics":
+    col1, col2, col3 = st.columns([1, 8, 1])
+    with col2:
+        st.markdown(f"""
+            <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                Analytics & Reports
+            </h1>
+            <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+                Business Intelligence Insights
+            </p>
+        """, unsafe_allow_html=True)
+
+        df = load_complaints()
+        
+        if len(df) == 0:
+            st.info("No data available for analysis yet.")
+        else:
+            st.markdown("#### Complaints by Subject")
+            subject_counts = df["subject"].value_counts().reset_index()
+            subject_counts.columns = ["Subject", "Count"]
+            fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b'])
+            fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
+            fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=400, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False)
+            st.plotly_chart(fig, use_container_width=True)
+
+            st.markdown("#### Complaints by Sentiment")
+            sentiment_counts = df["sentiment"].value_counts().reset_index()
+            sentiment_counts.columns = ["Sentiment", "Count"]
+            fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"}, text="Count")
+            fig.update_traces(textposition='outside', textfont_size=12)
+            fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=400, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
+            st.plotly_chart(fig, use_container_width=True)
+
+# ============================================================
+# PAGE 5: SETTINGS (New)
+# ============================================================
+elif page == "Settings":
+    st.title("Profile Settings")
+    st.markdown("Manage your account preferences and security.")
+
+    with st.expander("Change Password"):
+        with st.form("change_password"):
+            st.write("Update your password below.")
+            current_pass = st.text_input("Current Password", type="password")
+            new_pass = st.text_input("New Password", type="password")
+            confirm_pass = st.text_input("Confirm New Password", type="password")
+            if st.form_submit_button("Update Password"):
+                if new_pass == confirm_pass:
+                    st.success("Password updated successfully! (Prototype Demo)")
+                else:
+                    st.error("New passwords do not match.")
+
+    with st.expander("Notification Preferences"):
+        st.checkbox("Email me when a new complaint is assigned to my department.", value=True)
+        st.checkbox("Send me a weekly performance summary.", value=False)
+        st.button("Save Preferences")
+
+# ============================================================
+# PAGE 6: HELP CENTER (New)
+# ============================================================
+elif page == "Help Center":
+    st.title("Help & Support")
+    st.markdown("""
+    Welcome to the ILYASHI Help Center. Here you can find answers to common questions or contact our support team.
+    
+    ### Frequently Asked Questions (FAQ)
+    
+    **Q: How does the AI classify my complaint?**
+    *A: The AI uses Natural Language Processing (NLP) to read the text of the complaint. It then predicts the Subject, Urgency, and Sentiment based on patterns learned from thousands of previous complaints.*
+    
+    **Q: Can I upload a picture of my damaged car?**
+    *A: Yes! When submitting a complaint, use the "Attach Evidence" button to upload PDFs, JPGs, or PNGs.*
+    
+    **Q: Who can see my complaint?**
+    *A: For this prototype, only Administrators and Officers assigned to your specific department can view the complaint details.*
+    
+    ---
+    ### Contact IT Support
+    If you are experiencing technical issues, please contact:
+    *   **Email:** support@ilyashi.co.zm
+    *   **Phone:** +260 211 123 456
+    *   **Hours:** Monday - Friday, 08:00 - 17:00
+    """)
+
+# ============================================================
+# PAGE 7: MANAGE USERS (Admin Only)
 # ============================================================
 elif page == "Manage Users":
     st.title("Manage Users")
@@ -530,7 +613,7 @@ elif page == "Manage Users":
                 st.error("Please fill in all fields.")
 
 # ============================================================
-# PAGE 5: AUDIT LOG
+# PAGE 8: AUDIT LOG (Admin Only)
 # ============================================================
 elif page == "Audit Log":
     st.title("Audit Log")
@@ -539,3 +622,36 @@ elif page == "Audit Log":
         st.dataframe(logs.tail(100), use_container_width=True)
     else:
         st.info("No audit logs yet.")
+
+# ============================================================
+# PAGE 9: EXPORT DATA (Admin Only)
+# ============================================================
+elif page == "Export Data":
+    col1, col2, col3 = st.columns([1, 8, 1])
+    with col2:
+        st.markdown(f"""
+            <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                Export Data
+            </h1>
+            <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+                Download the complete complaints database for offline analysis.
+            </p>
+        """, unsafe_allow_html=True)
+
+        df = load_complaints()
+        
+        if len(df) == 0:
+            st.info("There are no complaints to export yet.")
+        else:
+            st.write(f"Total records available: **{len(df)}**")
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            csv = df.to_csv(index=False)
+            st.download_button(
+                label="📥 Download Complaints as CSV",
+                data=csv,
+                file_name="complaints_export.csv",
+                mime="text/csv",
+                use_container_width=True,
+                type="primary"
+            )
