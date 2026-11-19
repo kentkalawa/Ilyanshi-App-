@@ -106,3 +106,19 @@ header[data-testid="stHeader"] {
 .main .block-container {
     padding-top: 1rem !important;
 }
+
+/* Make the Log In button solid blue */
+[data-testid="stAppViewContainer"] .stButton > button[kind="secondary"] {
+    background-color: #1f6feb !important; 
+    color: #ffffff !important;
+    border: 1px solid #1f6feb !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Hover effect for the Log In button */
+[data-testid="stAppViewContainer"] .stButton > button[kind="secondary"]:hover {
+    background-color: #388bfd !important; 
+    border-color: #388bfd !important;
+}
