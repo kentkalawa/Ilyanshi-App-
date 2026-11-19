@@ -108,6 +108,9 @@ if "show_login" not in st.session_state:
 if "nav_page" not in st.session_state:
     st.session_state.nav_page = None
 
+if "extra_page" not in st.session_state:
+    st.session_state.extra_page = None
+
 # ============================================================
 # LANDING PAGE & LOGIN
 # ============================================================
