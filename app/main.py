@@ -382,6 +382,26 @@ if page == "Dashboard":
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
                 st.plotly_chart(fig, use_container_width=True)
 
+            st.markdown("<br>", unsafe_allow_html=True)
+            chart_col3, chart_col4 = st.columns(2)
+            with chart_col3:
+                st.markdown("#### Complaints by Subject")
+                subject_counts = df["subject"].value_counts().reset_index()
+                subject_counts.columns = ["Subject", "Count"]
+                fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b'])
+                fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False)
+                st.plotly_chart(fig, use_container_width=True)
+
+            with chart_col4:
+                st.markdown("#### Complaints by Sentiment")
+                sentiment_counts = df["sentiment"].value_counts().reset_index()
+                sentiment_counts.columns = ["Sentiment", "Count"]
+                fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"}, text="Count")
+                fig.update_traces(textposition='outside', textfont_size=12)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
+                st.plotly_chart(fig, use_container_width=True)
+
 # ============================================================
 # PAGE 2: SUBMIT COMPLAINT
 # ============================================================
