@@ -166,7 +166,28 @@ if not st.session_state.logged_in:
             </style>
         """, unsafe_allow_html=True)
 
-st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+        
+        st.markdown("""
+            <div class="hero-text" style='text-align: center;'>
+                <div class="hero-logo">🛡️ ILYASHI</div>
+                <h1>From Complaint<br>To Resolution</h1>
+                <p>The AI-powered platform that always listens. Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br><br>", unsafe_allow_html=True)
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("Get Started", use_container_width=True, type="primary"):
+                st.session_state.show_login = True
+                st.rerun()
+            if st.button("Log In to Portal", use_container_width=True):
+                st.session_state.show_login = True
+                st.rerun()
+            
+        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
         
         # Landing Page Footer
         st.markdown("""
@@ -182,29 +203,6 @@ st.markdown("<br><br><br><br>", unsafe_allow_html=True)
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        st.stop()
-        
-        st.markdown("""
-            <div class="hero-text" style='text-align: center;'>
-                <div class="hero-logo">🛡️ ILYASHI</div>
-                <h1>From Complaint<br>To Resolution</h1>
-                <p>The AI-powered platform that always listens. Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.</p>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            if st.button("Get Started", use_container_width=True, type="primary"):
-                st.session_state.show_login = True
-                st.rerun()
-            if st.button("Log In to Portal", use_container_width=True):
-                st.session_state.show_login = True
-                st.rerun()
-            
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#888;'>© 2026 ILYASHI Insurance. All rights reserved. | Privacy Policy | Terms of Service</p>", unsafe_allow_html=True)
         st.stop()
 
     else:
