@@ -92,6 +92,33 @@ def log_action(username, action, details=""):
         log_entry.to_csv(AUDIT_FILE, mode='a', header=False, index=False)
     else:
         log_entry.to_csv(AUDIT_FILE, index=False)
+        
+def filter_for_user(df):
+    if st.session_state.role == "Officer":
+        if st.session_state.username == "jbanda":
+            return df[df["subject"].isin(["Claim", "Payment"])]
+        if st.session_state.username == "mphiri":
+            return df[df["subject"].isin(["Policy", "Premium"])]
+    return df
+
+def go_to(page_name):
+    if page_name in ("Settings", "Help Center"):
+        st.session_state.extra_page = page_name
+    else:
+        st.session_state.extra_page = None
+        st.session_state.nav_radio = page_name
+
+def clear_extra_page():
+    st.session_state.extra_page = None
+
+def do_logout():
+    log_action(st.session_state.username, "LOGOUT", "User logged out")
+    st.session_state.logged_in = False
+    st.session_state.username = None
+    st.session_state.role = None
+    st.session_state.name = None
+    st.session_state.extra_page = None
+    st.session_state.pop("nav_radio", None)     
 
 # ============================================================
 # SESSION STATE
