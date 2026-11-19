@@ -166,17 +166,23 @@ if not st.session_state.logged_in:
             </style>
         """, unsafe_allow_html=True)
 
-        # Public Navbar
+                st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+        
+        # Landing Page Footer
         st.markdown("""
-            <div style='display: flex; justify-content: center; gap: 30px; padding: 10px; font-weight: 500; color: white;'>
-                <span>Home</span>
-                <span>Services</span>
-                <span>About Us</span>
-                <span>Contact</span>
+            <div style='text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 50px;'>
+                <div style='display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; font-weight: 500; color: #d1d5db;'>
+                    <span style='cursor: pointer;'>Home</span>
+                    <span style='cursor: pointer;'>Services</span>
+                    <span style='cursor: pointer;'>About Us</span>
+                    <span style='cursor: pointer;'>Contact</span>
+                </div>
+                <p style='text-align:center; color:#888; font-size: 0.8rem; margin: 0;'>
+                    © 2026 ILYASHI Insurance. All rights reserved. | Privacy Policy | Terms of Service
+                </p>
             </div>
         """, unsafe_allow_html=True)
-
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.stop()
         
         st.markdown("""
             <div class="hero-text" style='text-align: center;'>
