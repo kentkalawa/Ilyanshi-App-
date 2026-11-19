@@ -166,7 +166,7 @@ if not st.session_state.logged_in:
             </style>
         """, unsafe_allow_html=True)
 
-                st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+st.markdown("<br><br><br><br>", unsafe_allow_html=True)
         
         # Landing Page Footer
         st.markdown("""
