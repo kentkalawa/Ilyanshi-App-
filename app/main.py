@@ -340,7 +340,7 @@ if page == "Dashboard":
                 </p>
             """, unsafe_allow_html=True)
 
-        df = load_complaints()
+        df = filter_for_user(load_complaints())
 
         if len(df) == 0:
             st.info("No complaints yet. Submit some first.")
