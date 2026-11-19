@@ -183,7 +183,10 @@ if not st.session_state.logged_in:
             if st.button("Get Started", use_container_width=True, type="primary", key="get_started_btn"):
                 st.session_state.show_login = True
                 st.rerun()
-            if st.button("Log In to Portal", use_container_width=True):
+
+            st.markdown("<p style='text-align:center; color:#d1d5db; margin: 15px 0 10px 0;'>Already have an account? Log in below</p>", unsafe_allow_html=True)
+
+            if st.button("Log In to Portal", use_container_width=True, key="login_btn_landing"):
                 st.session_state.show_login = True
                 st.rerun()
             
