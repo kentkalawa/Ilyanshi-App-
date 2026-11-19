@@ -295,46 +295,18 @@ with st.sidebar:
         st.rerun()
 
 # ============================================================
-# TOP NAVIGATION BAR & PROFILE (For quick links)
+# TOP BAR: PROFILE & NOTIFICATIONS ONLY
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Render the visual top bar
 st.markdown(f"""
-    <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #30363d;'>
-        <div style='display: flex; gap: 20px;'>
-            <span style='color: #8b949e; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;'>Quick Links:</span>
-            <span style='color: #3b82f6; cursor: pointer; font-weight: 500;'>Analytics</span>
-            <span style='color: #3b82f6; cursor: pointer; font-weight: 500;'>Settings</span>
-            <span style='color: #3b82f6; cursor: pointer; font-weight: 500;'>Help Center</span>
-        </div>
-        <div style='display: flex; align-items: center; gap: 15px;'>
-            <span style='font-size: 1.2rem;'>🔔</span>
-            <div style='background: #21262d; padding: 5px 12px; border-radius: 15px; border: 1px solid #30363d;'>
-                <span style='color: #ffffff; font-weight: bold; font-size: 0.9rem;'>{st.session_state.name}</span>
-            </div>
+    <div style='display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #30363d; gap: 15px;'>
+        <span style='font-size: 1.2rem; cursor: pointer;'>🔔</span>
+        <div style='background: #21262d; padding: 5px 12px; border-radius: 15px; border: 1px solid #30363d;'>
+            <span style='color: #ffffff; font-weight: bold; font-size: 0.9rem;'>{st.session_state.name}</span>
         </div>
     </div>
 """, unsafe_allow_html=True)
-
-# Hidden buttons to make the "Quick Links" clickable
-nav_col1, nav_col2, nav_col3, nav_col4, nav_col5 = st.columns([1, 1, 1, 4, 1])
-with nav_col1:
-    if st.button("Analytics", use_container_width=True):
-        st.session_state.nav_page = "Analytics"
-with nav_col2:
-    if st.button("Settings", use_container_width=True):
-        st.session_state.nav_page = "Settings"
-with nav_col3:
-    if st.button("Help Center", use_container_width=True):
-        st.session_state.nav_page = "Help Center"
-
-# Check if a quick link was clicked and override the sidebar page
-if st.session_state.nav_page:
-    page = st.session_state.nav_page
-    st.session_state.nav_page = None # Reset after click
-
-st.markdown("<hr style='margin-top: 0;'>", unsafe_allow_html=True)
 
 # ============================================================
 # PAGE 1: DASHBOARD
@@ -700,3 +672,62 @@ elif page == "Export Data":
                 use_container_width=True,
                 type="primary"
             )
+
+# ============================================================
+# PROFESSIONAL FOOTER (Like Booking.com)
+# ============================================================
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+st.markdown(f"""
+    <div style='background-color: #161b22; padding: 40px; border-top: 1px solid #30363d; border-radius: 10px;'>
+        <div style='display: flex; justify-content: space-between; flex-wrap: wrap; color: #c9d1d9; font-size: 0.85rem;'>
+            
+            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+                <h4 style='color: #ffffff; margin-bottom: 15px;'>Support</h4>
+                <p style='margin: 5px 0; cursor: pointer;'>Manage your account</p>
+                <p style='margin: 5px 0; cursor: pointer;'>Contact IT Support</p>
+                <p style='margin: 5px 0; cursor: pointer;'>Safety Resource Center</p>
+            </div>
+            
+            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+                <h4 style='color: #ffffff; margin-bottom: 15px;'>Discover</h4>
+                <p style='margin: 5px 0; cursor: pointer;'>AI Classification</p>
+                <p style='margin: 5px 0; cursor: pointer;'>System Updates</p>
+                <p style='margin: 5px 0; cursor: pointer;'>ILYASHI for Business</p>
+            </div>
+            
+            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+                <h4 style='color: #ffffff; margin-bottom: 15px;'>Terms and settings</h4>
+                <p style='margin: 5px 0; cursor: pointer;'>Privacy Notice</p>
+                <p style='margin: 5px 0; cursor: pointer;'>Terms of Service</p>
+                <p style='margin: 5px 0; cursor: pointer;'>Accessibility Statement</p>
+            </div>
+            
+            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+                <h4 style='color: #ffffff; margin-bottom: 15px;'>Partners</h4>
+                <p style='margin: 5px 0; cursor: pointer;'>Extranet login</p>
+                <p style='margin: 5px 0; cursor: pointer;'>Partner help</p>
+                <p style='margin: 5px 0; cursor: pointer;'>List your institution</p>
+            </div>
+            
+            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+                <h4 style='color: #ffffff; margin-bottom: 15px;'>About</h4>
+                <p style='margin: 5px 0; cursor: pointer;'>About ILYASHI</p>
+                <p style='margin: 5px 0; cursor: pointer;'>How We Work</p>
+                <p style='margin: 5px 0; cursor: pointer;'>Sustainability</p>
+                <p style='margin: 5px 0; cursor: pointer;'>Careers</p>
+            </div>
+        </div>
+        
+        <hr style='border-color: #30363d; margin: 20px 0;'>
+        
+        <div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
+            <p>ILYASHI is part of Mulungushi University ICT431 Capstone Project. The world leader in AI-powered complaint management.</p>
+            <p>Copyright © 1996–2026 ILYASHI™. All rights reserved.</p>
+            <p style='margin-top: 10px;'>
+                <span style='color: #3b82f6; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ILYASHI</span>
+                <span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>ZAMBIA</span>
+                <span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>AFRICA</span>
+            </p>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
