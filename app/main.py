@@ -191,7 +191,7 @@ if not st.session_state.logged_in:
         
         # Landing Page Footer
         st.markdown("""
-            <div style='text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 50px;'>
+           <div style='text-align: center; padding: 20px; margin-top: 50px;'>
                 <div style='display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; font-weight: 500; color: #d1d5db;'>
                     <span style='cursor: pointer;'>Home</span>
                     <span style='cursor: pointer;'>Services</span>
