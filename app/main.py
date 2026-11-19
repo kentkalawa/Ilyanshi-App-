@@ -105,6 +105,9 @@ if "logged_in" not in st.session_state:
 if "show_login" not in st.session_state:
     st.session_state.show_login = False
 
+if "nav_page" not in st.session_state:
+    st.session_state.nav_page = None
+
 # ============================================================
 # LANDING PAGE & LOGIN
 # ============================================================
@@ -173,7 +176,7 @@ if not st.session_state.logged_in:
             </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
         
         st.markdown("""
             <div class="hero-text" style='text-align: center;'>
@@ -183,7 +186,7 @@ if not st.session_state.logged_in:
             </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("<br><br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
 
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
@@ -194,7 +197,7 @@ if not st.session_state.logged_in:
                 st.session_state.show_login = True
                 st.rerun()
             
-        st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+        st.markdown("<br><br>", unsafe_allow_html=True)
         st.markdown("<p style='text-align:center; color:#888;'>© 2026 ILYASHI Insurance. All rights reserved. | Privacy Policy | Terms of Service</p>", unsafe_allow_html=True)
         st.stop()
 
@@ -238,7 +241,7 @@ if not st.session_state.logged_in:
         st.stop()
 
 # ============================================================
-# SIDEBAR
+# SIDEBAR (OPERATIONS ONLY)
 # ============================================================
 with st.sidebar:
     logo_b64 = None
@@ -274,8 +277,8 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
 
-    # Navigation Menu (Expanded)
-    menu_items = ["Dashboard", "Submit Complaint", "View Complaints", "Analytics", "Settings", "Help Center"]
+    # Sidebar Navigation (Operations only)
+    menu_items = ["Dashboard", "Submit Complaint", "View Complaints"]
     if st.session_state.role == "Admin":
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
@@ -290,6 +293,48 @@ with st.sidebar:
         st.session_state.role = None
         st.session_state.name = None
         st.rerun()
+
+# ============================================================
+# TOP NAVIGATION BAR & PROFILE (For quick links)
+# ============================================================
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Render the visual top bar
+st.markdown(f"""
+    <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #30363d;'>
+        <div style='display: flex; gap: 20px;'>
+            <span style='color: #8b949e; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;'>Quick Links:</span>
+            <span style='color: #3b82f6; cursor: pointer; font-weight: 500;'>Analytics</span>
+            <span style='color: #3b82f6; cursor: pointer; font-weight: 500;'>Settings</span>
+            <span style='color: #3b82f6; cursor: pointer; font-weight: 500;'>Help Center</span>
+        </div>
+        <div style='display: flex; align-items: center; gap: 15px;'>
+            <span style='font-size: 1.2rem;'>🔔</span>
+            <div style='background: #21262d; padding: 5px 12px; border-radius: 15px; border: 1px solid #30363d;'>
+                <span style='color: #ffffff; font-weight: bold; font-size: 0.9rem;'>{st.session_state.name}</span>
+            </div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# Hidden buttons to make the "Quick Links" clickable
+nav_col1, nav_col2, nav_col3, nav_col4, nav_col5 = st.columns([1, 1, 1, 4, 1])
+with nav_col1:
+    if st.button("Analytics", use_container_width=True):
+        st.session_state.nav_page = "Analytics"
+with nav_col2:
+    if st.button("Settings", use_container_width=True):
+        st.session_state.nav_page = "Settings"
+with nav_col3:
+    if st.button("Help Center", use_container_width=True):
+        st.session_state.nav_page = "Help Center"
+
+# Check if a quick link was clicked and override the sidebar page
+if st.session_state.nav_page:
+    page = st.session_state.nav_page
+    st.session_state.nav_page = None # Reset after click
+
+st.markdown("<hr style='margin-top: 0;'>", unsafe_allow_html=True)
 
 # ============================================================
 # PAGE 1: DASHBOARD
@@ -577,7 +622,7 @@ elif page == "Help Center":
     ### Contact IT Support
     If you are experiencing technical issues, please contact:
     *   **Email:** support@ilyashi.co.zm
-    *   **Phone:** +260 760425101
+    *   **Phone:** +260 211 123 456
     *   **Hours:** Monday - Friday, 08:00 - 17:00
     """)
 
