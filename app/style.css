@@ -95,3 +95,14 @@ hr {
 [data-testid="stSidebar"] .stRadio label > div:first-child {
     display: none !important;
 }
+
+/* FORCE REMOVE THE TOP BLACK SPACE */
+header[data-testid="stHeader"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0px !important;
+}
+
+.main .block-container {
+    padding-top: 1rem !important;
+}
