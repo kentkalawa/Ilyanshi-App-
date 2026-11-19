@@ -180,7 +180,7 @@ if not st.session_state.logged_in:
 
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            if st.button("Get Started", use_container_width=True, type="primary"):
+            if st.button("Get Started", use_container_width=True, type="primary", key="get_started_btn"):
                 st.session_state.show_login = True
                 st.rerun()
             if st.button("Log In to Portal", use_container_width=True):
