@@ -680,58 +680,51 @@ elif page == "Export Data":
 # ============================================================
 # PROFESSIONAL FOOTER (Like Booking.com)
 # ============================================================
+footer_html = """<div style='background-color: #161b22; padding: 40px; border-top: 1px solid #30363d; border-radius: 10px;'>
+<div style='display: flex; justify-content: space-between; flex-wrap: wrap; color: #c9d1d9; font-size: 0.85rem;'>
+<div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+<h4 style='color: #ffffff; margin-bottom: 15px;'>Support</h4>
+<p style='margin: 5px 0;'>Manage your account</p>
+<p style='margin: 5px 0;'>Contact IT Support</p>
+<p style='margin: 5px 0;'>Safety Resource Center</p>
+</div>
+<div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+<h4 style='color: #ffffff; margin-bottom: 15px;'>Discover</h4>
+<p style='margin: 5px 0;'>AI Classification</p>
+<p style='margin: 5px 0;'>System Updates</p>
+<p style='margin: 5px 0;'>ILYASHI for Business</p>
+</div>
+<div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+<h4 style='color: #ffffff; margin-bottom: 15px;'>Terms and settings</h4>
+<p style='margin: 5px 0;'>Privacy Notice</p>
+<p style='margin: 5px 0;'>Terms of Service</p>
+<p style='margin: 5px 0;'>Accessibility Statement</p>
+</div>
+<div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+<h4 style='color: #ffffff; margin-bottom: 15px;'>Partners</h4>
+<p style='margin: 5px 0;'>Extranet login</p>
+<p style='margin: 5px 0;'>Partner help</p>
+<p style='margin: 5px 0;'>List your institution</p>
+</div>
+<div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
+<h4 style='color: #ffffff; margin-bottom: 15px;'>About</h4>
+<p style='margin: 5px 0;'>About ILYASHI</p>
+<p style='margin: 5px 0;'>How We Work</p>
+<p style='margin: 5px 0;'>Sustainability</p>
+<p style='margin: 5px 0;'>Careers</p>
+</div>
+</div>
+<hr style='border-color: #30363d; margin: 20px 0;'>
+<div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
+<p>ILYASHI is part of Mulungushi University ICT431 Capstone Project: an AI-based insurance customer complaints management system.</p>
+<p>© 2026 ILYASHI. All rights reserved.</p>
+<p style='margin-top: 10px;'>
+<span style='color: #3b82f6; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ILYASHI</span>
+<span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>ZAMBIA</span>
+<span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>AFRICA</span>
+</p>
+</div>
+</div>"""
+
 st.markdown("<br><br><br>", unsafe_allow_html=True)
-st.markdown(f"""
-    <div style='background-color: #161b22; padding: 40px; border-top: 1px solid #30363d; border-radius: 10px;'>
-        <div style='display: flex; justify-content: space-between; flex-wrap: wrap; color: #c9d1d9; font-size: 0.85rem;'>
-            
-            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
-                <h4 style='color: #ffffff; margin-bottom: 15px;'>Support</h4>
-                <p style='margin: 5px 0; cursor: pointer;'>Manage your account</p>
-                <p style='margin: 5px 0; cursor: pointer;'>Contact IT Support</p>
-                <p style='margin: 5px 0; cursor: pointer;'>Safety Resource Center</p>
-            </div>
-            
-            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
-                <h4 style='color: #ffffff; margin-bottom: 15px;'>Discover</h4>
-                <p style='margin: 5px 0; cursor: pointer;'>AI Classification</p>
-                <p style='margin: 5px 0; cursor: pointer;'>System Updates</p>
-                <p style='margin: 5px 0; cursor: pointer;'>ILYASHI for Business</p>
-            </div>
-            
-            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
-                <h4 style='color: #ffffff; margin-bottom: 15px;'>Terms and settings</h4>
-                <p style='margin: 5px 0; cursor: pointer;'>Privacy Notice</p>
-                <p style='margin: 5px 0; cursor: pointer;'>Terms of Service</p>
-                <p style='margin: 5px 0; cursor: pointer;'>Accessibility Statement</p>
-            </div>
-            
-            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
-                <h4 style='color: #ffffff; margin-bottom: 15px;'>Partners</h4>
-                <p style='margin: 5px 0; cursor: pointer;'>Extranet login</p>
-                <p style='margin: 5px 0; cursor: pointer;'>Partner help</p>
-                <p style='margin: 5px 0; cursor: pointer;'>List your institution</p>
-            </div>
-            
-            <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
-                <h4 style='color: #ffffff; margin-bottom: 15px;'>About</h4>
-                <p style='margin: 5px 0; cursor: pointer;'>About ILYASHI</p>
-                <p style='margin: 5px 0; cursor: pointer;'>How We Work</p>
-                <p style='margin: 5px 0; cursor: pointer;'>Sustainability</p>
-                <p style='margin: 5px 0; cursor: pointer;'>Careers</p>
-            </div>
-        </div>
-        
-        <hr style='border-color: #30363d; margin: 20px 0;'>
-        
-        <div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
-            <p>ILYASHI is part of Mulungushi University ICT431 Capstone Project. The world leader in AI-powered complaint management.</p>
-            <p>Copyright © 1996–2026 ILYASHI™. All rights reserved.</p>
-            <p style='margin-top: 10px;'>
-                <span style='color: #3b82f6; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ILYASHI</span>
-                <span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>ZAMBIA</span>
-                <span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>AFRICA</span>
-            </p>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
+st.markdown(footer_html, unsafe_allow_html=True)
