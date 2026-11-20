@@ -782,7 +782,7 @@ elif page == "Export Data":
 # ============================================================
 # PROFESSIONAL FOOTER (Like Booking.com)
 # ============================================================
-footer_html = """<div style='background-color: #161b22; padding: 40px; border-top: 1px solid #30363d; border-radius: 10px;'>
+footer_html = """<div style='background-color: transparent; padding: 40px;'>
 <div style='display: flex; justify-content: space-between; flex-wrap: wrap; color: #c9d1d9; font-size: 0.85rem;'>
 <div style='flex: 1; min-width: 150px; margin-bottom: 20px;'>
 <h4 style='color: #ffffff; margin-bottom: 15px;'>Support</h4>
