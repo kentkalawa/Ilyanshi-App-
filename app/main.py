@@ -120,24 +120,6 @@ def do_logout():
     st.session_state.extra_page = None
     st.session_state.pop("nav_radio", None)
     
- LANGUAGES = {"English": "en", "Nyanja": "ny"}
-
-TRANSLATIONS = {
-    "ny": {
-        "Settings": "Zokonda",
-        "Help Center": "Thandizo",
-        "Notifications": "Zidziwitso",
-        "Language": "Chilankhulo",
-    }
-}
-
-def t(text):
-    lang = st.session_state.get("lang", "en")
-    return TRANSLATIONS.get(lang, {}).get(text, text)
-
-def set_language():
-    st.session_state.lang = LANGUAGES[st.session_state.lang_choice]   
-
 # ============================================================
 # SESSION STATE
 # ============================================================
