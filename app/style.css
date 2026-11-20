@@ -220,3 +220,37 @@ header[data-testid="stHeader"] {
     letter-spacing: 0.5px !important;
     color: #ffffff !important;
 }
+
+/* Make the login form completely transparent to blend with the background */
+[data-testid="stForm"] {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+}
+
+/* Ensure the text inside the form stays white */
+[data-testid="stForm"] h3, 
+[data-testid="stForm"] p, 
+[data-testid="stForm"] label {
+    color: #ffffff !important;
+}
+
+/* Style the input boxes to be semi-transparent dark so they are readable */
+[data-testid="stForm"] input {
+    background-color: rgba(15, 27, 42, 0.8) !important;
+    color: #ffffff !important;
+    border: 1px solid #3b82f6 !important;
+}
+
+/* Fix the Login button color (make it blue instead of pink) */
+[data-testid="stForm"] button[kind="primary"] {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+[data-testid="stForm"] button[kind="primary"]:hover {
+    background-color: #2563eb !important;
+}
