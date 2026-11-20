@@ -123,4 +123,128 @@ header[data-testid="stHeader"] {
     border-color: #388bfd !important;
 }
 
+/* ============================================================
+   GLOBAL DARK THEME
+   ============================================================ */
+.stApp {
+    background: #0f1b2a !important;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+[data-testid="stSidebar"] {
+    background: #16283d !important;
+    border-right: 1px solid #2c3e50;
+}
+
+h1, h2, h3, p, label {
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   CLEAN SIDEBAR (Windows / YouTube Style)
+   ============================================================ */
+[data-testid="stSidebar"] .stRadio label {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 8px 15px !important;
+    border-radius: 8px !important;
+    color: #d1d5db !important;
+}
+
+[data-testid="stSidebar"] .stRadio label:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+[data-testid="stSidebar"] .stRadio label[data-checked="true"] {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+[data-testid="stSidebar"] .stRadio label > div:first-child {
+    display: none !important;
+}
+
+/* Remove the line under the Welcome text */
+.stMarkdown p {
+    border-bottom: none !important;
+}
+
+hr {
+    display: none !important;
+}
+/* ============================================================
+   HIDE TOOLBAR BUTTONS SAFELY (Keeps the sidebar arrow)
+   ============================================================ */
+
+/* Hide the 'Share' button */
+[data-testid="stToolbar"] button[kind="header"] {
+    display: none !important;
+}
+
+/* Hide the main toolbar menu (the 3 dots and the star/pen icons) */
+#MainMenu {
+    visibility: hidden !important;
+    display: none !important;
+}
+
+/* Hide the GitHub icon if it's there */
+[data-testid="stToolbar"] a {
+    display: none !important;
+}
+
+/* ============================================================
+   FORCE HIDE THE RADIO BUTTON DOTS (New Streamlit Fix)
+   ============================================================ */
+
+/* Hide the actual radio input */
+[data-testid="stSidebar"] .stRadio input[type="radio"] {
+    display: none !important;
+}
+
+/* Hide the visual dot wrapper */
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label > div:first-child {
+    display: none !important;
+}
+
+[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label > span:first-child {
+    display: none !important;
+}
+
+/* Ensure the text stays aligned nicely */
+[data-testid="stSidebar"] .stRadio label {
+    padding-left: 5px !important;
+}
+/* Hide the default radio circle dots in the sidebar */
+[data-testid="stSidebar"] .stRadio label > div:first-child {
+    display: none !important;
+}
+
+/* FORCE REMOVE THE TOP BLACK SPACE */
+header[data-testid="stHeader"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0px !important;
+}
+
+.main .block-container {
+    padding-top: 1rem !important;
+}
+
+/* Make the Log In button solid blue */
+[data-testid="stAppViewContainer"] .stButton > button[kind="secondary"] {
+    background-color: #1f6feb !important; 
+    color: #ffffff !important;
+    border: 1px solid #1f6feb !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Hover effect for the Log In button */
+[data-testid="stAppViewContainer"] .stButton > button[kind="secondary"]:hover {
+    background-color: #388bfd !important; 
+    border-color: #388bfd !important;
+
 
