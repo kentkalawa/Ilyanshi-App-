@@ -332,19 +332,37 @@ with st.sidebar:
         st.rerun()
 
 # ============================================================
-# TOP BAR: PROFILE & NOTIFICATIONS ONLY
+# TOP BAR: NOTIFICATIONS & ACCOUNT MENU
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
 
-st.markdown(f"""
-    <div style='display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #30363d; gap: 15px;'>
-        <span style='font-size: 1.2rem; cursor: pointer;'>🔔</span>
-        <div style='background: #21262d; padding: 5px 12px; border-radius: 15px; border: 1px solid #30363d;'>
-            <span style='color: #ffffff; font-weight: bold; font-size: 0.9rem;'>{st.session_state.name}</span>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
+visible_df = filter_for_user(load_complaints())
+alerts = visible_df[(visible_df["urgency"] == "High") & (visible_df["status"] == "Open")]
+alert_count = len(alerts)
 
+spacer, bell_col, acct_col = st.columns([6, 1, 1.8])
+
+with bell_col:
+    with st.popover(f"🔔 {alert_count}" if alert_count else "🔔", use_container_width=True):
+        st.markdown("**Notifications**")
+        if alert_count == 0:
+            st.caption("No urgent open complaints.")
+        else:
+            st.caption(f"{alert_count} high-urgency complaint(s) still open")
+            for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
+                st.markdown(f"**#{row['id']}** · {row['subject']} · {row['customer_name']}")
+            st.button("View all complaints", key="bell_view_all", on_click=go_to,
+                      args=("View Complaints",), use_container_width=True)
+
+with acct_col:
+    with st.popover(f"👤 {st.session_state.name}", use_container_width=True):
+        st.markdown(f"**{st.session_state.name}**")
+        st.caption(st.session_state.role)
+        st.button("⚙️ Settings", key="acct_settings", on_click=go_to, args=("Settings",), use_container_width=True)
+        st.button("❓ Help Center", key="acct_help", on_click=go_to, args=("Help Center",), use_container_width=True)
+        st.button("Logout", key="acct_logout", on_click=do_logout, use_container_width=True)
+
+st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
 # ============================================================
 # PAGE 1: DASHBOARD
 # ============================================================
