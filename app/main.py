@@ -332,7 +332,7 @@ with st.sidebar:
         st.rerun()
 
 # ============================================================
-# TOP BAR: NOTIFICATIONS & ACCOUNT MENU
+# TOP BAR: NOTIFICATIONS & ACCOUNT CIRCLE
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -340,26 +340,41 @@ visible_df = filter_for_user(load_complaints())
 alerts = visible_df[(visible_df["urgency"] == "High") & (visible_df["status"] == "Open")]
 alert_count = len(alerts)
 
-spacer, bell_col, acct_col = st.columns([6, 1, 1.8])
+name_parts = (st.session_state.name or "?").split()
+if len(name_parts) > 1:
+    initials = (name_parts[0][0] + name_parts[1][0]).upper()
+else:
+    initials = name_parts[0][:2].upper()
+
+spacer, bell_col, acct_col = st.columns([10, 1.4, 0.8])
 
 with bell_col:
-    with st.popover(f"🔔 {alert_count}" if alert_count else "🔔", use_container_width=True):
-        st.markdown("**Notifications**")
-        if alert_count == 0:
-            st.caption("No urgent open complaints.")
-        else:
-            st.caption(f"{alert_count} high-urgency complaint(s) still open")
-            for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
-                st.markdown(f"**#{row['id']}** · {row['subject']} · {row['customer_name']}")
-            st.button("View all complaints", key="bell_view_all", on_click=go_to,
-                      args=("View Complaints",), use_container_width=True)
+    with st.container(key="bell_menu"):
+        with st.popover(f"🔔 {alert_count}" if alert_count else "🔔", use_container_width=True):
+            st.markdown("**" + t("Notifications") + "**")
+            if alert_count == 0:
+                st.caption("No urgent open complaints.")
+            else:
+                st.caption(f"{alert_count} high-urgency complaint(s) still open")
+                for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
+                    st.markdown(f"**#{row['id']}** · {row['subject']} · {row['customer_name']}")
+                st.button("View all complaints", key="bell_view_all", on_click=go_to,
+                          args=("View Complaints",), use_container_width=True)
 
 with acct_col:
-    with st.popover(f"👤 {st.session_state.name}", use_container_width=True):
-        st.markdown(f"**{st.session_state.name}**")
-        st.caption(st.session_state.role)
-        st.button("⚙️ Settings", key="acct_settings", on_click=go_to, args=("Settings",), use_container_width=True)
-        st.button("❓ Help Center", key="acct_help", on_click=go_to, args=("Help Center",), use_container_width=True)
+    with st.container(key="acct_menu"):
+        with st.popover(initials):
+            header_html = f"<div style='display:flex;align-items:center;gap:12px;margin-bottom:6px;'><div style='width:48px;height:48px;border-radius:50%;background:#3b82f6;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;'>{initials}</div><div><div style='font-weight:700;'>{st.session_state.name}</div><div style='opacity:0.7;font-size:0.85rem;'>@{st.session_state.username} · {st.session_state.role}</div></div></div>"
+            st.markdown(header_html, unsafe_allow_html=True)
+            st.divider()
+            st.button("⚙️ " + t("Settings"), key="acct_settings", on_click=go_to,
+                      args=("Settings",), use_container_width=True)
+            st.button("❓ " + t("Help Center"), key="acct_help", on_click=go_to,
+                      args=("Help Center",), use_container_width=True)
+            st.divider()
+            st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
+                         index=list(LANGUAGES.values()).index(st.session_state.lang),
+                         key="lang_choice", on_change=set_language)
 
 st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
 # ============================================================
