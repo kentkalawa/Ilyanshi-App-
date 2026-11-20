@@ -187,3 +187,36 @@ header[data-testid="stHeader"] {
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5) !important;
     min-width: 300px !important;
 }
+
+/* Account circle: centre the two initials neatly */
+.st-key-acct_menu button {
+    width: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.st-key-acct_menu button > div,
+.st-key-acct_menu button [data-testid="stMarkdownContainer"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.st-key-acct_menu button p {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.5px !important;
+    color: #ffffff !important;
+}
