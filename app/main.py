@@ -360,7 +360,6 @@ with acct_col:
         st.caption(st.session_state.role)
         st.button("⚙️ Settings", key="acct_settings", on_click=go_to, args=("Settings",), use_container_width=True)
         st.button("❓ Help Center", key="acct_help", on_click=go_to, args=("Help Center",), use_container_width=True)
-        st.button("Logout", key="acct_logout", on_click=do_logout, use_container_width=True)
 
 st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
 # ============================================================
