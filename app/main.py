@@ -138,9 +138,6 @@ def set_language():
 # ============================================================
 # SESSION STATE
 # ============================================================
-# ============================================================
-# SESSION STATE
-# ============================================================
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.username = None
@@ -157,143 +154,126 @@ if "extra_page" not in st.session_state:
     st.session_state.extra_page = None
 
 # ============================================================
-# LANDING PAGE & LOGIN
+# LANDING PAGE + LOGIN (MERGED)
 # ============================================================
 if not st.session_state.logged_in:
     
-    if not st.session_state.show_login:
-        # --- LANDING PAGE ---
-        img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
-        if os.path.exists(img_path):
-            with open(img_path, "rb") as f:
-                hero_b64 = base64.b64encode(f.read()).decode()
-        else:
-            hero_b64 = ""
-
-        st.markdown(f"""
-            <style>
-            [data-testid="stAppViewContainer"] {{
-                background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('data:image/jpeg;base64,{hero_b64}') !important;
-                background-size: cover !important;
-                background-position: center !important;
-                background-attachment: fixed !important;
-                background-repeat: no-repeat !important;
-            }}
-            .main .block-container {{ background-color: transparent !important; box-shadow: none !important; }}
-            [data-testid="stHeader"] {{ background: transparent !important; }}
-            
-            .hero-text h1, .hero-text h1 * {{
-                font-size: clamp(2rem, 8vw, 4.5rem) !important;
-                white-space: nowrap !important;
-                font-weight: 800 !important;
-                line-height: 1.1 !important;
-                color: #ffffff !important;
-                -webkit-text-fill-color: #ffffff !important;
-                font-family: Georgia, serif !important;
-                text-shadow: 2px 2px 10px rgba(0,0,0,0.9) !important;
-                border-bottom: none !important;
-                margin: 0 !important;
-            }}
-            .hero-text p {{
-                font-size: 1.2rem !important;
-                max-width: 600px !important;
-                margin: 20px auto !important;
-                color: #ffffff !important;
-                -webkit-text-fill-color: #ffffff !important;
-                line-height: 1.5 !important;
-                text-shadow: 1px 1px 5px rgba(0,0,0,0.9) !important;
-            }}
-            .hero-logo {{
-                font-size: 2rem !important;
-                font-weight: 900 !important;
-                margin-bottom: 1rem !important;
-                letter-spacing: 2px !important;
-                color: #ffffff !important;
-                -webkit-text-fill-color: #ffffff !important;
-            }}
-            </style>
-        """, unsafe_allow_html=True)
-
-        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
-        
-        st.markdown("""
-            <div class="hero-text" style='text-align: center;'>
-                <div class="hero-logo">🛡️ ILYASHI</div>
-                <h1>From Complaint<br>To Resolution</h1>
-                <p>The AI-powered platform that always listens. Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.</p>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("<br><br>", unsafe_allow_html=True)
-
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            if st.button("Get Started", use_container_width=True, type="primary", key="get_started_btn"):
-                st.session_state.show_login = True
-                st.rerun()
-
-            st.markdown("<p style='text-align:center; color:#d1d5db; margin: 15px 0 10px 0;'>Already have an account? Log in below</p>", unsafe_allow_html=True)
-
-            if st.button("Log In to Portal", use_container_width=True, key="login_btn_landing"):
-                st.session_state.show_login = True
-                st.rerun()
-            
-        st.markdown("<br><br><br><br>", unsafe_allow_html=True)
-        
-        # Landing Page Footer
-        st.markdown("""
-           <div style='text-align: center; padding: 20px; margin-top: 50px;'>
-                <div style='display: flex; justify-content: center; gap: 30px; margin-bottom: 15px; font-weight: 500; color: #d1d5db;'>
-                    <span style='cursor: pointer;'>Home</span>
-                    <span style='cursor: pointer;'>Services</span>
-                    <span style='cursor: pointer;'>About Us</span>
-                    <span style='cursor: pointer;'>Contact</span>
-                </div>
-                <p style='text-align:center; color:#888; font-size: 0.8rem; margin: 0;'>
-                    © 2026 ILYASHI Insurance. All rights reserved. | Privacy Policy | Terms of Service
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-        st.stop()
-
+    # 1. Load the background image
+    img_path = os.path.join(BASE_DIR, "app", "images", "hero.jpg")
+    if os.path.exists(img_path):
+        with open(img_path, "rb") as f:
+            hero_b64 = base64.b64encode(f.read()).decode()
     else:
-        # --- LOGIN FORM ---
-        col1, col2, col3 = st.columns([1, 1.5, 1])
-        with col2:
-            if st.button("← Back to Home"):
-                st.session_state.show_login = False
-                st.rerun()
-                
-            st.markdown("""
-                <h1 style='text-align: center; border-bottom: none; font-size: 2rem; font-weight: 800; color: white !important; margin-top: 2rem;'>
-                    Welcome Back
-                </h1>
-            """, unsafe_allow_html=True)
+        hero_b64 = ""
 
-            with st.form("login_form"):
-                username = st.text_input("👤 Username", placeholder="Enter your username")
-                password = st.text_input("🔑 Password", type="password", placeholder="Enter your password")
-                st.markdown("<br>", unsafe_allow_html=True)
-                login_btn = st.form_submit_button("Sign In", use_container_width=True)
+    st.markdown(f"""
+        <style>
+        [data-testid="stAppViewContainer"] {{
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('data:image/jpeg;base64,{hero_b64}') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+            background-repeat: no-repeat !important;
+        }}
+        .main .block-container {{ background-color: transparent !important; box-shadow: none !important; }}
+        [data-testid="stHeader"] {{ background: transparent !important; }}
+        
+        .hero-text h1, .hero-text h1 * {{
+            font-size: clamp(2rem, 8vw, 4.5rem) !important;
+            white-space: nowrap !important;
+            font-weight: 800 !important;
+            line-height: 1.1 !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            font-family: Georgia, serif !important;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.9) !important;
+            border-bottom: none !important;
+            margin: 0 !important;
+        }}
+        .hero-text p {{
+            font-size: 1.2rem !important;
+            max-width: 600px !important;
+            margin: 20px auto !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            line-height: 1.5 !important;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.9) !important;
+        }}
+        .hero-logo {{
+            font-size: 2rem !important;
+            font-weight: 900 !important;
+            margin-bottom: 1rem !important;
+            letter-spacing: 2px !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }}
+        
+        /* Style the login container to look like a white card */
+        [data-testid="stForm"] {{
+            background-color: rgba(26, 38, 56, 0.9) !important; /* Dark slate, slightly transparent */
+            padding: 30px !important;
+            border-radius: 15px !important;
+            border: 1px solid #3b82f6 !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+            backdrop-filter: blur(10px) !important;
+        }}
+        </style>
+    """, unsafe_allow_html=True)
 
-                if login_btn:
-                    users = load_users()
-                    user_row = users[users["username"] == username]
-                    if len(user_row) > 0:
-                        stored_hash = user_row.iloc[0]["password"]
-                        if verify_password(password, stored_hash):
-                            st.session_state.logged_in = True
-                            st.session_state.username = user_row.iloc[0]["username"]
-                            st.session_state.role = user_row.iloc[0]["role"]
-                            st.session_state.name = user_row.iloc[0]["name"]
-                            st.session_state.show_login = False 
-                            log_action(username, "LOGIN", "Successful login")
-                            st.rerun()
-                        else:
-                            st.error("❌ Invalid password")
+    # Top Navbar
+    st.markdown("""
+        <div style='display: flex; justify-content: center; gap: 30px; padding: 10px; font-weight: 500; color: white;'>
+            <span>Home</span>
+            <span>Services</span>
+            <span>About Us</span>
+            <span>Contact</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Hero Text
+    st.markdown("""
+        <div class="hero-text" style='text-align: center;'>
+            <div class="hero-logo">🛡️ ILYASHI</div>
+            <h1>From Complaint<br>To Resolution</h1>
+            <p>The AI-powered platform that always listens. Submit your insurance complaints anywhere, anytime, and let our system route it to the right department instantly.</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # The Login Form merged directly into the page
+    col1, col2, col3 = st.columns([1, 1.2, 1])
+    with col2:
+        with st.form("login_form"):
+            st.markdown("<h3 style='text-align: center; color: white; margin-bottom: 20px;'>Sign In to Portal</h3>", unsafe_allow_html=True)
+            username = st.text_input("👤 Username", placeholder="Enter your username")
+            password = st.text_input("🔑 Password", type="password", placeholder="Enter your password")
+            st.markdown("<br>", unsafe_allow_html=True)
+            login_btn = st.form_submit_button("Log In", use_container_width=True, type="primary")
+
+            if login_btn:
+                users = load_users()
+                user_row = users[users["username"] == username]
+                if len(user_row) > 0:
+                    stored_hash = user_row.iloc[0]["password"]
+                    if verify_password(password, stored_hash):
+                        st.session_state.logged_in = True
+                        st.session_state.username = user_row.iloc[0]["username"]
+                        st.session_state.role = user_row.iloc[0]["role"]
+                        st.session_state.name = user_row.iloc[0]["name"]
+                        log_action(username, "LOGIN", "Successful login")
+                        st.rerun()
                     else:
-                        st.error("❌ User not found")
-        st.stop()
+                        st.error("❌ Invalid password")
+                else:
+                    st.error("❌ User not found")
+                    
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; color:#888;'>© 2026 ILYASHI Insurance. All rights reserved. | Privacy Policy | Terms of Service</p>", unsafe_allow_html=True)
+    
+    st.stop()
 
 # ============================================================
 # SIDEBAR (OPERATIONS ONLY)
