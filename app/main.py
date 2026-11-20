@@ -391,10 +391,9 @@ with acct_col:
                       args=("Help Center",), use_container_width=True)
             st.divider()
             st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
-                         index=list(LANGUAGES.values()).index(st.session_state.lang),
+                         index=list(LANGUAGES.values()).index(st.session_state.get("lang", "en")),
                          key="lang_choice", on_change=set_language)
-
-st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
+            
 # ============================================================
 # PAGE 1: DASHBOARD
 # ============================================================
