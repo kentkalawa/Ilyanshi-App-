@@ -916,33 +916,33 @@ elif page == "Export Data":
 # FOOTER
 # ============================================================
 footer_html = """<div style='background-color: transparent; padding: 30px 20px;'>
-<div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 20px; color: #4b5563; font-size: 0.85rem;'>
+<div style='display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px 30px; color: #4b5563; font-size: 0.85rem;'>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px;'>Support</h4>
+<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Support</h4>
 <p style='margin: 5px 0;'>Manage your account</p>
 <p style='margin: 5px 0;'>Contact IT Support</p>
 <p style='margin: 5px 0;'>Safety Resource Center</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px;'>Discover</h4>
+<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Discover</h4>
 <p style='margin: 5px 0;'>AI Classification</p>
 <p style='margin: 5px 0;'>System Updates</p>
 <p style='margin: 5px 0;'>ILYASHI for Business</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px;'>Terms and settings</h4>
+<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Terms and settings</h4>
 <p style='margin: 5px 0;'>Privacy Notice</p>
 <p style='margin: 5px 0;'>Terms of Service</p>
 <p style='margin: 5px 0;'>Accessibility Statement</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px;'>Partners</h4>
+<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Partners</h4>
 <p style='margin: 5px 0;'>Extranet login</p>
 <p style='margin: 5px 0;'>Partner help</p>
 <p style='margin: 5px 0;'>List your institution</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px;'>About</h4>
+<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>About</h4>
 <p style='margin: 5px 0;'>About ILYASHI</p>
 <p style='margin: 5px 0;'>How We Work</p>
 <p style='margin: 5px 0;'>Sustainability</p>
