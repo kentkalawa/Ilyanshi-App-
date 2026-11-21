@@ -279,12 +279,30 @@ LOGIN_CSS = """
     fill: #6b7280 !important;
     color: #6b7280 !important;
 }
-}
 .st-key-login_panel input::placeholder {
     color: #6b7280 !important;
     -webkit-text-fill-color: #6b7280 !important;
 }
 .st-key-login_panel [data-testid="stForm"] { border: none !important; padding: 0 !important; }
+.st-key-login_panel [data-testid="stFormSubmitButton"] button,
+.st-key-login_panel [data-testid="stBaseButton-primaryFormSubmit"],
+.st-key-login_panel button[data-testid="stBaseButton-primaryFormSubmit"],
+.st-key-login_panel button[kind="primaryFormSubmit"] {
+    background: #1f6feb !important;
+    background-color: #1f6feb !important;
+    border: 1px solid #1f6feb !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+.st-key-login_panel [data-testid="stFormSubmitButton"] button:hover,
+.st-key-login_panel [data-testid="stBaseButton-primaryFormSubmit"]:hover,
+.st-key-login_panel button[kind="primaryFormSubmit"]:hover {
+    background: #388bfd !important;
+    background-color: #388bfd !important;
+    border-color: #388bfd !important;
+}
+.st-key-login_panel [data-testid="stFormSubmitButton"] button p,
 .st-key-login_panel button p { color: #ffffff !important; }
 
 @media (max-width: 768px) {
