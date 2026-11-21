@@ -177,13 +177,17 @@ LOGIN_CSS = """
 [data-testid="stHorizontalBlock"] { gap: 0 !important; }
 
 .st-key-login_left {
-    height: 100vh;
-    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('data:image/jpeg;base64,__HERO__');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('data:image/jpeg;base64,__HERO__') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     padding: 0 !important;
 }
 .login-card {
