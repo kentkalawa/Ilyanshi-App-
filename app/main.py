@@ -118,6 +118,10 @@ def go_to(page_name):
 def clear_extra_page():
     st.session_state.extra_page = None
 
+def select_page(name):
+    st.session_state.nav_radio = name
+    st.session_state.extra_page = None
+
 def do_logout():
     log_action(st.session_state.username, "LOGOUT", "User logged out")
     st.session_state.logged_in = False
@@ -425,9 +429,17 @@ with st.sidebar:
         menu_items.append("Audit Log")
         menu_items.append("Export Data")
 
-    radio_page = st.radio("Navigation", menu_items, key="nav_radio",
-                          label_visibility="collapsed", on_change=clear_extra_page)
-    page = st.session_state.extra_page or radio_page
+    if st.session_state.get("nav_radio") not in menu_items:
+        st.session_state.nav_radio = "Dashboard"
+
+    with st.container(key="side_nav"):
+        for i, item in enumerate(menu_items):
+            is_active = (st.session_state.nav_radio == item) and not st.session_state.extra_page
+            st.button(item, key=f"nav_{i}", on_click=select_page, args=(item,),
+                      use_container_width=True,
+                      type="primary" if is_active else "secondary")
+
+    page = st.session_state.extra_page or st.session_state.nav_radio
 
     st.button("Logout", key="sidebar_logout", on_click=do_logout, use_container_width=True)
 
@@ -516,19 +528,19 @@ if page == "Dashboard":
     with col2:
         if st.session_state.role == "Admin":
             st.markdown(f"""
-                <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                <h1 style='color: #111827; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
                     Admin Dashboard
                 </h1>
-                <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+                <p style='color: #6b7280; font-size: 1rem; margin-bottom: 30px;'>
                     System Administrator: {st.session_state.name} | {datetime.now().strftime('%d %B %Y')}
                 </p>
             """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
-                <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                <h1 style='color: #111827; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
                     Welcome, {st.session_state.name}
                 </h1>
-                <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+                <p style='color: #6b7280; font-size: 1rem; margin-bottom: 30px;'>
                     {st.session_state.role} View | {datetime.now().strftime('%d %B %Y')}
                 </p>
             """, unsafe_allow_html=True)
@@ -563,7 +575,7 @@ if page == "Dashboard":
                 urgency_counts.columns = ["Urgency", "Count"]
                 fig = px.bar(urgency_counts, x="Urgency", y="Count", color="Urgency", color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
                 st.plotly_chart(fig, use_container_width=True)
 
             with chart_col2:
@@ -572,7 +584,7 @@ if page == "Dashboard":
                 status_counts.columns = ["Status", "Count"]
                 fig = px.bar(status_counts, x="Status", y="Count", color="Status", color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
                 st.plotly_chart(fig, use_container_width=True)
 
             st.markdown("<br>", unsafe_allow_html=True)
@@ -583,7 +595,7 @@ if page == "Dashboard":
                 subject_counts.columns = ["Subject", "Count"]
                 fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b'])
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False)
                 st.plotly_chart(fig, use_container_width=True)
 
             with chart_col4:
@@ -592,7 +604,7 @@ if page == "Dashboard":
                 sentiment_counts.columns = ["Sentiment", "Count"]
                 fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#e2e8f0"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#2d3748"))
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
                 st.plotly_chart(fig, use_container_width=True)
 
 # ============================================================
@@ -802,7 +814,7 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 ### Contact IT Support
 If you are experiencing technical issues, please contact:
 *   **Email:** support@ilyashi.co.zm
-*   **Phone:** +260 760425101
+*   **Phone:** +260 211 123 456
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
 
@@ -855,10 +867,10 @@ elif page == "Export Data":
     col1, col2, col3 = st.columns([1, 8, 1])
     with col2:
         st.markdown("""
-            <h1 style='color: #ffffff; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+            <h1 style='color: #111827; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
                 Export Data
             </h1>
-            <p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>
+            <p style='color: #6b7280; font-size: 1rem; margin-bottom: 30px;'>
                 Download the complete complaints database for offline analysis.
             </p>
         """, unsafe_allow_html=True)
@@ -885,47 +897,47 @@ elif page == "Export Data":
 # FOOTER
 # ============================================================
 footer_html = """<div style='background-color: transparent; padding: 30px 20px;'>
-<div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 20px; color: #c9d1d9; font-size: 0.85rem;'>
+<div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 20px; color: #4b5563; font-size: 0.85rem;'>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #ffffff; margin-bottom: 15px;'>Support</h4>
+<h4 style='color: #111827; margin-bottom: 15px;'>Support</h4>
 <p style='margin: 5px 0;'>Manage your account</p>
 <p style='margin: 5px 0;'>Contact IT Support</p>
 <p style='margin: 5px 0;'>Safety Resource Center</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #ffffff; margin-bottom: 15px;'>Discover</h4>
+<h4 style='color: #111827; margin-bottom: 15px;'>Discover</h4>
 <p style='margin: 5px 0;'>AI Classification</p>
 <p style='margin: 5px 0;'>System Updates</p>
 <p style='margin: 5px 0;'>ILYASHI for Business</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #ffffff; margin-bottom: 15px;'>Terms and settings</h4>
+<h4 style='color: #111827; margin-bottom: 15px;'>Terms and settings</h4>
 <p style='margin: 5px 0;'>Privacy Notice</p>
 <p style='margin: 5px 0;'>Terms of Service</p>
 <p style='margin: 5px 0;'>Accessibility Statement</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #ffffff; margin-bottom: 15px;'>Partners</h4>
+<h4 style='color: #111827; margin-bottom: 15px;'>Partners</h4>
 <p style='margin: 5px 0;'>Extranet login</p>
 <p style='margin: 5px 0;'>Partner help</p>
 <p style='margin: 5px 0;'>List your institution</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #ffffff; margin-bottom: 15px;'>About</h4>
+<h4 style='color: #111827; margin-bottom: 15px;'>About</h4>
 <p style='margin: 5px 0;'>About ILYASHI</p>
 <p style='margin: 5px 0;'>How We Work</p>
 <p style='margin: 5px 0;'>Sustainability</p>
 <p style='margin: 5px 0;'>Careers</p>
 </div>
 </div>
-<hr style='border-color: #30363d; margin: 20px 0;'>
-<div style='text-align: center; color: #8b949e; font-size: 0.75rem;'>
+<hr style='border-color: #e5e7eb; margin: 20px 0;'>
+<div style='text-align: center; color: #6b7280; font-size: 0.75rem;'>
 <p>ILYASHI is part of Mulungushi University ICT431 Capstone Project: an AI-based insurance customer complaints management system.</p>
 <p>© 2026 ILYASHI. All rights reserved.</p>
 <p style='margin-top: 10px;'>
 <span style='color: #3b82f6; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ILYASHI</span>
-<span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>ZAMBIA</span>
-<span style='font-weight: bold; font-size: 1rem; margin: 0 10px;'>AFRICA</span>
+<span style='color: #111827; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ZAMBIA</span>
+<span style='color: #111827; font-weight: bold; font-size: 1rem; margin: 0 10px;'>AFRICA</span>
 </p>
 </div>
 </div>"""
