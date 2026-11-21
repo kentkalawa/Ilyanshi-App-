@@ -54,7 +54,6 @@ AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@st.cache_data(ttl=0)
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         df = pd.read_csv(COMPLAINTS_FILE)
@@ -567,12 +566,11 @@ if page == "Dashboard":
                 </p>
             """, unsafe_allow_html=True)
 
-        df = load_complaints()
+        df = filter_for_user(load_complaints())
 
         if len(df) == 0:
             st.info("No complaints yet. Submit some first.")
         else:
-            # Role-based metrics
             if st.session_state.role == "Admin":
                 c1, c2, c3, c4 = st.columns(4)
                 with c1:
@@ -583,23 +581,14 @@ if page == "Dashboard":
                     st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
                 with c4:
                     st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
-            elif st.session_state.role == "Officer":
+            else:
                 c1, c2 = st.columns(2)
                 with c1:
                     st.metric("MY OPEN TASKS", len(df[df["status"] == "Open"]))
                 with c2:
                     st.metric("TASKS IN PROGRESS", len(df[df["status"] == "In Progress"]))
-            else:
-                # Viewer sees their own summary
-                c1, c2 = st.columns(2)
-                with c1:
-                    st.metric("TOTAL COMPLAINTS IN SYSTEM", len(df))
-                with c2:
-                    st.metric("RESOLVED COMPLAINTS", len(df[df["status"] == "Resolved"]))
 
             st.markdown("<br>", unsafe_allow_html=True)
-            
-            # Charts
             chart_col1, chart_col2 = st.columns(2)
             with chart_col1:
                 st.markdown("#### Complaints by Urgency")
@@ -607,8 +596,8 @@ if page == "Dashboard":
                 urgency_counts.columns = ["Urgency", "Count"]
                 fig = px.bar(urgency_counts, x="Urgency", y="Count", color="Urgency", color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#333333"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(fig, use_container_width=True)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#dbeafe"))
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
             with chart_col2:
                 st.markdown("#### Complaints by Status")
@@ -616,8 +605,28 @@ if page == "Dashboard":
                 status_counts.columns = ["Status", "Count"]
                 fig = px.bar(status_counts, x="Status", y="Count", color="Status", color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#333333"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(fig, use_container_width=True)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#dbeafe"))
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
+
+            st.markdown("<br>", unsafe_allow_html=True)
+            chart_col3, chart_col4 = st.columns(2)
+            with chart_col3:
+                st.markdown("#### Complaints by Subject")
+                subject_counts = df["subject"].value_counts().reset_index()
+                subject_counts.columns = ["Subject", "Count"]
+                fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#1f6feb', '#60a5fa', '#0f1b2a', '#bfdbfe', '#1e3a8a'])
+                fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
+
+            with chart_col4:
+                st.markdown("#### Complaints by Sentiment")
+                sentiment_counts = df["sentiment"].value_counts().reset_index()
+                sentiment_counts.columns = ["Sentiment", "Count"]
+                fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#60a5fa", "Positive": "#10b981"}, text="Count")
+                fig.update_traces(textposition='outside', textfont_size=12)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#dbeafe"))
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
 # ============================================================
 # PAGE 2: SUBMIT COMPLAINT
@@ -826,7 +835,7 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 ### Contact IT Support
 If you are experiencing technical issues, please contact:
 *   **Email:** support@ilyashi.co.zm
-*   **Phone:** +260 760425101
+*   **Phone:** +260 211 123 456
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
 
