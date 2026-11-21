@@ -54,17 +54,26 @@ AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+@st.cache_data(ttl=0)
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         df = pd.read_csv(COMPLAINTS_FILE)
-        df = df.drop(columns=["policy_number"], errors="ignore")
+        
+        # Ensure the attachment column exists
         if "attachment" not in df.columns:
             df["attachment"] = ""
+            
+        # Ensure the reference (Ticket Number) column exists
         if "reference" not in df.columns:
-            years = df["date_submitted"].astype(str).str[:4]
-            df.insert(1, "reference", [f"ILY-{y}-{int(i):04d}" for y, i in zip(years, df["id"])])
+            df["reference"] = ""
+            
         return df
-    return pd.DataFrame(columns=["id", "reference", "customer_name", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment"])
+        
+    return pd.DataFrame(columns=[
+        "id", "reference", "customer_name", "complaint_text", 
+        "subject", "urgency", "sentiment", "status", 
+        "date_submitted", "attachment"
+    ])
 
 def save_complaint(complaint):
     df = load_complaints()
