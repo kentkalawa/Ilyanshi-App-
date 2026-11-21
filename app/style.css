@@ -12,6 +12,11 @@ h1, h2, h3, h4, p, label, li {
     color: #111827 !important;
 }
 
+[data-testid="stCaptionContainer"],
+[data-testid="stCaptionContainer"] p {
+    color: #4b5563 !important;
+}
+
 .stMarkdown p {
     border-bottom: none !important;
 }
@@ -20,7 +25,6 @@ hr {
     display: none !important;
 }
 
-/* Remove the top black space and hide the toolbar */
 header[data-testid="stHeader"] {
     display: none !important;
     visibility: hidden !important;
@@ -95,23 +99,36 @@ header[data-testid="stHeader"] {
 }
 
 /* ============================================================
-   SIDEBAR MENU  (plain words, no dots)
+   SIDEBAR MENU  (plain words, all starting at the same margin)
    ============================================================ */
 .st-key-side_nav button {
+    display: flex !important;
     justify-content: flex-start !important;
+    align-items: center !important;
     text-align: left !important;
     background: transparent !important;
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 8px 15px !important;
+    padding: 10px 18px !important;
     font-weight: 500 !important;
+}
+
+.st-key-side_nav button > div,
+.st-key-side_nav button [data-testid="stMarkdownContainer"] {
+    display: flex !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
 }
 
 .st-key-side_nav button p {
     color: #e5e7eb !important;
     text-align: left !important;
     width: 100% !important;
+    margin: 0 !important;
 }
 
 .st-key-side_nav button:hover {
@@ -122,20 +139,78 @@ header[data-testid="stHeader"] {
 
 .st-key-side_nav [data-testid="stBaseButton-primary"],
 .st-key-side_nav button[kind="primary"] {
-    background: rgba(31, 111, 235, 0.35) !important;
-    background-color: rgba(31, 111, 235, 0.35) !important;
+    background: rgba(31, 111, 235, 0.40) !important;
+    background-color: rgba(31, 111, 235, 0.40) !important;
     font-weight: 600 !important;
 }
 
 .st-key-side_nav [data-testid="stBaseButton-primary"]:hover,
 .st-key-side_nav button[kind="primary"]:hover {
-    background: rgba(31, 111, 235, 0.45) !important;
-    background-color: rgba(31, 111, 235, 0.45) !important;
+    background: rgba(31, 111, 235, 0.55) !important;
+    background-color: rgba(31, 111, 235, 0.55) !important;
 }
 
 .st-key-side_nav [data-testid="stBaseButton-primary"] p,
 .st-key-side_nav button[kind="primary"] p {
     color: #ffffff !important;
+}
+
+/* ============================================================
+   FORM FIELDS  (light with dark text, readable on a white page)
+   ============================================================ */
+[data-testid="stTextInputRootElement"],
+[data-testid="stNumberInputContainer"],
+[data-baseweb="select"] > div,
+[data-baseweb="textarea"],
+[data-testid="stFileUploaderDropzone"] {
+    background: #f3f6fb !important;
+    background-color: #f3f6fb !important;
+    border: 1px solid #c7d0dc !important;
+    border-radius: 8px !important;
+}
+
+[data-testid="stTextInputRootElement"] > div,
+[data-baseweb="base-input"],
+[data-baseweb="input"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+input,
+textarea,
+[data-baseweb="select"] div,
+[data-baseweb="select"] span {
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
+    caret-color: #111827 !important;
+}
+
+textarea {
+    background: transparent !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #6b7280 !important;
+    -webkit-text-fill-color: #6b7280 !important;
+}
+
+[data-testid="stFileUploaderDropzone"] small,
+[data-testid="stFileUploaderDropzone"] span {
+    color: #4b5563 !important;
+}
+
+/* Dropdown lists (selectbox options) */
+[data-baseweb="popover"] ul,
+[data-baseweb="menu"] {
+    background: #ffffff !important;
+}
+
+[data-baseweb="popover"] li,
+[data-baseweb="menu"] li {
+    color: #111827 !important;
 }
 
 /* ============================================================
@@ -221,9 +296,27 @@ header[data-testid="stHeader"] {
     box-shadow: none !important;
 }
 
+/* Dropdown panels: white, dark readable text */
 [data-testid="stPopoverBody"] {
+    background: #ffffff !important;
     border-radius: 16px !important;
-    border: none !important;
+    border: 1px solid #e5e7eb !important;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18) !important;
     min-width: 300px !important;
+}
+
+[data-testid="stPopoverBody"] p,
+[data-testid="stPopoverBody"] label,
+[data-testid="stPopoverBody"] span,
+[data-testid="stPopoverBody"] li {
+    color: #111827 !important;
+}
+
+[data-testid="stPopoverBody"] [data-testid="stCaptionContainer"],
+[data-testid="stPopoverBody"] [data-testid="stCaptionContainer"] p {
+    color: #4b5563 !important;
+}
+
+[data-testid="stPopoverBody"] .stButton > button p {
+    color: #ffffff !important;
 }
