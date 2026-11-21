@@ -122,6 +122,14 @@ def select_page(name):
     st.session_state.nav_radio = name
     st.session_state.extra_page = None
 
+def style_chart(fig):
+    """Dark, readable text on a white page (axis numbers, titles, labels)."""
+    dark = "#111827"
+    fig.update_layout(font=dict(color=dark))
+    fig.update_xaxes(tickfont=dict(color=dark), title_font=dict(color=dark), linecolor="#9ca3af")
+    fig.update_yaxes(tickfont=dict(color=dark), title_font=dict(color=dark), linecolor="#9ca3af")
+    return fig
+
 def do_logout():
     log_action(st.session_state.username, "LOGOUT", "User logged out")
     st.session_state.logged_in = False
@@ -410,9 +418,9 @@ with st.sidebar:
     # User Profile Card
     st.markdown(f"""
         <div style='text-align: center; padding: 1rem;
-                    background: rgba(255,255,255,0.12);
+                    background: rgba(31,111,235,0.18);
                     border-radius: 12px; margin-bottom: 1.5rem;
-                    border: 1px solid rgba(255,255,255,0.2);'>
+                    border: 1px solid rgba(96,165,250,0.55);'>
             <p style='margin: 0; font-size: 1.05rem; font-weight: 700;'>
                 {st.session_state.name}
             </p>
@@ -576,7 +584,7 @@ if page == "Dashboard":
                 fig = px.bar(urgency_counts, x="Urgency", y="Count", color="Urgency", color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
 
             with chart_col2:
                 st.markdown("#### Complaints by Status")
@@ -585,7 +593,7 @@ if page == "Dashboard":
                 fig = px.bar(status_counts, x="Status", y="Count", color="Status", color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
 
             st.markdown("<br>", unsafe_allow_html=True)
             chart_col3, chart_col4 = st.columns(2)
@@ -593,19 +601,19 @@ if page == "Dashboard":
                 st.markdown("#### Complaints by Subject")
                 subject_counts = df["subject"].value_counts().reset_index()
                 subject_counts.columns = ["Subject", "Count"]
-                fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#3b82f6', '#64748b', '#94a3b8', '#cbd5e1', '#1e293b'])
+                fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#1f6feb', '#60a5fa', '#0f1b2a', '#bfdbfe', '#1e3a8a'])
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
 
             with chart_col4:
                 st.markdown("#### Complaints by Sentiment")
                 sentiment_counts = df["sentiment"].value_counts().reset_index()
                 sentiment_counts.columns = ["Sentiment", "Count"]
-                fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#64748b", "Positive": "#10b981"}, text="Count")
+                fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#60a5fa", "Positive": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
 
 # ============================================================
 # PAGE 2: SUBMIT COMPLAINT
