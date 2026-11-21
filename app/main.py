@@ -54,6 +54,7 @@ AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+@st.cache_data(ttl=0)
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         df = pd.read_csv(COMPLAINTS_FILE)
