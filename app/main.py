@@ -57,15 +57,20 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         df = pd.read_csv(COMPLAINTS_FILE)
+        df = df.drop(columns=["policy_number"], errors="ignore")
         if "attachment" not in df.columns:
             df["attachment"] = ""
+        if "reference" not in df.columns:
+            years = df["date_submitted"].astype(str).str[:4]
+            df.insert(1, "reference", [f"ILY-{y}-{int(i):04d}" for y, i in zip(years, df["id"])])
         return df
-    return pd.DataFrame(columns=["id", "customer_name", "policy_number", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment"])
+    return pd.DataFrame(columns=["id", "reference", "customer_name", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment"])
 
 def save_complaint(complaint):
     df = load_complaints()
     new_id = int(df["id"].max()) + 1 if len(df) else 1
     complaint["id"] = new_id
+    complaint["reference"] = f"ILY-{datetime.now().year}-{new_id:04d}"
     complaint["status"] = "Open"
     complaint["date_submitted"] = datetime.now().strftime("%Y-%m-%d %H:%M")
     if "attachment" not in complaint:
@@ -547,11 +552,7 @@ elif page == "Submit Complaint":
     st.markdown("Fill in the form below. The AI will automatically classify your complaint.")
 
     with st.form("complaint_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            customer_name = st.text_input("Customer Name")
-        with col2:
-            policy_number = st.text_input("Policy Number")
+        customer_name = st.text_input("Customer Name")
 
         complaint_text = st.text_area("Complaint Description", height=150, placeholder="Describe your complaint in detail...")
         uploaded_file = st.file_uploader("Attach Evidence (Optional)", type=["pdf", "jpg", "png"])
@@ -579,7 +580,6 @@ elif page == "Submit Complaint":
 
                 complaint = {
                     "customer_name": customer_name,
-                    "policy_number": policy_number,
                     "complaint_text": complaint_text,
                     "subject": subject,
                     "urgency": urgency,
@@ -587,9 +587,10 @@ elif page == "Submit Complaint":
                     "attachment": attachment_filename
                 }
                 new_id = save_complaint(complaint)
-                log_action(st.session_state.username, "SUBMIT_COMPLAINT", f"Complaint #{new_id}")
+                log_action(st.session_state.username, "SUBMIT_COMPLAINT", f"Complaint #{new_id} ({complaint['reference']})")
 
                 st.success(f"✅ Complaint #{new_id} submitted successfully!")
+                st.info(f"📌 Reference number: **{complaint['reference']}**. Please quote it when you contact the insurance company about this complaint.")
                 st.balloons()
 
                 st.markdown("### AI Analysis Results")
@@ -629,6 +630,8 @@ elif page == "View Complaints":
     if len(df) == 0:
         st.info("No complaints yet. Submit one first.")
     else:
+        search = st.text_input("🔍 Search", placeholder="Reference number, customer name or keyword")
+
         col1, col2, col3 = st.columns(3)
         with col1:
             status_filter = st.selectbox("Status", ["All"] + list(df["status"].unique()))
@@ -644,6 +647,14 @@ elif page == "View Complaints":
             filtered = filtered[filtered["subject"] == subject_filter]
         if urgency_filter != "All":
             filtered = filtered[filtered["urgency"] == urgency_filter]
+
+        if search.strip():
+            q = search.strip().lower()
+            filtered = filtered[
+                filtered["reference"].astype(str).str.lower().str.contains(q, regex=False)
+                | filtered["customer_name"].astype(str).str.lower().str.contains(q, regex=False)
+                | filtered["complaint_text"].astype(str).str.lower().str.contains(q, regex=False)
+            ]
 
         st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
         st.dataframe(filtered, use_container_width=True)
