@@ -123,11 +123,22 @@ def select_page(name):
     st.session_state.extra_page = None
 
 def style_chart(fig):
-    """Dark, readable text on a white page (axis numbers, titles, labels)."""
+    """Dark, readable text on a white page, with room for axis labels."""
     dark = "#111827"
-    fig.update_layout(font=dict(color=dark))
-    fig.update_xaxes(tickfont=dict(color=dark), title_font=dict(color=dark), linecolor="#9ca3af")
-    fig.update_yaxes(tickfont=dict(color=dark), title_font=dict(color=dark), linecolor="#9ca3af")
+    is_pie = any(getattr(t, "type", "") == "pie" for t in fig.data)
+    fig.update_layout(
+        font=dict(color=dark),
+        margin=dict(l=20, r=20, t=30, b=20) if is_pie else dict(l=45, r=20, t=30, b=55),
+    )
+    if not is_pie:
+        fig.update_xaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#9ca3af")
+        fig.update_yaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#9ca3af")
+        try:
+            ymax = max(max(t.y) for t in fig.data if getattr(t, "y", None) is not None)
+            if ymax <= 10:
+                fig.update_yaxes(dtick=1)
+        except Exception:
+            pass
     return fig
 
 def do_logout():
@@ -584,7 +595,7 @@ if page == "Dashboard":
                 fig = px.bar(urgency_counts, x="Urgency", y="Count", color="Urgency", color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
             with chart_col2:
                 st.markdown("#### Complaints by Status")
@@ -593,7 +604,7 @@ if page == "Dashboard":
                 fig = px.bar(status_counts, x="Status", y="Count", color="Status", color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
             st.markdown("<br>", unsafe_allow_html=True)
             chart_col3, chart_col4 = st.columns(2)
@@ -604,7 +615,7 @@ if page == "Dashboard":
                 fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#1f6feb', '#60a5fa', '#0f1b2a', '#bfdbfe', '#1e3a8a'])
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False)
-                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
             with chart_col4:
                 st.markdown("#### Complaints by Sentiment")
@@ -613,7 +624,7 @@ if page == "Dashboard":
                 fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#60a5fa", "Positive": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
                 fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
-                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None)
+                st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
 # ============================================================
 # PAGE 2: SUBMIT COMPLAINT
