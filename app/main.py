@@ -236,14 +236,26 @@ LOGIN_CSS = """
     color: #1f2937 !important;
     border: none !important;
 }
-.st-key-login_panel [data-testid="stTextInputRootElement"],
+.st-key-login_panel [data-testid="stTextInputRootElement"] {
+    background: #f3f6fb !important;
+    border: 1px solid #c7d0dc !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+}
+.st-key-login_panel [data-testid="stTextInputRootElement"]:focus-within {
+    border-color: #1f6feb !important;
+    box-shadow: 0 0 0 1px #1f6feb !important;
+}
 .st-key-login_panel [data-testid="stTextInputRootElement"] > div,
 .st-key-login_panel [data-baseweb="input"],
 .st-key-login_panel [data-baseweb="base-input"] {
     background: #f3f6fb !important;
     background-color: #f3f6fb !important;
-    border-radius: 8px !important;
-    border: 1px solid #c7d0dc !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 .st-key-login_panel input,
 .st-key-login_panel input:focus,
@@ -253,16 +265,20 @@ LOGIN_CSS = """
     color: #111827 !important;
     -webkit-text-fill-color: #111827 !important;
     caret-color: #111827 !important;
+    border: none !important;
+    outline: none !important;
     -webkit-box-shadow: 0 0 0 1000px #f3f6fb inset !important;
 }
 .st-key-login_panel [data-testid="stTextInputRootElement"] button {
     background: #f3f6fb !important;
     background-color: #f3f6fb !important;
     border: none !important;
+    box-shadow: none !important;
 }
 .st-key-login_panel [data-testid="stTextInputRootElement"] button svg {
     fill: #6b7280 !important;
     color: #6b7280 !important;
+}
 }
 .st-key-login_panel input::placeholder {
     color: #6b7280 !important;
