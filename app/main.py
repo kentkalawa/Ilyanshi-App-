@@ -124,15 +124,15 @@ def select_page(name):
 
 def style_chart(fig):
     """Dark, readable text on a white page, with room for axis labels."""
-    dark = "#111827"
+    dark = "#0f1b2a"
     is_pie = any(getattr(t, "type", "") == "pie" for t in fig.data)
     fig.update_layout(
         font=dict(color=dark),
         margin=dict(l=20, r=20, t=30, b=20) if is_pie else dict(l=45, r=20, t=30, b=55),
     )
     if not is_pie:
-        fig.update_xaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#9ca3af")
-        fig.update_yaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#9ca3af")
+        fig.update_xaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#93c5fd")
+        fig.update_yaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#93c5fd")
         try:
             ymax = max(max(t.y) for t in fig.data if getattr(t, "y", None) is not None)
             if ymax <= 10:
@@ -256,12 +256,12 @@ LOGIN_CSS = """
 .st-key-login_panel p,
 .st-key-login_panel label,
 .st-key-login_panel label p {
-    color: #1f2937 !important;
+    color: #0f1b2a !important;
     border: none !important;
 }
 .st-key-login_panel [data-testid="stTextInputRootElement"] {
-    background: #f3f6fb !important;
-    border: 1px solid #c7d0dc !important;
+    background: #eaf2ff !important;
+    border: 1px solid #bfdbfe !important;
     border-radius: 8px !important;
     box-shadow: none !important;
     overflow: hidden !important;
@@ -273,8 +273,8 @@ LOGIN_CSS = """
 .st-key-login_panel [data-testid="stTextInputRootElement"] > div,
 .st-key-login_panel [data-baseweb="input"],
 .st-key-login_panel [data-baseweb="base-input"] {
-    background: #f3f6fb !important;
-    background-color: #f3f6fb !important;
+    background: #eaf2ff !important;
+    background-color: #eaf2ff !important;
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
@@ -283,28 +283,28 @@ LOGIN_CSS = """
 .st-key-login_panel input,
 .st-key-login_panel input:focus,
 .st-key-login_panel input:-webkit-autofill {
-    background: #f3f6fb !important;
-    background-color: #f3f6fb !important;
-    color: #111827 !important;
-    -webkit-text-fill-color: #111827 !important;
-    caret-color: #111827 !important;
+    background: #eaf2ff !important;
+    background-color: #eaf2ff !important;
+    color: #0f1b2a !important;
+    -webkit-text-fill-color: #0f1b2a !important;
+    caret-color: #0f1b2a !important;
     border: none !important;
     outline: none !important;
-    -webkit-box-shadow: 0 0 0 1000px #f3f6fb inset !important;
+    -webkit-box-shadow: 0 0 0 1000px #eaf2ff inset !important;
 }
 .st-key-login_panel [data-testid="stTextInputRootElement"] button {
-    background: #f3f6fb !important;
-    background-color: #f3f6fb !important;
+    background: #eaf2ff !important;
+    background-color: #eaf2ff !important;
     border: none !important;
     box-shadow: none !important;
 }
 .st-key-login_panel [data-testid="stTextInputRootElement"] button svg {
-    fill: #6b7280 !important;
-    color: #6b7280 !important;
+    fill: #3a5a8c !important;
+    color: #3a5a8c !important;
 }
 .st-key-login_panel input::placeholder {
-    color: #6b7280 !important;
-    -webkit-text-fill-color: #6b7280 !important;
+    color: #3a5a8c !important;
+    -webkit-text-fill-color: #3a5a8c !important;
 }
 .st-key-login_panel [data-testid="stForm"] { border: none !important; padding: 0 !important; }
 .st-key-login_panel [data-testid="stFormSubmitButton"] button,
@@ -327,6 +327,8 @@ LOGIN_CSS = """
 }
 .st-key-login_panel [data-testid="stFormSubmitButton"] button p,
 .st-key-login_panel button p { color: #ffffff !important; }
+
+.st-key-login_panel p.login-sub { color: #3a5a8c !important; }
 
 @media (max-width: 768px) {
     .st-key-login_left { display: none !important; }
@@ -374,7 +376,7 @@ if not st.session_state.logged_in:
             st.markdown(logo_html, unsafe_allow_html=True)
             st.markdown(
                 "<h2 style='font-size:2.2rem; font-weight:500; margin:0 0 4px 0;'>Welcome back</h2>"
-                "<p style='margin:0 0 24px 0; opacity:0.75;'>Log in to the ILYASHI Insurance Portal</p>",
+                "<p class='login-sub' style='margin:0 0 24px 0;'>Log in to the ILYASHI Insurance Portal</p>",
                 unsafe_allow_html=True,
             )
 
@@ -398,8 +400,8 @@ if not st.session_state.logged_in:
                         st.error("❌ Invalid username or password")
 
             st.markdown(
-                "<p style='text-align:center; margin-top:18px; font-size:0.9rem; opacity:0.75;'>Forgot your password? Contact IT Support: support@ilyashi.co.zm</p>"
-                "<p style='text-align:center; margin-top:30px; font-size:0.8rem; opacity:0.6;'>© 2026 ILYASHI Insurance. All rights reserved.</p>",
+                "<p class='login-sub' style='text-align:center; margin-top:18px; font-size:0.9rem;'>Forgot your password? Contact IT Support: support@ilyashi.co.zm</p>"
+                "<p class='login-sub' style='text-align:center; margin-top:30px; font-size:0.8rem;'>© 2026 ILYASHI Insurance. All rights reserved.</p>",
                 unsafe_allow_html=True,
             )
     st.stop()
@@ -525,7 +527,7 @@ with bell_col:
 with acct_col:
     with st.container(key="acct_menu"):
         with st.popover(initials):
-            header_html = f"<div style='display:flex;align-items:center;gap:12px;margin-bottom:6px;'><div style='width:48px;height:48px;border-radius:50%;background:#3b82f6;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;'>{initials}</div><div><div style='font-weight:700;'>{st.session_state.name}</div><div style='opacity:0.7;font-size:0.85rem;'>@{st.session_state.username} · {st.session_state.role}</div></div></div>"
+            header_html = f"<div style='display:flex;align-items:center;gap:12px;margin-bottom:6px;'><div style='width:48px;height:48px;border-radius:50%;background:#3b82f6;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;'>{initials}</div><div><div style='font-weight:700;color:#0f1b2a;'>{st.session_state.name}</div><div style='color:#3a5a8c;font-size:0.85rem;'>@{st.session_state.username} · {st.session_state.role}</div></div></div>"
             st.markdown(header_html, unsafe_allow_html=True)
             st.divider()
             st.button("⚙️ " + t("Settings"), key="acct_settings", on_click=go_to,
@@ -547,19 +549,19 @@ if page == "Dashboard":
     with col2:
         if st.session_state.role == "Admin":
             st.markdown(f"""
-                <h1 style='color: #111827; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                <h1 style='color: #0f1b2a; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
                     Admin Dashboard
                 </h1>
-                <p style='color: #6b7280; font-size: 1rem; margin-bottom: 30px;'>
+                <p style='color: #3a5a8c; font-size: 1rem; margin-bottom: 30px;'>
                     System Administrator: {st.session_state.name} | {datetime.now().strftime('%d %B %Y')}
                 </p>
             """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
-                <h1 style='color: #111827; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+                <h1 style='color: #0f1b2a; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
                     Welcome, {st.session_state.name}
                 </h1>
-                <p style='color: #6b7280; font-size: 1rem; margin-bottom: 30px;'>
+                <p style='color: #3a5a8c; font-size: 1rem; margin-bottom: 30px;'>
                     {st.session_state.role} View | {datetime.now().strftime('%d %B %Y')}
                 </p>
             """, unsafe_allow_html=True)
@@ -594,7 +596,7 @@ if page == "Dashboard":
                 urgency_counts.columns = ["Urgency", "Count"]
                 fig = px.bar(urgency_counts, x="Urgency", y="Count", color="Urgency", color_discrete_map={"High": "#ef4444", "Medium": "#f59e0b", "Low": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#dbeafe"))
                 st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
             with chart_col2:
@@ -603,7 +605,7 @@ if page == "Dashboard":
                 status_counts.columns = ["Status", "Count"]
                 fig = px.bar(status_counts, x="Status", y="Count", color="Status", color_discrete_map={"Open": "#f59e0b", "In Progress": "#3b82f6", "Resolved": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#dbeafe"))
                 st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
             st.markdown("<br>", unsafe_allow_html=True)
@@ -614,7 +616,7 @@ if page == "Dashboard":
                 subject_counts.columns = ["Subject", "Count"]
                 fig = px.pie(subject_counts, names="Subject", values="Count", hole=0.5, color_discrete_sequence=['#1f6feb', '#60a5fa', '#0f1b2a', '#bfdbfe', '#1e3a8a'])
                 fig.update_traces(textposition='inside', textinfo='percent+label', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False)
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False)
                 st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
             with chart_col4:
@@ -623,7 +625,7 @@ if page == "Dashboard":
                 sentiment_counts.columns = ["Sentiment", "Count"]
                 fig = px.bar(sentiment_counts, x="Sentiment", y="Count", color="Sentiment", color_discrete_map={"Negative": "#ef4444", "Neutral": "#60a5fa", "Positive": "#10b981"}, text="Count")
                 fig.update_traces(textposition='outside', textfont_size=12)
-                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#111827"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#e5e7eb"))
+                fig.update_layout(margin=dict(l=10, r=10, t=30, b=10), height=350, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0f1b2a"), showlegend=False, xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#dbeafe"))
                 st.plotly_chart(style_chart(fig), use_container_width=True, theme=None, config={"displayModeBar": False})
 
 # ============================================================
@@ -886,10 +888,10 @@ elif page == "Export Data":
     col1, col2, col3 = st.columns([1, 8, 1])
     with col2:
         st.markdown("""
-            <h1 style='color: #111827; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
+            <h1 style='color: #0f1b2a; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; border-bottom: none;'>
                 Export Data
             </h1>
-            <p style='color: #6b7280; font-size: 1rem; margin-bottom: 30px;'>
+            <p style='color: #3a5a8c; font-size: 1rem; margin-bottom: 30px;'>
                 Download the complete complaints database for offline analysis.
             </p>
         """, unsafe_allow_html=True)
@@ -916,47 +918,47 @@ elif page == "Export Data":
 # FOOTER
 # ============================================================
 footer_html = """<div style='background-color: transparent; padding: 30px 20px;'>
-<div style='display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px 30px; color: #4b5563; font-size: 0.85rem;'>
+<div style='display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px 30px; color: #3a5a8c; font-size: 0.85rem;'>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Support</h4>
+<h4 style='color: #0f1b2a; margin-bottom: 15px; white-space: nowrap;'>Support</h4>
 <p style='margin: 5px 0;'>Manage your account</p>
 <p style='margin: 5px 0;'>Contact IT Support</p>
 <p style='margin: 5px 0;'>Safety Resource Center</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Discover</h4>
+<h4 style='color: #0f1b2a; margin-bottom: 15px; white-space: nowrap;'>Discover</h4>
 <p style='margin: 5px 0;'>AI Classification</p>
 <p style='margin: 5px 0;'>System Updates</p>
 <p style='margin: 5px 0;'>ILYASHI for Business</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Terms and settings</h4>
+<h4 style='color: #0f1b2a; margin-bottom: 15px; white-space: nowrap;'>Terms and settings</h4>
 <p style='margin: 5px 0;'>Privacy Notice</p>
 <p style='margin: 5px 0;'>Terms of Service</p>
 <p style='margin: 5px 0;'>Accessibility Statement</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>Partners</h4>
+<h4 style='color: #0f1b2a; margin-bottom: 15px; white-space: nowrap;'>Partners</h4>
 <p style='margin: 5px 0;'>Extranet login</p>
 <p style='margin: 5px 0;'>Partner help</p>
 <p style='margin: 5px 0;'>List your institution</p>
 </div>
 <div style='margin-bottom: 20px;'>
-<h4 style='color: #111827; margin-bottom: 15px; white-space: nowrap;'>About</h4>
+<h4 style='color: #0f1b2a; margin-bottom: 15px; white-space: nowrap;'>About</h4>
 <p style='margin: 5px 0;'>About ILYASHI</p>
 <p style='margin: 5px 0;'>How We Work</p>
 <p style='margin: 5px 0;'>Sustainability</p>
 <p style='margin: 5px 0;'>Careers</p>
 </div>
 </div>
-<hr style='border-color: #e5e7eb; margin: 20px 0;'>
-<div style='text-align: center; color: #6b7280; font-size: 0.75rem;'>
+<hr style='border-color: #dbeafe; margin: 20px 0;'>
+<div style='text-align: center; color: #3a5a8c; font-size: 0.75rem;'>
 <p>ILYASHI is part of Mulungushi University ICT431 Capstone Project: an AI-based insurance customer complaints management system.</p>
 <p>© 2026 ILYASHI. All rights reserved.</p>
 <p style='margin-top: 10px;'>
 <span style='color: #3b82f6; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ILYASHI</span>
-<span style='color: #111827; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ZAMBIA</span>
-<span style='color: #111827; font-weight: bold; font-size: 1rem; margin: 0 10px;'>AFRICA</span>
+<span style='color: #0f1b2a; font-weight: bold; font-size: 1rem; margin: 0 10px;'>ZAMBIA</span>
+<span style='color: #0f1b2a; font-weight: bold; font-size: 1rem; margin: 0 10px;'>AFRICA</span>
 </p>
 </div>
 </div>"""
