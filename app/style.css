@@ -1,61 +1,17 @@
 /* ============================================================
-   GLOBAL DARK THEME
+   GLOBAL LIGHT THEME  (white page, blue accents, dark sidebar)
    ============================================================ */
-.stApp {
-    background: #0f1b2a !important;
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"] {
+    background: #ffffff !important;
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-[data-testid="stSidebar"] {
-    background: #16283d !important;
-    border-right: 1px solid #2c3e50;
+h1, h2, h3, h4, p, label, li {
+    color: #111827 !important;
 }
 
-h1, h2, h3, p, label {
-    color: #ffffff !important;
-}
-
-/* ============================================================
-   CLEAN SIDEBAR (Windows / YouTube Style)
-   ============================================================ */
-[data-testid="stSidebar"] .stRadio label {
-    background-color: transparent !important;
-    border: none !important;
-    padding: 8px 15px !important;
-    padding-left: 5px !important;
-    border-radius: 8px !important;
-    color: #d1d5db !important;
-}
-
-[data-testid="stSidebar"] .stRadio label:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-}
-
-[data-testid="stSidebar"] .stRadio label[data-checked="true"] {
-    background-color: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
-}
-
-/* Hide the radio dots */
-[data-testid="stSidebar"] .stRadio label > div:first-child {
-    display: none !important;
-}
-
-[data-testid="stSidebar"] .stRadio input[type="radio"] {
-    display: none !important;
-}
-
-[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label > div:first-child {
-    display: none !important;
-}
-
-[data-testid="stSidebar"] .stRadio [role="radiogroup"] > label > span:first-child {
-    display: none !important;
-}
-
-/* Remove the line under the Welcome text */
 .stMarkdown p {
     border-bottom: none !important;
 }
@@ -64,11 +20,11 @@ hr {
     display: none !important;
 }
 
-/* ============================================================
-   HIDE TOOLBAR BUTTONS SAFELY (Keeps the sidebar arrow)
-   ============================================================ */
-[data-testid="stToolbar"] button[kind="header"] {
+/* Remove the top black space and hide the toolbar */
+header[data-testid="stHeader"] {
     display: none !important;
+    visibility: hidden !important;
+    height: 0px !important;
 }
 
 #MainMenu {
@@ -76,55 +32,123 @@ hr {
     display: none !important;
 }
 
-[data-testid="stToolbar"] a {
+[data-testid="stToolbar"] a,
+[data-testid="stToolbar"] button[kind="header"] {
     display: none !important;
 }
 
-/* FORCE REMOVE THE TOP BLACK SPACE */
-header[data-testid="stHeader"] {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0px !important;
-}
-
-.main .block-container {
+.main .block-container,
+[data-testid="stMainBlockContainer"] {
     padding-top: 1rem !important;
 }
 
 /* ============================================================
-   LANDING PAGE BUTTONS
+   SIDEBAR  (dark navy)
    ============================================================ */
-/* Log In button solid blue */
-[data-testid="stAppViewContainer"] .stButton > button[kind="secondary"] {
-    background-color: #1f6feb !important;
-    color: #ffffff !important;
-    border: 1px solid #1f6feb !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
+[data-testid="stSidebar"] {
+    background: #0f1b2a !important;
+    border-right: none !important;
 }
 
-[data-testid="stAppViewContainer"] .stButton > button[kind="secondary"]:hover {
-    background-color: #388bfd !important;
-    border-color: #388bfd !important;
-}
-
-/* Get Started button: same blue */
-.st-key-get_started_btn button {
-    background-color: #1f6feb !important;
-    color: #ffffff !important;
-    border: 1px solid #1f6feb !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-}
-
-.st-key-get_started_btn button:hover {
-    background-color: #388bfd !important;
-    border-color: #388bfd !important;
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] h4,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] li {
+    color: #e5e7eb !important;
 }
 
 /* ============================================================
-   TOP BAR: ACCOUNT CIRCLE, BELL, DROPDOWNS (no borders)
+   BUTTONS  (one blue everywhere)
+   ============================================================ */
+.stButton > button,
+[data-testid="stBaseButton-primary"],
+[data-testid="stBaseButton-secondary"],
+[data-testid="stDownloadButton"] button,
+[data-testid="stFormSubmitButton"] button {
+    background-color: #1f6feb !important;
+    color: #ffffff !important;
+    border: 1px solid #1f6feb !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+.stButton > button:hover,
+[data-testid="stBaseButton-primary"]:hover,
+[data-testid="stBaseButton-secondary"]:hover,
+[data-testid="stDownloadButton"] button:hover,
+[data-testid="stFormSubmitButton"] button:hover {
+    background-color: #388bfd !important;
+    border-color: #388bfd !important;
+}
+
+.stButton > button p,
+[data-testid="stBaseButton-primary"] p,
+[data-testid="stBaseButton-secondary"] p,
+[data-testid="stDownloadButton"] button p,
+[data-testid="stFormSubmitButton"] button p {
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   SIDEBAR MENU  (plain words, no dots)
+   ============================================================ */
+.st-key-side_nav button {
+    justify-content: flex-start !important;
+    text-align: left !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 8px 15px !important;
+    font-weight: 500 !important;
+}
+
+.st-key-side_nav button p {
+    color: #e5e7eb !important;
+    text-align: left !important;
+    width: 100% !important;
+}
+
+.st-key-side_nav button:hover {
+    background: rgba(255, 255, 255, 0.10) !important;
+    background-color: rgba(255, 255, 255, 0.10) !important;
+    border: none !important;
+}
+
+.st-key-side_nav [data-testid="stBaseButton-primary"],
+.st-key-side_nav button[kind="primary"] {
+    background: rgba(31, 111, 235, 0.35) !important;
+    background-color: rgba(31, 111, 235, 0.35) !important;
+    font-weight: 600 !important;
+}
+
+.st-key-side_nav [data-testid="stBaseButton-primary"]:hover,
+.st-key-side_nav button[kind="primary"]:hover {
+    background: rgba(31, 111, 235, 0.45) !important;
+    background-color: rgba(31, 111, 235, 0.45) !important;
+}
+
+.st-key-side_nav [data-testid="stBaseButton-primary"] p,
+.st-key-side_nav button[kind="primary"] p {
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   METRIC CARDS
+   ============================================================ */
+[data-testid="stMetric"] {
+    background: #f3f6fb;
+    border-radius: 12px;
+    padding: 14px 18px;
+}
+
+/* ============================================================
+   TOP BAR: ACCOUNT CIRCLE, BELL, DROPDOWNS
    ============================================================ */
 .st-key-acct_menu {
     display: flex;
@@ -133,25 +157,26 @@ header[data-testid="stHeader"] {
 
 .st-key-acct_menu button,
 .st-key-acct_menu [data-testid="stPopoverButton"] {
-    width: 44px !important;
-    height: 44px !important;
-    min-height: 44px !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
     padding: 0 !important;
     border-radius: 50% !important;
-    background: #3b82f6 !important;
+    background: #1f6feb !important;
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
     color: #ffffff !important;
-    font-size: 1rem !important;
     font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
     justify-content: center !important;
 }
 
 .st-key-acct_menu button:hover,
 .st-key-acct_menu button:focus,
 .st-key-acct_menu button:active {
-    background: #2563eb !important;
+    background: #388bfd !important;
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
@@ -163,19 +188,34 @@ header[data-testid="stHeader"] {
     display: none !important;
 }
 
+.st-key-acct_menu button p {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.5px !important;
+}
+
 .st-key-bell_menu button,
 .st-key-bell_menu [data-testid="stPopoverButton"] {
     background: transparent !important;
+    background-color: transparent !important;
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
-    color: #ffffff !important;
+    color: #111827 !important;
+}
+
+.st-key-bell_menu button p {
+    color: #111827 !important;
 }
 
 .st-key-bell_menu button:hover,
 .st-key-bell_menu button:focus,
 .st-key-bell_menu button:active {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(17, 24, 39, 0.06) !important;
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
@@ -184,41 +224,6 @@ header[data-testid="stHeader"] {
 [data-testid="stPopoverBody"] {
     border-radius: 16px !important;
     border: none !important;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18) !important;
     min-width: 300px !important;
-}
-
-/* ============================================================
-   ACCOUNT CIRCLE: centre the two initials neatly
-   ============================================================ */
-.st-key-acct_menu button {
-    width: 48px !important;
-    height: 48px !important;
-    min-height: 48px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.st-key-acct_menu button > div,
-.st-key-acct_menu button [data-testid="stMarkdownContainer"] {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.st-key-acct_menu button p {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    text-align: center !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-    letter-spacing: 0.5px !important;
-    color: #ffffff !important;
 }
