@@ -59,13 +59,18 @@ def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         df = pd.read_csv(COMPLAINTS_FILE)
         
+        # Drop the old policy_number column if it exists
+        if "policy_number" in df.columns:
+            df = df.drop(columns=["policy_number"])
+            
         # Ensure the attachment column exists
         if "attachment" not in df.columns:
             df["attachment"] = ""
             
         # Ensure the reference (Ticket Number) column exists
         if "reference" not in df.columns:
-            df["reference"] = ""
+            years = df["date_submitted"].astype(str).str[:4]
+            df.insert(1, "reference", [f"ILY-{y}-{int(i):04d}" for y, i in zip(years, df["id"])])
             
         return df
         
