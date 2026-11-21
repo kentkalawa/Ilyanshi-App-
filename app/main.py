@@ -196,6 +196,7 @@ LOGIN_CSS = """
     border-radius: 6px;
     max-width: 520px;
     text-align: center;
+    margin: 0 auto !important;
 }
 .login-card h2 {
     color: #ffffff !important;
