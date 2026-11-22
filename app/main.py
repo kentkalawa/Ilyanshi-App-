@@ -701,22 +701,15 @@ if page == "Dashboard":
         if len(df) == 0:
             st.info("No complaints yet. Submit some first.")
         else:
-            if st.session_state.role == "Admin":
-                c1, c2, c3, c4 = st.columns(4)
-                with c1:
-                    st.metric("TOTAL COMPLAINTS", len(df))
-                with c2:
-                    st.metric("OPEN", len(df[df["status"] == "Open"]))
-                with c3:
-                    st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
-                with c4:
-                    st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
-            else:
-                c1, c2 = st.columns(2)
-                with c1:
-                    st.metric("MY OPEN TASKS", len(df[df["status"] == "Open"]))
-                with c2:
-                    st.metric("TASKS IN PROGRESS", len(df[df["status"] == "In Progress"]))
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                st.metric("TOTAL COMPLAINTS", len(df))
+            with c2:
+                st.metric("OPEN", len(df[df["status"] == "Open"]))
+            with c3:
+                st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
+            with c4:
+                st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
 
             st.markdown("<br>", unsafe_allow_html=True)
             chart_col1, chart_col2 = st.columns(2)
