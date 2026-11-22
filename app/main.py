@@ -130,6 +130,11 @@ FIX_CSS = """
 .st-key-my_stats [data-testid="column"]:nth-child(2) [data-testid="stMetric"] { border-top-color: #60a5fa !important; }
 .st-key-my_stats [data-testid="stColumn"]:nth-child(3) [data-testid="stMetric"],
 .st-key-my_stats [data-testid="column"]:nth-child(3) [data-testid="stMetric"] { border-top-color: #10b981 !important; }
+/* ---- bell: pushed to the right edge ---- */
+.st-key-bell_menu {
+    display: flex;
+    justify-content: flex-end;
+}
 /* ---- tables ---- */
 .ily-table-wrap {
     overflow: auto;
@@ -614,8 +619,8 @@ with st.sidebar:
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
         menu_items.append("Export Data")
-        
-    # Added Settings and Help to the bottom of the sidebar for all roles
+
+    # Settings and Help Center sit at the bottom of the menu for all roles
     menu_items.append("Settings")
     menu_items.append("Help Center")
 
@@ -625,7 +630,7 @@ with st.sidebar:
     with st.container(key="side_nav"):
         for i, item in enumerate(menu_items):
             is_active = (st.session_state.nav_radio == item) and not st.session_state.extra_page
-            st.button(item, key=f"nav_{i}", on_click=select_page, args=(item,),
+            st.button(t(item), key=f"nav_{i}", on_click=select_page, args=(item,),
                       use_container_width=True,
                       type="primary" if is_active else "secondary")
 
@@ -638,39 +643,9 @@ with st.sidebar:
     st.button("Logout", key="sidebar_logout", on_click=do_logout, use_container_width=True)
 
 # ============================================================
-# TOP BAR: NOTIFICATIONS & ACCOUNT CIRCLE
+# TOP BAR: NOTIFICATIONS
 # ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-.st-key-acct_menu button,
-.st-key-acct_menu [data-testid="stPopoverButton"] {
-    width: 48px !important;
-    height: 48px !important;
-    min-width: 48px !important;
-    min-height: 48px !important;
-    padding: 0 !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden !important;
-}
-.st-key-acct_menu button * {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: auto !important;
-    line-height: 1 !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.5px !important;
-    white-space: nowrap !important;
-    text-align: center !important;
-    color: #ffffff !important;
-}
-</style>
-""", unsafe_allow_html=True)
 
 visible_df = filter_for_user(load_complaints())
 is_staff = st.session_state.role in ("Admin", "Officer")
@@ -681,17 +656,11 @@ else:
     alerts = my_all[my_all["status"] != "Resolved"]
 alert_count = len(alerts)
 
-name_parts = (st.session_state.name or "?").split()
-if len(name_parts) > 1:
-    initials = (name_parts[0][0] + name_parts[1][0]).upper()
-else:
-    initials = name_parts[0][:2].upper()
-
-spacer, bell_col, acct_col = st.columns([10, 1.4, 0.8])
+spacer, bell_col = st.columns([9, 1])
 
 with bell_col:
     with st.container(key="bell_menu"):
-        with st.popover(f"🔔 {alert_count}" if alert_count else "🔔", use_container_width=True):
+        with st.popover(f"🔔 {alert_count}" if alert_count else "🔔"):
             st.markdown("**" + t("Notifications") + "**")
             if is_staff:
                 if alert_count == 0:
@@ -711,13 +680,6 @@ with bell_col:
                         st.markdown(f"**{row['reference']}** · {row['status']}")
                     st.button("Track my complaints", key="bell_track", on_click=go_to,
                               args=("My Complaints",), use_container_width=True)
-
-with acct_col:
-    with st.container(key="acct_menu"):
-        with st.popover(initials):
-            header_html = f"<div style='display:flex;align-items:center;gap:12px;margin-bottom:6px;'><div style='width:48px;height:48px;border-radius:50%;background:#3b82f6;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;'>{initials}</div><div><div style='font-weight:700;color:#0f1b2a;'>{st.session_state.name}</div><div style='color:#3a5a8c;font-size:0.85rem;'>@{st.session_state.username} · {st.session_state.role}</div></div></div>"
-            st.markdown(header_html, unsafe_allow_html=True)
-            
 
 st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
 
@@ -981,7 +943,7 @@ elif page == "My Complaints":
         show_table(view[["reference", "subject", "handled_by", "status", "what_it_means", "date_submitted", "date_updated"]])
 
 # ============================================================
-# SETTINGS (opened from the account menu)
+# SETTINGS
 # ============================================================
 elif page == "Settings":
     st.title("Profile Settings")
@@ -1011,13 +973,18 @@ elif page == "Settings":
                     log_action(st.session_state.username, "CHANGE_PASSWORD", "Password changed")
                     st.success("✅ Password updated.")
 
+    with st.expander("Language"):
+        st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
+                     index=list(LANGUAGES.values()).index(st.session_state.get("lang", "en")),
+                     key="lang_choice", on_change=set_language)
+
     with st.expander("Notification Preferences"):
         st.checkbox("Email me when a new complaint is assigned to my department.", value=True)
         st.checkbox("Send me a weekly performance summary.", value=False)
         st.button("Save Preferences")
 
 # ============================================================
-# HELP CENTER (opened from the account menu)
+# HELP CENTER
 # ============================================================
 elif page == "Help Center":
     st.title("Help & Support")
