@@ -574,7 +574,9 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
     # Sidebar Navigation (Operations only)
-    menu_items = ["Dashboard", "Submit Complaint", "View Complaints"]
+    menu_items = ["Dashboard", "Submit Complaint"]
+    if st.session_state.role in ("Admin", "Officer"):
+        menu_items.append("View Complaints")
     if st.session_state.role == "Admin":
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
@@ -591,6 +593,8 @@ with st.sidebar:
                       type="primary" if is_active else "secondary")
 
     page = st.session_state.extra_page or st.session_state.nav_radio
+    if page == "View Complaints" and st.session_state.role not in ("Admin", "Officer"):
+        page = "Dashboard"
 
     st.button("Logout", key="sidebar_logout", on_click=do_logout, use_container_width=True)
 
@@ -649,10 +653,11 @@ with bell_col:
                 st.caption("No urgent open complaints.")
             else:
                 st.caption(f"{alert_count} high-urgency complaint(s) still open")
-                for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
-                    st.markdown(f"**{row['reference']}** · {row['subject']} · {row['customer_name']}")
-                st.button("View all complaints", key="bell_view_all", on_click=go_to,
-                          args=("View Complaints",), use_container_width=True)
+                if st.session_state.role in ("Admin", "Officer"):
+                    for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
+                        st.markdown(f"**{row['reference']}** · {row['subject']} · {row['customer_name']}")
+                    st.button("View all complaints", key="bell_view_all", on_click=go_to,
+                              args=("View Complaints",), use_container_width=True)
 
 with acct_col:
     with st.container(key="acct_menu"):
