@@ -38,12 +38,22 @@ FIX_CSS = """
     color: #0f1b2a !important;
     -webkit-text-fill-color: #0f1b2a !important;
     caret-color: #0f1b2a !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 [data-testid="stTextArea"] [data-baseweb="textarea"] {
     border: 1px solid #bfdbfe !important;
     border-radius: 8px !important;
+    overflow: hidden !important;
+}
+[data-testid="stTextArea"] [data-baseweb="textarea"]:focus-within {
+    border-color: #1f6feb !important;
+    box-shadow: 0 0 0 1px #1f6feb !important;
 }
 /* ---- dropdown boxes ---- */
+[data-testid="stSelectbox"] > div:not([data-testid="stWidgetLabel"]),
+[data-testid="stSelectbox"] > div:not([data-testid="stWidgetLabel"]) *,
 [data-testid="stSelectbox"] [data-baseweb="select"],
 [data-testid="stSelectbox"] [data-baseweb="select"] * {
     background: #eaf2ff !important;
@@ -71,6 +81,18 @@ FIX_CSS = """
 [role="listbox"], [role="listbox"] ul { background: #ffffff !important; }
 [role="option"] { background: #ffffff !important; color: #0f1b2a !important; }
 [role="option"]:hover, [role="option"][aria-selected="true"] { background: #eaf2ff !important; }
+/* ---- message boxes ---- */
+[data-testid="stAlert"],
+[data-testid="stAlertContainer"] {
+    background: #eaf2ff !important;
+    background-color: #eaf2ff !important;
+    border: 1px solid #bfdbfe !important;
+    border-radius: 10px !important;
+}
+[data-testid="stAlert"] *,
+[data-testid="stAlertContainer"] * {
+    color: #0f1b2a !important;
+}
 /* ---- tables ---- */
 .ily-table-wrap {
     overflow: auto;
