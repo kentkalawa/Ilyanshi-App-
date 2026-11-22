@@ -343,13 +343,16 @@ def resolution_hours(df):
     return None if hours.empty else float(hours.mean())
 
 def format_hours(h):
+    """Whole numbers only: minutes, hours or days."""
     if h is None:
         return "—"
     if h < 1:
         return f"{round(h * 60)} min"
-    if h < 48:
-        return f"{h:.1f} hours"
-    return f"{h / 24:.1f} days"
+    if h < 24:
+        n = round(h)
+        return f"{n} hour" + ("" if n == 1 else "s")
+    n = round(h / 24)
+    return f"{n} day" + ("" if n == 1 else "s")
 
 def do_logout():
     log_action(st.session_state.username, "LOGOUT", "User logged out")
