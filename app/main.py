@@ -720,7 +720,7 @@ with acct_col:
             st.divider()
             
             
-             st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
+        st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
                          index=list(LANGUAGES.values()).index(st.session_state.get("lang", "en")),
                          key="lang_choice", on_change=set_language)
 
