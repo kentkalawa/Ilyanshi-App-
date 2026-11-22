@@ -960,7 +960,7 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 ### Contact IT Support
 If you are experiencing technical issues, please contact:
 *   **Email:** support@ilyashi.co.zm
-*   **Phone:** +260 211 123 456
+*   **Phone:** +260 760425101
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
 
