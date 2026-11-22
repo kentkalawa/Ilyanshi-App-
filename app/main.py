@@ -130,6 +130,12 @@ FIX_CSS = """
 .st-key-my_stats [data-testid="column"]:nth-child(2) [data-testid="stMetric"] { border-top-color: #60a5fa !important; }
 .st-key-my_stats [data-testid="stColumn"]:nth-child(3) [data-testid="stMetric"],
 .st-key-my_stats [data-testid="column"]:nth-child(3) [data-testid="stMetric"] { border-top-color: #10b981 !important; }
+.st-key-dash_stats2 [data-testid="stColumn"]:nth-child(1) [data-testid="stMetric"],
+.st-key-dash_stats2 [data-testid="column"]:nth-child(1) [data-testid="stMetric"] { border-top-color: #1f6feb !important; }
+.st-key-dash_stats2 [data-testid="stColumn"]:nth-child(2) [data-testid="stMetric"],
+.st-key-dash_stats2 [data-testid="column"]:nth-child(2) [data-testid="stMetric"] { border-top-color: #10b981 !important; }
+.st-key-dash_stats2 [data-testid="stColumn"]:nth-child(3) [data-testid="stMetric"],
+.st-key-dash_stats2 [data-testid="column"]:nth-child(3) [data-testid="stMetric"] { border-top-color: #ef4444 !important; }
 /* ---- bell: pushed to the right edge ---- */
 .st-key-bell_menu {
     display: flex;
@@ -212,11 +218,16 @@ def load_complaints():
         if "date_updated" not in df.columns:
             df["date_updated"] = df["date_submitted"]
         df["date_updated"] = df["date_updated"].fillna(df["date_submitted"])
+        if "date_resolved" not in df.columns:
+            df["date_resolved"] = ""
+        df["date_resolved"] = df["date_resolved"].fillna("").astype(str)
+        backfill = (df["status"] == "Resolved") & (df["date_resolved"] == "") & (df["date_updated"].astype(str) != df["date_submitted"].astype(str))
+        df.loc[backfill, "date_resolved"] = df.loc[backfill, "date_updated"].astype(str)
         if "reference" not in df.columns:
             years = df["date_submitted"].astype(str).str[:4]
             df.insert(1, "reference", [f"ILY-{y}-{int(i):04d}" for y, i in zip(years, df["id"])])
         return df
-    return pd.DataFrame(columns=["id", "reference", "customer_name", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment", "submitted_by", "date_updated"])
+    return pd.DataFrame(columns=["id", "reference", "customer_name", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment", "submitted_by", "date_updated", "date_resolved"])
 
 def save_complaint(complaint):
     df = load_complaints()
@@ -226,6 +237,7 @@ def save_complaint(complaint):
     complaint["status"] = "Open"
     complaint["date_submitted"] = datetime.now().strftime("%Y-%m-%d %H:%M")
     complaint["date_updated"] = complaint["date_submitted"]
+    complaint["date_resolved"] = ""
     if "attachment" not in complaint:
         complaint["attachment"] = ""
     df = pd.concat([df, pd.DataFrame([complaint])], ignore_index=True)
@@ -275,7 +287,7 @@ def select_page(name):
     st.session_state.nav_radio = name
     st.session_state.extra_page = None
 
-def style_chart(fig):
+def style_chart(fig, keep_titles=False):
     """Dark, readable text on a white page, with room for axis labels."""
     dark = "#0f1b2a"
     is_pie = any(getattr(t, "type", "") == "pie" for t in fig.data)
@@ -284,8 +296,11 @@ def style_chart(fig):
         margin=dict(l=20, r=20, t=30, b=20) if is_pie else dict(l=45, r=20, t=30, b=55),
     )
     if not is_pie:
-        fig.update_xaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#93c5fd")
-        fig.update_yaxes(title_text="", automargin=True, tickfont=dict(color=dark), linecolor="#93c5fd")
+        fig.update_xaxes(automargin=True, tickfont=dict(color=dark), linecolor="#93c5fd")
+        fig.update_yaxes(automargin=True, tickfont=dict(color=dark), linecolor="#93c5fd")
+        if not keep_titles:
+            fig.update_xaxes(title_text="")
+            fig.update_yaxes(title_text="")
         try:
             ymax = max(max(t.y) for t in fig.data if getattr(t, "y", None) is not None)
             if ymax <= 10:
@@ -306,6 +321,52 @@ def show_table(df, max_height=420):
         "<div class='ily-table-wrap' style='max-height:" + str(max_height) + "px;'>" + table + "</div>",
         unsafe_allow_html=True,
     )
+
+ESCALATION_HOURS = 24  # High-urgency complaints still unresolved after this many hours are escalated
+
+def add_escalation(df):
+    """Adds a True/False 'escalated' column."""
+    df = df.copy()
+    submitted = pd.to_datetime(df["date_submitted"], errors="coerce")
+    age_hours = (datetime.now() - submitted).dt.total_seconds() / 3600
+    df["escalated"] = (df["urgency"] == "High") & (df["status"] != "Resolved") & (age_hours > ESCALATION_HOURS)
+    return df
+
+def resolution_hours(df):
+    """Average hours from submitted to resolved (None if nothing measurable yet)."""
+    done = df[(df["status"] == "Resolved") & (df["date_resolved"].astype(str) != "")]
+    if len(done) == 0:
+        return None
+    start = pd.to_datetime(done["date_submitted"], errors="coerce")
+    end = pd.to_datetime(done["date_resolved"], errors="coerce")
+    hours = ((end - start).dt.total_seconds() / 3600).dropna()
+    return None if hours.empty else float(hours.mean())
+
+def format_hours(h):
+    if h is None:
+        return "—"
+    if h < 1:
+        return f"{round(h * 60)} min"
+    if h < 48:
+        return f"{h:.1f} hours"
+    return f"{h / 24:.1f} days"
+
+def evaluate_model(model, X, y_true):
+    from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, classification_report
+    y_true = pd.Series(y_true).astype(str).str.strip().values
+    y_pred = pd.Series(model.predict(X)).astype(str).str.strip().values
+    labels = sorted(set(y_true) | set(y_pred))
+    report = classification_report(y_true, y_pred, labels=labels, output_dict=True, zero_division=0)
+    rows = [{"class": l, "precision": round(report[l]["precision"], 3), "recall": round(report[l]["recall"], 3),
+             "f1_score": round(report[l]["f1-score"], 3), "support": int(report[l]["support"])} for l in labels]
+    return {
+        "accuracy": accuracy_score(y_true, y_pred),
+        "f1": f1_score(y_true, y_pred, average="weighted", zero_division=0),
+        "labels": labels,
+        "cm": confusion_matrix(y_true, y_pred, labels=labels),
+        "report": pd.DataFrame(rows),
+        "n": len(y_true),
+    }
 
 def do_logout():
     log_action(st.session_state.username, "LOGOUT", "User logged out")
@@ -618,6 +679,7 @@ with st.sidebar:
     if st.session_state.role == "Admin":
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
+        menu_items.append("Model Performance")
         menu_items.append("Export Data")
 
     # Settings and Help Center sit at the bottom of the menu for all roles
@@ -639,6 +701,8 @@ with st.sidebar:
         page = "Dashboard"
     if page == "My Complaints" and st.session_state.role != "Viewer":
         page = "Dashboard"
+    if page in ("Manage Users", "Audit Log", "Model Performance", "Export Data") and st.session_state.role != "Admin":
+        page = "Dashboard"
 
     st.button("Logout", key="sidebar_logout", on_click=do_logout, use_container_width=True)
 
@@ -650,8 +714,11 @@ st.markdown("<br>", unsafe_allow_html=True)
 visible_df = filter_for_user(load_complaints())
 is_staff = st.session_state.role in ("Admin", "Officer")
 my_all = visible_df[visible_df["submitted_by"] == st.session_state.username]
+esc_n = 0
 if is_staff:
-    alerts = visible_df[(visible_df["urgency"] == "High") & (visible_df["status"] == "Open")]
+    esc_all = add_escalation(visible_df)
+    esc_n = int(esc_all["escalated"].sum())
+    alerts = esc_all[(esc_all["urgency"] == "High") & (esc_all["status"] == "Open")]
 else:
     alerts = my_all[my_all["status"] != "Resolved"]
 alert_count = len(alerts)
@@ -663,12 +730,16 @@ with bell_col:
         with st.popover(f"🔔 {alert_count}" if alert_count else "🔔"):
             st.markdown("**" + t("Notifications") + "**")
             if is_staff:
-                if alert_count == 0:
+                if esc_n:
+                    st.markdown(f"⚠️ **{esc_n} escalated** (unresolved for over {ESCALATION_HOURS} hours)")
+                if alert_count == 0 and esc_n == 0:
                     st.caption("No urgent open complaints.")
                 else:
                     st.caption(f"{alert_count} high-urgency complaint(s) still open")
                     for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
-                        st.markdown(f"**{row['reference']}** · {row['subject']} · {row['customer_name']}")
+                        flag = "⚠️ " if row["escalated"] else ""
+                        st.markdown(f"{flag}**{row['reference']}** · {row['subject']} · {row['customer_name']}")
+                if alert_count or esc_n:
                     st.button("View all complaints", key="bell_view_all", on_click=go_to,
                               args=("View Complaints",), use_container_width=True)
             else:
@@ -723,6 +794,19 @@ if page == "Dashboard":
                     st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
                 with c4:
                     st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
+
+            resolved_n = len(df[df["status"] == "Resolved"])
+            esc_count = int(add_escalation(df)["escalated"].sum())
+            st.markdown("<br>", unsafe_allow_html=True)
+            with st.container(key="dash_stats2"):
+                k1, k2, k3 = st.columns(3)
+                with k1:
+                    st.metric("AVG RESOLUTION TIME", format_hours(resolution_hours(df)))
+                with k2:
+                    st.metric("RESOLUTION RATE", f"{round(100 * resolved_n / len(df))}%")
+                with k3:
+                    st.metric("ESCALATED", esc_count)
+            st.caption(f"Escalated = high-urgency complaints still unresolved after {ESCALATION_HOURS} hours.")
 
             st.markdown("<br>", unsafe_allow_html=True)
             chart_col1, chart_col2 = st.columns(2)
@@ -846,18 +930,22 @@ elif page == "View Complaints":
             df = df[df["subject"].isin(["Policy", "Premium"])]
             st.info("🔒 **Department Filter Active:** You are only viewing Policy and Premium.")
 
+    df = add_escalation(df)
+
     if len(df) == 0:
         st.info("No complaints yet. Submit one first.")
     else:
         search = st.text_input("🔍 Search", placeholder="Reference number, customer name or keyword")
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
             status_filter = st.selectbox("Status", ["All"] + list(df["status"].unique()))
         with col2:
             subject_filter = st.selectbox("Subject", ["All"] + list(df["subject"].unique()))
         with col3:
             urgency_filter = st.selectbox("Urgency", ["All"] + list(df["urgency"].unique()))
+        with col4:
+            escalation_filter = st.selectbox("Escalation", ["All", "Escalated only"])
 
         filtered = df.copy()
         if status_filter != "All":
@@ -866,6 +954,8 @@ elif page == "View Complaints":
             filtered = filtered[filtered["subject"] == subject_filter]
         if urgency_filter != "All":
             filtered = filtered[filtered["urgency"] == urgency_filter]
+        if escalation_filter == "Escalated only":
+            filtered = filtered[filtered["escalated"]]
 
         if search.strip():
             q = search.strip().lower()
@@ -876,7 +966,10 @@ elif page == "View Complaints":
             ]
 
         st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
-        show_table(filtered.drop(columns=["id"]))
+        shown = filtered.drop(columns=["id"]).copy()
+        shown.insert(shown.columns.get_loc("status") + 1, "escalation",
+                     shown["escalated"].map({True: "⚠️ Escalated", False: ""}))
+        show_table(shown.drop(columns=["escalated"]))
 
         if st.session_state.role in ["Admin", "Officer"]:
             st.subheader("Update Complaint Status")
@@ -887,6 +980,8 @@ elif page == "View Complaints":
                 full_df = load_complaints()
                 full_df.loc[full_df["reference"] == chosen_ref, "status"] = new_status
                 full_df.loc[full_df["reference"] == chosen_ref, "date_updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+                full_df.loc[full_df["reference"] == chosen_ref, "date_resolved"] = (
+                    datetime.now().strftime("%Y-%m-%d %H:%M") if new_status == "Resolved" else "")
                 full_df.to_csv(COMPLAINTS_FILE, index=False)
                 log_action(st.session_state.username, "UPDATE_STATUS", f"{chosen_ref} → {new_status}")
                 st.session_state.flash = f"✅ {chosen_ref} updated to {new_status}"
@@ -1012,6 +1107,90 @@ If you are experiencing technical issues, please contact:
 *   **Phone:** +260 760425101
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
+
+# ============================================================
+# MODEL PERFORMANCE (Admin Only)
+# ============================================================
+elif page == "Model Performance":
+    st.title("Model Performance")
+    st.markdown("Check how well the three AI models classify complaints. Use a labelled test file: a CSV with the complaint text and the correct subject, urgency and sentiment.")
+    st.caption("Use complaints the models were not trained on. Scores on training data look better than real-world performance.")
+
+    eval_df = None
+    upload = st.file_uploader("Upload a labelled CSV", type=["csv"])
+    if upload is not None:
+        eval_df = pd.read_csv(upload)
+    else:
+        data_dir = os.path.join(BASE_DIR, "data")
+        skip = {"submitted_complaints.csv", "users_hashed.csv", "audit_log.csv", "status_history.csv"}
+        found = [f for f in sorted(os.listdir(data_dir)) if f.endswith(".csv") and f not in skip] if os.path.isdir(data_dir) else []
+        if found:
+            chosen_file = st.selectbox("Or use a file from the data folder", ["(none)"] + found)
+            if chosen_file != "(none)":
+                eval_df = pd.read_csv(os.path.join(data_dir, chosen_file))
+
+    if eval_df is None or len(eval_df) == 0:
+        st.info("Upload a labelled CSV to begin.")
+    else:
+        cols = list(eval_df.columns)
+
+        def guess(names):
+            for c in cols:
+                if str(c).strip().lower() in names:
+                    return cols.index(c)
+            return 0
+
+        st.write(f"File loaded: **{len(eval_df)}** rows. Match the columns below.")
+        m1, m2 = st.columns(2)
+        with m1:
+            text_col = st.selectbox("Complaint text column", cols, index=guess(("complaint_text", "text", "complaint", "description", "message")))
+            urgency_col = st.selectbox("Urgency column", cols, index=guess(("urgency", "priority")))
+        with m2:
+            subject_col = st.selectbox("Subject column", cols, index=guess(("subject", "category", "topic")))
+            sentiment_col = st.selectbox("Sentiment column", cols, index=guess(("sentiment", "tone")))
+
+        if st.button("Evaluate models"):
+            data = eval_df[[text_col, subject_col, urgency_col, sentiment_col]].dropna()
+            try:
+                X = vectorizer.transform(data[text_col].astype(str))
+                st.session_state.perf = {
+                    "Subject": evaluate_model(subject_model, X, data[subject_col]),
+                    "Urgency": evaluate_model(urgency_model, X, data[urgency_col]),
+                    "Sentiment": evaluate_model(sentiment_model, X, data[sentiment_col]),
+                }
+            except Exception as e:
+                st.session_state.pop("perf", None)
+                st.error(f"Could not evaluate: {e}")
+
+    perf = st.session_state.get("perf")
+    if perf:
+        st.subheader("Summary")
+        summary = pd.DataFrame([
+            {"model": name, "accuracy": f"{r['accuracy'] * 100:.1f}%", "weighted_f1": f"{r['f1'] * 100:.1f}%", "samples": r["n"]}
+            for name, r in perf.items()
+        ])
+        show_table(summary, max_height=240)
+
+        st.subheader("Details")
+        which = st.selectbox("Model", list(perf.keys()))
+        r = perf[which]
+        d1, d2, d3 = st.columns(3)
+        with d1:
+            st.metric("ACCURACY", f"{r['accuracy'] * 100:.1f}%")
+        with d2:
+            st.metric("WEIGHTED F1", f"{r['f1'] * 100:.1f}%")
+        with d3:
+            st.metric("SAMPLES", r["n"])
+
+        st.markdown("#### Confusion matrix")
+        fig = px.imshow(r["cm"], x=r["labels"], y=r["labels"], text_auto=True,
+                        color_continuous_scale="Blues",
+                        labels=dict(x="Predicted", y="Actual", color="Count"))
+        fig.update_layout(height=420, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", coloraxis_showscale=False)
+        st.plotly_chart(style_chart(fig, keep_titles=True), use_container_width=True, theme=None, config={"displayModeBar": False})
+
+        st.markdown("#### Per-class results")
+        show_table(r["report"], max_height=320)
 
 # ============================================================
 # MANAGE USERS (Admin Only)
