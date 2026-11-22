@@ -614,6 +614,10 @@ with st.sidebar:
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
         menu_items.append("Export Data")
+        
+    # Added Settings and Help to the bottom of the sidebar for all roles
+    menu_items.append("Settings")
+    menu_items.append("Help Center")
 
     if st.session_state.get("nav_radio") not in menu_items:
         st.session_state.nav_radio = "Dashboard"
@@ -714,12 +718,9 @@ with acct_col:
             header_html = f"<div style='display:flex;align-items:center;gap:12px;margin-bottom:6px;'><div style='width:48px;height:48px;border-radius:50%;background:#3b82f6;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;'>{initials}</div><div><div style='font-weight:700;color:#0f1b2a;'>{st.session_state.name}</div><div style='color:#3a5a8c;font-size:0.85rem;'>@{st.session_state.username} · {st.session_state.role}</div></div></div>"
             st.markdown(header_html, unsafe_allow_html=True)
             st.divider()
-            st.button("⚙️ " + t("Settings"), key="acct_settings", on_click=go_to,
-                      args=("Settings",), use_container_width=True)
-            st.button("❓ " + t("Help Center"), key="acct_help", on_click=go_to,
-                      args=("Help Center",), use_container_width=True)
-            st.divider()
-            st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
+            
+            
+             st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
                          index=list(LANGUAGES.values()).index(st.session_state.get("lang", "en")),
                          key="lang_choice", on_change=set_language)
 
