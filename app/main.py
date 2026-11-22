@@ -28,6 +28,81 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 css_path = os.path.join(BASE_DIR, "app", "style.css")
 load_css(css_path)
 
+FIX_CSS = """
+<style>
+/* ---- text areas ---- */
+[data-testid="stTextArea"] [data-baseweb],
+[data-testid="stTextArea"] textarea {
+    background: #eaf2ff !important;
+    background-color: #eaf2ff !important;
+    color: #0f1b2a !important;
+    -webkit-text-fill-color: #0f1b2a !important;
+    caret-color: #0f1b2a !important;
+}
+[data-testid="stTextArea"] [data-baseweb="textarea"] {
+    border: 1px solid #bfdbfe !important;
+    border-radius: 8px !important;
+}
+/* ---- dropdown boxes ---- */
+[data-testid="stSelectbox"] [data-baseweb="select"],
+[data-testid="stSelectbox"] [data-baseweb="select"] * {
+    background: #eaf2ff !important;
+    background-color: #eaf2ff !important;
+    color: #0f1b2a !important;
+    -webkit-text-fill-color: #0f1b2a !important;
+}
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    border: 1px solid #bfdbfe !important;
+    border-radius: 8px !important;
+}
+[data-testid="stSelectbox"] svg { fill: #0f1b2a !important; }
+/* ---- number boxes ---- */
+[data-testid="stNumberInput"] [data-baseweb],
+[data-testid="stNumberInput"] input,
+[data-testid="stNumberInputStepUp"],
+[data-testid="stNumberInputStepDown"] {
+    background: #eaf2ff !important;
+    background-color: #eaf2ff !important;
+    color: #0f1b2a !important;
+    -webkit-text-fill-color: #0f1b2a !important;
+}
+[data-testid="stNumberInput"] svg { fill: #0f1b2a !important; }
+/* ---- open dropdown lists ---- */
+[role="listbox"], [role="listbox"] ul { background: #ffffff !important; }
+[role="option"] { background: #ffffff !important; color: #0f1b2a !important; }
+[role="option"]:hover, [role="option"][aria-selected="true"] { background: #eaf2ff !important; }
+/* ---- tables ---- */
+.ily-table-wrap {
+    overflow: auto;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    background: #ffffff;
+    margin-bottom: 1rem;
+}
+.ily-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.ily-table thead th {
+    position: sticky; top: 0;
+    background: #1f6feb !important;
+    color: #ffffff !important;
+    text-align: left !important;
+    padding: 10px 14px !important;
+    font-weight: 600 !important;
+    white-space: nowrap;
+    border: none !important;
+}
+.ily-table tbody td {
+    padding: 9px 14px !important;
+    color: #0f1b2a !important;
+    background: #ffffff !important;
+    border: none !important;
+    border-top: 1px solid #dbeafe !important;
+}
+.ily-table tbody tr:nth-child(even) td { background: #f5f9ff !important; }
+.ily-table tbody tr:hover td { background: #eaf2ff !important; }
+</style>
+"""
+st.markdown(FIX_CSS, unsafe_allow_html=True)
+
 # ============================================================
 # LOAD MODELS
 # ============================================================
@@ -58,27 +133,14 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 def load_complaints():
     if os.path.exists(COMPLAINTS_FILE):
         df = pd.read_csv(COMPLAINTS_FILE)
-        
-        # Drop the old policy_number column if it exists
-        if "policy_number" in df.columns:
-            df = df.drop(columns=["policy_number"])
-            
-        # Ensure the attachment column exists
+        df = df.drop(columns=["policy_number"], errors="ignore")
         if "attachment" not in df.columns:
             df["attachment"] = ""
-            
-        # Ensure the reference (Ticket Number) column exists
         if "reference" not in df.columns:
             years = df["date_submitted"].astype(str).str[:4]
             df.insert(1, "reference", [f"ILY-{y}-{int(i):04d}" for y, i in zip(years, df["id"])])
-            
         return df
-        
-    return pd.DataFrame(columns=[
-        "id", "reference", "customer_name", "complaint_text", 
-        "subject", "urgency", "sentiment", "status", 
-        "date_submitted", "attachment"
-    ])
+    return pd.DataFrame(columns=["id", "reference", "customer_name", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment"])
 
 def save_complaint(complaint):
     df = load_complaints()
@@ -154,6 +216,16 @@ def style_chart(fig):
         except Exception:
             pass
     return fig
+
+def show_table(df, max_height=420):
+    """Light, readable table that does not depend on Streamlit's theme."""
+    clean = df.fillna("").astype(str)
+    table = clean.to_html(index=False, escape=True, border=0, classes="ily-table")
+    table = " ".join(table.split())
+    st.markdown(
+        "<div class='ily-table-wrap' style='max-height:" + str(max_height) + "px;'>" + table + "</div>",
+        unsafe_allow_html=True,
+    )
 
 def do_logout():
     log_action(st.session_state.username, "LOGOUT", "User logged out")
@@ -755,7 +827,7 @@ elif page == "View Complaints":
             ]
 
         st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
-        st.dataframe(filtered, use_container_width=True)
+        show_table(filtered)
 
         if st.session_state.role in ["Admin", "Officer"]:
             st.subheader("Update Complaint Status")
@@ -849,7 +921,7 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 ### Contact IT Support
 If you are experiencing technical issues, please contact:
 *   **Email:** support@ilyashi.co.zm
-*   **Phone:** +260 760425101
+*   **Phone:** +260 211 123 456
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
 
@@ -861,7 +933,7 @@ elif page == "Manage Users":
     users = load_users()
     display_users = users.copy()
     display_users["password"] = "••••••••"
-    st.dataframe(display_users, use_container_width=True)
+    show_table(display_users)
 
     st.subheader("Add New User")
     with st.form("add_user_form"):
@@ -891,7 +963,7 @@ elif page == "Audit Log":
     st.title("Audit Log")
     if os.path.exists(AUDIT_FILE):
         logs = pd.read_csv(AUDIT_FILE)
-        st.dataframe(logs.tail(100), use_container_width=True)
+        show_table(logs.tail(100)[::-1], max_height=520)
     else:
         st.info("No audit logs yet.")
 
