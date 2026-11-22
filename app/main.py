@@ -93,6 +93,20 @@ FIX_CSS = """
 [data-testid="stAlertContainer"] * {
     color: #0f1b2a !important;
 }
+/* ---- confidence pills under the AI results ---- */
+[data-testid="stMetricDelta"] {
+    background: #1f6feb !important;
+    background-color: #1f6feb !important;
+    border-radius: 999px !important;
+    padding: 3px 14px !important;
+    width: fit-content !important;
+}
+[data-testid="stMetricDelta"],
+[data-testid="stMetricDelta"] * {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+}
+[data-testid="stMetricDelta"] svg { display: none !important; }
 /* ---- tables ---- */
 .ily-table-wrap {
     overflow: auto;
@@ -120,7 +134,8 @@ FIX_CSS = """
     background: #ffffff !important;
     border: 1px solid #bfdbfe !important;
 }
-.ily-table tbody td:first-child { border-left: none !important; }
+.ily-table tbody td { min-width: 110px; }
+.ily-table tbody td:first-child { border-left: none !important; white-space: nowrap; }
 .ily-table tbody td:last-child { border-right: none !important; }
 .ily-table tbody tr:first-child td { border-top: none !important; }
 .ily-table tbody tr:nth-child(even) td { background: #f5f9ff !important; }
@@ -246,6 +261,9 @@ def style_chart(fig):
 def show_table(df, max_height=420):
     """Light, readable table that does not depend on Streamlit's theme."""
     clean = df.fillna("").astype(str)
+    clean = clean.apply(lambda c: c.str.replace(r"\s+", " ", regex=True).str.strip())
+    names = {"reference": "Reference ID"}
+    clean.columns = [names.get(c, str(c).replace("_", " ").title()) for c in clean.columns]
     table = clean.to_html(index=False, escape=True, border=0, classes="ily-table")
     table = " ".join(table.split())
     st.markdown(
@@ -632,7 +650,7 @@ with bell_col:
             else:
                 st.caption(f"{alert_count} high-urgency complaint(s) still open")
                 for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
-                    st.markdown(f"**#{row['id']}** · {row['subject']} · {row['customer_name']}")
+                    st.markdown(f"**{row['reference']}** · {row['subject']} · {row['customer_name']}")
                 st.button("View all complaints", key="bell_view_all", on_click=go_to,
                           args=("View Complaints",), use_container_width=True)
 
@@ -785,9 +803,8 @@ elif page == "Submit Complaint":
                 new_id = save_complaint(complaint)
                 log_action(st.session_state.username, "SUBMIT_COMPLAINT", f"Complaint #{new_id} ({complaint['reference']})")
 
-                st.success(f"✅ Complaint #{new_id} submitted successfully!")
-                st.info(f"📌 Reference number: **{complaint['reference']}**. Please quote it when you contact the insurance company about this complaint.")
-                st.balloons()
+                st.success("✅ Complaint submitted successfully!")
+                st.info(f"📌 Reference ID: **{complaint['reference']}**. Please quote it when you contact the insurance company about this complaint.")
 
                 st.markdown("### AI Analysis Results")
                 col1, col2, col3 = st.columns(3)
@@ -853,22 +870,20 @@ elif page == "View Complaints":
             ]
 
         st.write(f"Showing **{len(filtered)}** of **{len(df)}** complaints")
-        show_table(filtered)
+        show_table(filtered.drop(columns=["id"]))
 
         if st.session_state.role in ["Admin", "Officer"]:
             st.subheader("Update Complaint Status")
-            complaint_id = st.number_input("Complaint ID", min_value=1, step=1)
+            ref_options = df.sort_values("id", ascending=False)["reference"].tolist()
+            chosen_ref = st.selectbox("Reference ID", ref_options)
             new_status = st.selectbox("New Status", ["Open", "In Progress", "Resolved"])
             if st.button("Update Status"):
-                if complaint_id not in df["id"].values:
-                    st.error("That complaint ID is not in your list.")
-                else:
-                    full_df = load_complaints()
-                    full_df.loc[full_df["id"] == complaint_id, "status"] = new_status
-                    full_df.to_csv(COMPLAINTS_FILE, index=False)
-                    log_action(st.session_state.username, "UPDATE_STATUS", f"Complaint #{complaint_id} → {new_status}")
-                    st.session_state.flash = f"✅ Complaint #{complaint_id} updated to {new_status}"
-                    st.rerun()
+                full_df = load_complaints()
+                full_df.loc[full_df["reference"] == chosen_ref, "status"] = new_status
+                full_df.to_csv(COMPLAINTS_FILE, index=False)
+                log_action(st.session_state.username, "UPDATE_STATUS", f"{chosen_ref} → {new_status}")
+                st.session_state.flash = f"✅ {chosen_ref} updated to {new_status}"
+                st.rerun()
         else:
             st.info("🔒 Viewers cannot update complaints.")
 
@@ -879,7 +894,7 @@ elif page == "View Complaints":
                 for index, row in complaints_with_files.iterrows():
                     col_a, col_b = st.columns([3, 1])
                     with col_a:
-                        st.write(f"**Complaint #{row['id']}** - {row['customer_name']} ({row['attachment']})")
+                        st.write(f"**{row['reference']}** - {row['customer_name']} ({row['attachment']})")
                     with col_b:
                         file_path = os.path.join(UPLOAD_DIR, str(row['attachment']))
                         if os.path.exists(file_path):
@@ -947,7 +962,7 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 ### Contact IT Support
 If you are experiencing technical issues, please contact:
 *   **Email:** support@ilyashi.co.zm
-*   **Phone:** +260 760425101
+*   **Phone:** +260 211 123 456
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
 
