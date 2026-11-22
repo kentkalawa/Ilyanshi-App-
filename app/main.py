@@ -351,23 +351,6 @@ def format_hours(h):
         return f"{h:.1f} hours"
     return f"{h / 24:.1f} days"
 
-def evaluate_model(model, X, y_true):
-    from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, classification_report
-    y_true = pd.Series(y_true).astype(str).str.strip().values
-    y_pred = pd.Series(model.predict(X)).astype(str).str.strip().values
-    labels = sorted(set(y_true) | set(y_pred))
-    report = classification_report(y_true, y_pred, labels=labels, output_dict=True, zero_division=0)
-    rows = [{"class": l, "precision": round(report[l]["precision"], 3), "recall": round(report[l]["recall"], 3),
-             "f1_score": round(report[l]["f1-score"], 3), "support": int(report[l]["support"])} for l in labels]
-    return {
-        "accuracy": accuracy_score(y_true, y_pred),
-        "f1": f1_score(y_true, y_pred, average="weighted", zero_division=0),
-        "labels": labels,
-        "cm": confusion_matrix(y_true, y_pred, labels=labels),
-        "report": pd.DataFrame(rows),
-        "n": len(y_true),
-    }
-
 def do_logout():
     log_action(st.session_state.username, "LOGOUT", "User logged out")
     st.session_state.logged_in = False
@@ -679,7 +662,6 @@ with st.sidebar:
     if st.session_state.role == "Admin":
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
-        menu_items.append("Model Performance")
         menu_items.append("Export Data")
 
     # Settings and Help Center sit at the bottom of the menu for all roles
@@ -701,7 +683,7 @@ with st.sidebar:
         page = "Dashboard"
     if page == "My Complaints" and st.session_state.role != "Viewer":
         page = "Dashboard"
-    if page in ("Manage Users", "Audit Log", "Model Performance", "Export Data") and st.session_state.role != "Admin":
+    if page in ("Manage Users", "Audit Log", "Export Data") and st.session_state.role != "Admin":
         page = "Dashboard"
 
     st.button("Logout", key="sidebar_logout", on_click=do_logout, use_container_width=True)
@@ -1107,90 +1089,6 @@ If you are experiencing technical issues, please contact:
 *   **Phone:** +260 760425101
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
-
-# ============================================================
-# MODEL PERFORMANCE (Admin Only)
-# ============================================================
-elif page == "Model Performance":
-    st.title("Model Performance")
-    st.markdown("Check how well the three AI models classify complaints. Use a labelled test file: a CSV with the complaint text and the correct subject, urgency and sentiment.")
-    st.caption("Use complaints the models were not trained on. Scores on training data look better than real-world performance.")
-
-    eval_df = None
-    upload = st.file_uploader("Upload a labelled CSV", type=["csv"])
-    if upload is not None:
-        eval_df = pd.read_csv(upload)
-    else:
-        data_dir = os.path.join(BASE_DIR, "data")
-        skip = {"submitted_complaints.csv", "users_hashed.csv", "audit_log.csv", "status_history.csv"}
-        found = [f for f in sorted(os.listdir(data_dir)) if f.endswith(".csv") and f not in skip] if os.path.isdir(data_dir) else []
-        if found:
-            chosen_file = st.selectbox("Or use a file from the data folder", ["(none)"] + found)
-            if chosen_file != "(none)":
-                eval_df = pd.read_csv(os.path.join(data_dir, chosen_file))
-
-    if eval_df is None or len(eval_df) == 0:
-        st.info("Upload a labelled CSV to begin.")
-    else:
-        cols = list(eval_df.columns)
-
-        def guess(names):
-            for c in cols:
-                if str(c).strip().lower() in names:
-                    return cols.index(c)
-            return 0
-
-        st.write(f"File loaded: **{len(eval_df)}** rows. Match the columns below.")
-        m1, m2 = st.columns(2)
-        with m1:
-            text_col = st.selectbox("Complaint text column", cols, index=guess(("complaint_text", "text", "complaint", "description", "message")))
-            urgency_col = st.selectbox("Urgency column", cols, index=guess(("urgency", "priority")))
-        with m2:
-            subject_col = st.selectbox("Subject column", cols, index=guess(("subject", "category", "topic")))
-            sentiment_col = st.selectbox("Sentiment column", cols, index=guess(("sentiment", "tone")))
-
-        if st.button("Evaluate models"):
-            data = eval_df[[text_col, subject_col, urgency_col, sentiment_col]].dropna()
-            try:
-                X = vectorizer.transform(data[text_col].astype(str))
-                st.session_state.perf = {
-                    "Subject": evaluate_model(subject_model, X, data[subject_col]),
-                    "Urgency": evaluate_model(urgency_model, X, data[urgency_col]),
-                    "Sentiment": evaluate_model(sentiment_model, X, data[sentiment_col]),
-                }
-            except Exception as e:
-                st.session_state.pop("perf", None)
-                st.error(f"Could not evaluate: {e}")
-
-    perf = st.session_state.get("perf")
-    if perf:
-        st.subheader("Summary")
-        summary = pd.DataFrame([
-            {"model": name, "accuracy": f"{r['accuracy'] * 100:.1f}%", "weighted_f1": f"{r['f1'] * 100:.1f}%", "samples": r["n"]}
-            for name, r in perf.items()
-        ])
-        show_table(summary, max_height=240)
-
-        st.subheader("Details")
-        which = st.selectbox("Model", list(perf.keys()))
-        r = perf[which]
-        d1, d2, d3 = st.columns(3)
-        with d1:
-            st.metric("ACCURACY", f"{r['accuracy'] * 100:.1f}%")
-        with d2:
-            st.metric("WEIGHTED F1", f"{r['f1'] * 100:.1f}%")
-        with d3:
-            st.metric("SAMPLES", r["n"])
-
-        st.markdown("#### Confusion matrix")
-        fig = px.imshow(r["cm"], x=r["labels"], y=r["labels"], text_auto=True,
-                        color_continuous_scale="Blues",
-                        labels=dict(x="Predicted", y="Actual", color="Count"))
-        fig.update_layout(height=420, paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", coloraxis_showscale=False)
-        st.plotly_chart(style_chart(fig, keep_titles=True), use_container_width=True, theme=None, config={"displayModeBar": False})
-
-        st.markdown("#### Per-class results")
-        show_table(r["report"], max_height=320)
 
 # ============================================================
 # MANAGE USERS (Admin Only)
