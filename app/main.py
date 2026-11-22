@@ -111,14 +111,18 @@ FIX_CSS = """
     font-weight: 600 !important;
     white-space: nowrap;
     border: none !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.45) !important;
 }
+.ily-table thead th:last-child { border-right: none !important; }
 .ily-table tbody td {
     padding: 9px 14px !important;
     color: #0f1b2a !important;
     background: #ffffff !important;
-    border: none !important;
-    border-top: 1px solid #dbeafe !important;
+    border: 1px solid #bfdbfe !important;
 }
+.ily-table tbody td:first-child { border-left: none !important; }
+.ily-table tbody td:last-child { border-right: none !important; }
+.ily-table tbody tr:first-child td { border-top: none !important; }
 .ily-table tbody tr:nth-child(even) td { background: #f5f9ff !important; }
 .ily-table tbody tr:hover td { background: #eaf2ff !important; }
 </style>
