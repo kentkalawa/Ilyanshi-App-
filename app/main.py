@@ -719,10 +719,11 @@ with acct_col:
             st.markdown(header_html, unsafe_allow_html=True)
             st.divider()
             
-            
+            # Move this inside the popover (add 4 spaces)
         st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
                          index=list(LANGUAGES.values()).index(st.session_state.get("lang", "en")),
-                         key="lang_choice", on_change=set_language)
+                         key="lang_choice", on_change=set_language)    
+        
 
 st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
 
@@ -1047,7 +1048,7 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 ### Contact IT Support
 If you are experiencing technical issues, please contact:
 *   **Email:** support@ilyashi.co.zm
-*   **Phone:** +260 211 123 456
+*   **Phone:** +260 760425101
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
 
