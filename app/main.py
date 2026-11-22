@@ -107,6 +107,29 @@ FIX_CSS = """
     fill: #ffffff !important;
 }
 [data-testid="stMetricDelta"] svg { display: none !important; }
+/* ---- stat cards: outline with a coloured top edge ---- */
+[data-testid="stMetric"] {
+    background: #ffffff !important;
+    border: 1px solid #bfdbfe !important;
+    border-top: 4px solid #1f6feb !important;
+    border-radius: 10px !important;
+    padding: 14px 18px !important;
+    box-shadow: 0 1px 4px rgba(15, 27, 42, 0.08) !important;
+}
+.st-key-dash_stats [data-testid="stColumn"]:nth-child(1) [data-testid="stMetric"],
+.st-key-dash_stats [data-testid="column"]:nth-child(1) [data-testid="stMetric"] { border-top-color: #1f6feb !important; }
+.st-key-dash_stats [data-testid="stColumn"]:nth-child(2) [data-testid="stMetric"],
+.st-key-dash_stats [data-testid="column"]:nth-child(2) [data-testid="stMetric"] { border-top-color: #f59e0b !important; }
+.st-key-dash_stats [data-testid="stColumn"]:nth-child(3) [data-testid="stMetric"],
+.st-key-dash_stats [data-testid="column"]:nth-child(3) [data-testid="stMetric"] { border-top-color: #60a5fa !important; }
+.st-key-dash_stats [data-testid="stColumn"]:nth-child(4) [data-testid="stMetric"],
+.st-key-dash_stats [data-testid="column"]:nth-child(4) [data-testid="stMetric"] { border-top-color: #10b981 !important; }
+.st-key-my_stats [data-testid="stColumn"]:nth-child(1) [data-testid="stMetric"],
+.st-key-my_stats [data-testid="column"]:nth-child(1) [data-testid="stMetric"] { border-top-color: #f59e0b !important; }
+.st-key-my_stats [data-testid="stColumn"]:nth-child(2) [data-testid="stMetric"],
+.st-key-my_stats [data-testid="column"]:nth-child(2) [data-testid="stMetric"] { border-top-color: #60a5fa !important; }
+.st-key-my_stats [data-testid="stColumn"]:nth-child(3) [data-testid="stMetric"],
+.st-key-my_stats [data-testid="column"]:nth-child(3) [data-testid="stMetric"] { border-top-color: #10b981 !important; }
 /* ---- tables ---- */
 .ily-table-wrap {
     overflow: auto;
@@ -168,6 +191,7 @@ COMPLAINTS_FILE = os.path.join(BASE_DIR, "data", "submitted_complaints.csv")
 USERS_FILE = os.path.join(BASE_DIR, "data", "users_hashed.csv")
 AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+ROUTING_MAP = {"Claim": "Claims Department", "Payment": "Finance Department", "Policy": "Policy Services", "Premium": "Billing Department", "Service": "Customer Service"}
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @st.cache_data(ttl=0)
@@ -177,11 +201,17 @@ def load_complaints():
         df = df.drop(columns=["policy_number"], errors="ignore")
         if "attachment" not in df.columns:
             df["attachment"] = ""
+        if "submitted_by" not in df.columns:
+            df["submitted_by"] = ""
+        df["submitted_by"] = df["submitted_by"].fillna("")
+        if "date_updated" not in df.columns:
+            df["date_updated"] = df["date_submitted"]
+        df["date_updated"] = df["date_updated"].fillna(df["date_submitted"])
         if "reference" not in df.columns:
             years = df["date_submitted"].astype(str).str[:4]
             df.insert(1, "reference", [f"ILY-{y}-{int(i):04d}" for y, i in zip(years, df["id"])])
         return df
-    return pd.DataFrame(columns=["id", "reference", "customer_name", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment"])
+    return pd.DataFrame(columns=["id", "reference", "customer_name", "complaint_text", "subject", "urgency", "sentiment", "status", "date_submitted", "attachment", "submitted_by", "date_updated"])
 
 def save_complaint(complaint):
     df = load_complaints()
@@ -190,6 +220,7 @@ def save_complaint(complaint):
     complaint["reference"] = f"ILY-{datetime.now().year}-{new_id:04d}"
     complaint["status"] = "Open"
     complaint["date_submitted"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+    complaint["date_updated"] = complaint["date_submitted"]
     if "attachment" not in complaint:
         complaint["attachment"] = ""
     df = pd.concat([df, pd.DataFrame([complaint])], ignore_index=True)
@@ -577,6 +608,8 @@ with st.sidebar:
     menu_items = ["Dashboard", "Submit Complaint"]
     if st.session_state.role in ("Admin", "Officer"):
         menu_items.append("View Complaints")
+    if st.session_state.role == "Viewer":
+        menu_items.append("My Complaints")
     if st.session_state.role == "Admin":
         menu_items.append("Manage Users")
         menu_items.append("Audit Log")
@@ -594,6 +627,8 @@ with st.sidebar:
 
     page = st.session_state.extra_page or st.session_state.nav_radio
     if page == "View Complaints" and st.session_state.role not in ("Admin", "Officer"):
+        page = "Dashboard"
+    if page == "My Complaints" and st.session_state.role != "Viewer":
         page = "Dashboard"
 
     st.button("Logout", key="sidebar_logout", on_click=do_logout, use_container_width=True)
@@ -634,7 +669,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 visible_df = filter_for_user(load_complaints())
-alerts = visible_df[(visible_df["urgency"] == "High") & (visible_df["status"] == "Open")]
+is_staff = st.session_state.role in ("Admin", "Officer")
+my_all = visible_df[visible_df["submitted_by"] == st.session_state.username]
+if is_staff:
+    alerts = visible_df[(visible_df["urgency"] == "High") & (visible_df["status"] == "Open")]
+else:
+    alerts = my_all[my_all["status"] != "Resolved"]
 alert_count = len(alerts)
 
 name_parts = (st.session_state.name or "?").split()
@@ -649,15 +689,24 @@ with bell_col:
     with st.container(key="bell_menu"):
         with st.popover(f"🔔 {alert_count}" if alert_count else "🔔", use_container_width=True):
             st.markdown("**" + t("Notifications") + "**")
-            if alert_count == 0:
-                st.caption("No urgent open complaints.")
-            else:
-                st.caption(f"{alert_count} high-urgency complaint(s) still open")
-                if st.session_state.role in ("Admin", "Officer"):
+            if is_staff:
+                if alert_count == 0:
+                    st.caption("No urgent open complaints.")
+                else:
+                    st.caption(f"{alert_count} high-urgency complaint(s) still open")
                     for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
                         st.markdown(f"**{row['reference']}** · {row['subject']} · {row['customer_name']}")
                     st.button("View all complaints", key="bell_view_all", on_click=go_to,
                               args=("View Complaints",), use_container_width=True)
+            else:
+                if len(my_all) == 0:
+                    st.caption("You have not submitted any complaints yet.")
+                else:
+                    st.caption(f"{alert_count} of your complaint(s) still being handled")
+                    for _, row in my_all.sort_values("id", ascending=False).head(5).iterrows():
+                        st.markdown(f"**{row['reference']}** · {row['status']}")
+                    st.button("Track my complaints", key="bell_track", on_click=go_to,
+                              args=("My Complaints",), use_container_width=True)
 
 with acct_col:
     with st.container(key="acct_menu"):
@@ -706,15 +755,16 @@ if page == "Dashboard":
         if len(df) == 0:
             st.info("No complaints yet. Submit some first.")
         else:
-            c1, c2, c3, c4 = st.columns(4)
-            with c1:
-                st.metric("TOTAL COMPLAINTS", len(df))
-            with c2:
-                st.metric("OPEN", len(df[df["status"] == "Open"]))
-            with c3:
-                st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
-            with c4:
-                st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
+            with st.container(key="dash_stats"):
+                c1, c2, c3, c4 = st.columns(4)
+                with c1:
+                    st.metric("TOTAL COMPLAINTS", len(df))
+                with c2:
+                    st.metric("OPEN", len(df[df["status"] == "Open"]))
+                with c3:
+                    st.metric("IN PROGRESS", len(df[df["status"] == "In Progress"]))
+                with c4:
+                    st.metric("RESOLVED", len(df[df["status"] == "Resolved"]))
 
             st.markdown("<br>", unsafe_allow_html=True)
             chart_col1, chart_col2 = st.columns(2)
@@ -796,7 +846,8 @@ elif page == "Submit Complaint":
                     "subject": subject,
                     "urgency": urgency,
                     "sentiment": sentiment,
-                    "attachment": attachment_filename
+                    "attachment": attachment_filename,
+                    "submitted_by": st.session_state.username
                 }
                 new_id = save_complaint(complaint)
                 log_action(st.session_state.username, "SUBMIT_COMPLAINT", f"Complaint #{new_id} ({complaint['reference']})")
@@ -814,8 +865,7 @@ elif page == "Submit Complaint":
                     st.metric("Sentiment", sentiment, f"{sent_conf}% Confidence")
 
                 st.markdown("### Routing")
-                routing_map = {"Claim": "Claims Department", "Payment": "Finance Department", "Policy": "Policy Services", "Premium": "Billing Department", "Service": "Customer Service"}
-                dept = routing_map.get(subject, "Customer Service")
+                dept = ROUTING_MAP.get(subject, "Customer Service")
                 st.info(f"→ Routed to: **{dept}**")
             else:
                 st.error("Please enter customer name and complaint description.")
@@ -878,6 +928,7 @@ elif page == "View Complaints":
             if st.button("Update Status"):
                 full_df = load_complaints()
                 full_df.loc[full_df["reference"] == chosen_ref, "status"] = new_status
+                full_df.loc[full_df["reference"] == chosen_ref, "date_updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
                 full_df.to_csv(COMPLAINTS_FILE, index=False)
                 log_action(st.session_state.username, "UPDATE_STATUS", f"{chosen_ref} → {new_status}")
                 st.session_state.flash = f"✅ {chosen_ref} updated to {new_status}"
@@ -900,6 +951,38 @@ elif page == "View Complaints":
                                 st.download_button(label="Download", data=file, file_name=str(row['attachment']), key=f"download_{row['id']}")
             else:
                 st.info("No attachments found for these complaints.")
+
+# ============================================================
+# MY COMPLAINTS (Viewer: track what you submitted)
+# ============================================================
+elif page == "My Complaints":
+    st.title("My Complaints")
+    st.markdown("Track the complaints you have submitted. Quote the Reference ID if you contact the insurance company.")
+
+    all_df = load_complaints()
+    mine = all_df[all_df["submitted_by"] == st.session_state.username]
+
+    if len(mine) == 0:
+        st.info("You have not submitted any complaints yet.")
+    else:
+        with st.container(key="my_stats"):
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                st.metric("OPEN", len(mine[mine["status"] == "Open"]))
+            with c2:
+                st.metric("IN PROGRESS", len(mine[mine["status"] == "In Progress"]))
+            with c3:
+                st.metric("RESOLVED", len(mine[mine["status"] == "Resolved"]))
+
+        meaning = {
+            "Open": "Received, waiting for a team member",
+            "In Progress": "Being handled",
+            "Resolved": "Dealt with",
+        }
+        view = mine.sort_values("id", ascending=False).copy()
+        view["handled_by"] = view["subject"].map(ROUTING_MAP).fillna("Customer Service")
+        view["what_it_means"] = view["status"].map(meaning).fillna("")
+        show_table(view[["reference", "subject", "handled_by", "status", "what_it_means", "date_submitted", "date_updated"]])
 
 # ============================================================
 # SETTINGS (opened from the account menu)
@@ -953,6 +1036,9 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 **Q: Can I upload a picture of my damaged car?**
 *A: Yes! When submitting a complaint, use the "Attach Evidence" button to upload PDFs, JPGs, or PNGs.*
 
+**Q: How do I know my complaint has been dealt with?**
+*A: Open "My Complaints" from the menu. Each complaint you submitted shows its status: Open (received), In Progress (being handled) or Resolved (dealt with), plus the date it last changed.*
+
 **Q: Who can see my complaint?**
 *A: For this prototype, Administrators and Officers assigned to your specific department can view and update complaint details.*
 
@@ -960,7 +1046,7 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 ### Contact IT Support
 If you are experiencing technical issues, please contact:
 *   **Email:** support@ilyashi.co.zm
-*   **Phone:** +260 760425101
+*   **Phone:** +260 211 123 456
 *   **Hours:** Monday - Friday, 08:00 - 17:00
 """)
 
