@@ -369,3 +369,52 @@ textarea::placeholder {
 [role="option"][aria-selected="true"] {
     background: #eaf2ff !important;
 }
+
+/* ============================================================
+   FIXES FOR LAYOUT AND BORDERS
+   ============================================================ */
+
+/* 1. Fix the Language selector from squishing vertically */
+[data-testid="stSelectbox"] {
+    min-width: 120px !important;
+}
+
+/* 2. Remove the black outline boxes around the Submit form and Add User form */
+[data-testid="stForm"] {
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* 3. Remove the default borders/outlines from text inputs and text areas */
+[data-testid="stTextInput"] > div > div,
+[data-testid="stTextArea"] > div > div {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* (Optional) Make the input backgrounds clean and light blue without outlines */
+.stTextInput input, .stTextArea textarea {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    background-color: #f8fafc !important;
+}
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 1px #3b82f6 !important;
+}
+
+/* 4. Remove the black lines from the Account menu and User Profile */
+.st-key-acct_menu hr, 
+.st-key-acct_menu [data-testid="stDivider"],
+.st-key-bell_menu hr,
+.st-key-bell_menu [data-testid="stDivider"] {
+    display: none !important;
+}
+
+/* Remove the line that Streamlit puts under headers in the sidebar */
+[data-testid="stSidebar"] h3, 
+[data-testid="stSidebar"] h4 {
+    border-bottom: none !important;
+}
