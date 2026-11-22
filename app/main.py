@@ -717,13 +717,7 @@ with acct_col:
         with st.popover(initials):
             header_html = f"<div style='display:flex;align-items:center;gap:12px;margin-bottom:6px;'><div style='width:48px;height:48px;border-radius:50%;background:#3b82f6;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;'>{initials}</div><div><div style='font-weight:700;color:#0f1b2a;'>{st.session_state.name}</div><div style='color:#3a5a8c;font-size:0.85rem;'>@{st.session_state.username} · {st.session_state.role}</div></div></div>"
             st.markdown(header_html, unsafe_allow_html=True)
-            st.divider()
             
-            # Move this inside the popover (add 4 spaces)
-        st.selectbox("🌐 " + t("Language"), list(LANGUAGES),
-                         index=list(LANGUAGES.values()).index(st.session_state.get("lang", "en")),
-                         key="lang_choice", on_change=set_language)    
-        
 
 st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
 
