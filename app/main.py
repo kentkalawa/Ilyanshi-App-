@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import bcrypt
 import base64
+import html
 import plotly.express as px
 from datetime import datetime
 
@@ -136,11 +137,19 @@ FIX_CSS = """
 .st-key-dash_stats2 [data-testid="column"]:nth-child(2) [data-testid="stMetric"] { border-top-color: #10b981 !important; }
 .st-key-dash_stats2 [data-testid="stColumn"]:nth-child(3) [data-testid="stMetric"],
 .st-key-dash_stats2 [data-testid="column"]:nth-child(3) [data-testid="stMetric"] { border-top-color: #ef4444 !important; }
-/* ---- bell: pushed to the right edge ---- */
-.st-key-bell_menu {
-    display: flex;
-    justify-content: flex-end;
+/* ---- simulated notification cards ---- */
+.ily-note {
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid #1f6feb;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 12px 16px;
+    margin-bottom: 10px;
 }
+.ily-note.sms { border-left-color: #10b981; }
+.ily-note-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: #3a5a8c; font-size: 0.85rem; margin-bottom: 6px; }
+.ily-note-body { color: #0f1b2a; }
+.ily-note-foot { font-size: 0.8rem; margin-top: 6px; font-weight: 600; }
 /* ---- tables ---- */
 .ily-table-wrap {
     overflow: auto;
@@ -201,6 +210,8 @@ vectorizer, subject_model, urgency_model, sentiment_model = load_models()
 COMPLAINTS_FILE = os.path.join(BASE_DIR, "data", "submitted_complaints.csv")
 USERS_FILE = os.path.join(BASE_DIR, "data", "users_hashed.csv")
 AUDIT_FILE = os.path.join(BASE_DIR, "data", "audit_log.csv")
+CONTACTS_FILE = os.path.join(BASE_DIR, "data", "contacts.csv")
+NOTIFY_FILE = os.path.join(BASE_DIR, "data", "notifications.csv")
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 ROUTING_MAP = {"Claim": "Claims Department", "Payment": "Finance Department", "Policy": "Policy Services", "Premium": "Billing Department", "Service": "Customer Service"}
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -353,6 +364,148 @@ def format_hours(h):
         return f"{n} hour" + ("" if n == 1 else "s")
     n = round(h / 24)
     return f"{n} day" + ("" if n == 1 else "s")
+
+# ---------- Simulated notifications (nothing is really sent) ----------
+NOTIFY_COLUMNS = ["timestamp", "channel", "to_user", "to_name", "destination", "reference", "event", "subject", "message", "status"]
+CHANNEL_CHOICES = ["Email", "SMS", "Both", "None"]
+DEPARTMENT_OFFICER = {"Claim": "jbanda", "Payment": "jbanda", "Policy": "mphiri", "Premium": "mphiri"}
+STATUS_MESSAGES = {
+    "Open": "ILYASHI: Your complaint {ref} has been reopened.",
+    "In Progress": "ILYASHI: Your complaint {ref} is now being handled by our team.",
+    "Resolved": "ILYASHI: Your complaint {ref} has been resolved. Quote this Reference ID if you need more help.",
+}
+
+def live_sms_enabled():
+    """True only when Africa's Talking keys are saved in Streamlit secrets."""
+    try:
+        return bool(st.secrets.get("AT_API_KEY")) and bool(st.secrets.get("AT_USERNAME"))
+    except Exception:
+        return False
+
+def to_international(phone):
+    """0971234567 or 260971234567 -> +260971234567"""
+    p = "".join(ch for ch in str(phone) if ch.isdigit() or ch == "+")
+    if p.startswith("+"):
+        return p
+    if p.startswith("00"):
+        return "+" + p[2:]
+    if p.startswith("260"):
+        return "+" + p
+    if p.startswith("0"):
+        return "+260" + p[1:]
+    return "+260" + p
+
+def send_real_sms(phone, message):
+    """Sends a real SMS through Africa's Talking. Returns (ok, detail). Never raises."""
+    try:
+        import africastalking
+        africastalking.initialize(st.secrets["AT_USERNAME"], st.secrets["AT_API_KEY"])
+        sender = st.secrets.get("AT_SENDER_ID") or None
+        response = africastalking.SMS.send(message, [to_international(phone)], sender_id=sender)
+        data = response.get("SMSMessageData", {})
+        recipients = data.get("Recipients", [])
+        if recipients and recipients[0].get("statusCode") in (100, 101, 102):
+            return True, "sent"
+        reason = recipients[0].get("status") if recipients else data.get("Message", "no response")
+        return False, str(reason)
+    except Exception as e:
+        return False, str(e)[:120]
+
+def get_contact(username):
+    default = {"channel": "Email", "email": f"{username}@ilyashi.demo", "phone": ""}
+    if os.path.exists(CONTACTS_FILE):
+        contacts = pd.read_csv(CONTACTS_FILE, dtype=str, keep_default_na=False)
+        row = contacts[contacts["username"] == username]
+        if len(row) > 0:
+            r = row.iloc[0]
+            return {"channel": r["channel"] or default["channel"],
+                    "email": r["email"] or default["email"],
+                    "phone": r["phone"]}
+    return default
+
+def save_contact(username, channel, email, phone):
+    new_row = pd.DataFrame([{"username": username, "channel": channel, "email": email, "phone": phone}])
+    if os.path.exists(CONTACTS_FILE):
+        contacts = pd.read_csv(CONTACTS_FILE, dtype=str, keep_default_na=False)
+        contacts = contacts[contacts["username"] != username]
+        contacts = pd.concat([contacts, new_row], ignore_index=True)
+    else:
+        contacts = new_row
+    contacts.to_csv(CONTACTS_FILE, index=False)
+
+def load_notifications():
+    if os.path.exists(NOTIFY_FILE):
+        return pd.read_csv(NOTIFY_FILE, dtype=str, keep_default_na=False)
+    return pd.DataFrame(columns=NOTIFY_COLUMNS)
+
+def notify(username, event, reference, message):
+    """Simulates sending an SMS / email. Returns how many messages were logged."""
+    contact = get_contact(username)
+    channels = {"Email": ["Email"], "SMS": ["SMS"], "Both": ["Email", "SMS"], "None": []}.get(contact["channel"], ["Email"])
+    try:
+        users = load_users()
+        match = users[users["username"] == username]
+        to_name = match.iloc[0]["name"] if len(match) else username
+    except Exception:
+        to_name = username
+    rows = []
+    for ch in channels:
+        destination = contact["email"] if ch == "Email" else contact["phone"]
+        if ch == "SMS" and not destination:
+            destination = "(no phone number saved)"
+            status = "Failed (simulated): add a phone number in Settings"
+        elif ch == "SMS" and live_sms_enabled():
+            ok, detail = send_real_sms(destination, message)
+            status = "Delivered (live SMS)" if ok else f"Failed (live SMS): {detail}"
+        else:
+            status = "Delivered (simulated)"
+        rows.append({
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "channel": ch, "to_user": username, "to_name": to_name,
+            "destination": destination, "reference": reference, "event": event,
+            "subject": f"ILYASHI: {event}" if ch == "Email" else "",
+            "message": message, "status": status,
+        })
+    if rows:
+        out = pd.DataFrame(rows, columns=NOTIFY_COLUMNS)
+        if os.path.exists(NOTIFY_FILE):
+            out.to_csv(NOTIFY_FILE, mode="a", header=False, index=False)
+        else:
+            out.to_csv(NOTIFY_FILE, index=False)
+    return len(rows)
+
+def send_escalation_alerts():
+    """Alerts the responsible officer once for each newly escalated complaint."""
+    esc = add_escalation(load_complaints())
+    esc = esc[esc["escalated"]]
+    if esc.empty:
+        return
+    users = load_users()
+    sent = load_notifications()
+    for _, r in esc.iterrows():
+        officer = DEPARTMENT_OFFICER.get(r["subject"])
+        recipients = [officer] if officer else users[users["role"] == "Admin"]["username"].tolist()
+        for u in recipients:
+            already = ((sent["reference"] == r["reference"]) & (sent["to_user"] == u) & (sent["event"] == "Escalation alert")).any()
+            if not already:
+                notify(u, "Escalation alert", r["reference"],
+                       f"ILYASHI ALERT: {r['reference']} ({r['subject']}, high urgency) is still unresolved after {ESCALATION_HOURS} hours. Please act now.")
+                sent = load_notifications()
+
+def notification_card(r):
+    is_email = r["channel"] == "Email"
+    ok = str(r["status"]).startswith("Delivered")
+    colour = "#10b981" if ok else "#ef4444"
+    icon = "✉️" if is_email else "📱"
+    subject = f"<b>{html.escape(r['subject'])}</b><br>" if is_email and r["subject"] else ""
+    return (
+        f"<div class='ily-note {'email' if is_email else 'sms'}'>"
+        f"<div class='ily-note-head'><span>{icon} <b>{html.escape(r['channel'])}</b> to {html.escape(r['to_name'])} ({html.escape(r['destination'])})</span>"
+        f"<span>{html.escape(r['timestamp'])}</span></div>"
+        f"<div class='ily-note-body'>{subject}{html.escape(r['message'])}</div>"
+        f"<div class='ily-note-foot' style='color:{colour};'>{html.escape(r['status'])} · {html.escape(str(r['reference']))}</div>"
+        f"</div>"
+    )
 
 def do_logout():
     log_action(st.session_state.username, "LOGOUT", "User logged out")
@@ -668,6 +821,7 @@ with st.sidebar:
         menu_items.append("Export Data")
 
     # Settings and Help Center sit at the bottom of the menu for all roles
+    menu_items.append("Notifications")
     menu_items.append("Settings")
     menu_items.append("Help Center")
 
@@ -691,58 +845,14 @@ with st.sidebar:
 
     st.button("Logout", key="sidebar_logout", on_click=do_logout, use_container_width=True)
 
-# ============================================================
-# TOP BAR: NOTIFICATIONS
-# ============================================================
 st.markdown("<br>", unsafe_allow_html=True)
-
-visible_df = filter_for_user(load_complaints())
-is_staff = st.session_state.role in ("Admin", "Officer")
-my_all = visible_df[visible_df["submitted_by"] == st.session_state.username]
-esc_n = 0
-if is_staff:
-    esc_all = add_escalation(visible_df)
-    esc_n = int(esc_all["escalated"].sum())
-    alerts = esc_all[(esc_all["urgency"] == "High") & (esc_all["status"] == "Open")]
-else:
-    alerts = my_all[my_all["status"] != "Resolved"]
-alert_count = len(alerts)
-
-spacer, bell_col = st.columns([9, 1])
-
-with bell_col:
-    with st.container(key="bell_menu"):
-        with st.popover(f"🔔 {alert_count}" if alert_count else "🔔"):
-            st.markdown("**" + t("Notifications") + "**")
-            if is_staff:
-                if esc_n:
-                    st.markdown(f"⚠️ **{esc_n} escalated** (unresolved for over {ESCALATION_HOURS} hours)")
-                if alert_count == 0 and esc_n == 0:
-                    st.caption("No urgent open complaints.")
-                else:
-                    st.caption(f"{alert_count} high-urgency complaint(s) still open")
-                    for _, row in alerts.sort_values("id", ascending=False).head(5).iterrows():
-                        flag = "⚠️ " if row["escalated"] else ""
-                        st.markdown(f"{flag}**{row['reference']}** · {row['subject']} · {row['customer_name']}")
-                if alert_count or esc_n:
-                    st.button("View all complaints", key="bell_view_all", on_click=go_to,
-                              args=("View Complaints",), use_container_width=True)
-            else:
-                if len(my_all) == 0:
-                    st.caption("You have not submitted any complaints yet.")
-                else:
-                    st.caption(f"{alert_count} of your complaint(s) still being handled")
-                    for _, row in my_all.sort_values("id", ascending=False).head(5).iterrows():
-                        st.markdown(f"**{row['reference']}** · {row['status']}")
-                    st.button("Track my complaints", key="bell_track", on_click=go_to,
-                              args=("My Complaints",), use_container_width=True)
-
-st.markdown("<hr style='border-color:#30363d; margin: 0 0 20px 0;'>", unsafe_allow_html=True)
 
 # ============================================================
 # PAGE 1: DASHBOARD
 # ============================================================
 if page == "Dashboard":
+    if st.session_state.role in ("Admin", "Officer"):
+        send_escalation_alerts()
     col1, col2, col3 = st.columns([1, 8, 1])
     with col2:
         if st.session_state.role == "Admin":
@@ -893,6 +1003,10 @@ elif page == "Submit Complaint":
 
                 st.markdown("### Routing")
                 dept = ROUTING_MAP.get(subject, "Customer Service")
+                sent_count = notify(st.session_state.username, "Complaint received", complaint["reference"],
+                                    f"ILYASHI: Your complaint {complaint['reference']} has been received and routed to {dept}. Quote this Reference ID when you contact us.")
+                if sent_count:
+                    st.caption("📨 A confirmation message was sent to you (simulated). See Notifications.")
                 st.info(f"→ Routed to: **{dept}**")
             else:
                 st.error("Please enter customer name and complaint description.")
@@ -963,12 +1077,17 @@ elif page == "View Complaints":
             new_status = st.selectbox("New Status", ["Open", "In Progress", "Resolved"])
             if st.button("Update Status"):
                 full_df = load_complaints()
+                row_match = full_df[full_df["reference"] == chosen_ref]
+                old_status = row_match.iloc[0]["status"]
+                owner = row_match.iloc[0]["submitted_by"]
                 full_df.loc[full_df["reference"] == chosen_ref, "status"] = new_status
                 full_df.loc[full_df["reference"] == chosen_ref, "date_updated"] = datetime.now().strftime("%Y-%m-%d %H:%M")
                 full_df.loc[full_df["reference"] == chosen_ref, "date_resolved"] = (
                     datetime.now().strftime("%Y-%m-%d %H:%M") if new_status == "Resolved" else "")
                 full_df.to_csv(COMPLAINTS_FILE, index=False)
                 log_action(st.session_state.username, "UPDATE_STATUS", f"{chosen_ref} → {new_status}")
+                if owner and old_status != new_status:
+                    notify(owner, "Status update", chosen_ref, STATUS_MESSAGES[new_status].format(ref=chosen_ref))
                 st.session_state.flash = f"✅ {chosen_ref} updated to {new_status}"
                 st.rerun()
         else:
@@ -1023,6 +1142,33 @@ elif page == "My Complaints":
         show_table(view[["reference", "subject", "handled_by", "status", "what_it_means", "date_submitted", "date_updated"]])
 
 # ============================================================
+# NOTIFICATIONS (simulated SMS and email)
+# ============================================================
+elif page == "Notifications":
+    st.title("Notifications")
+    st.markdown("Messages the system sends when something happens to a complaint. Email messages are simulated. SMS messages are simulated too, unless live SMS is switched on.")
+    if live_sms_enabled():
+        st.caption("🟢 Live SMS is on: SMS messages go to real phones through Africa's Talking.")
+    else:
+        st.caption("🟡 Simulation mode: nothing is really sent.")
+
+    log = load_notifications()
+    if st.session_state.role != "Admin":
+        log = log[log["to_user"] == st.session_state.username]
+
+    if len(log) == 0:
+        st.info("No messages yet. Submit a complaint or change a complaint's status to see messages appear here.")
+    else:
+        channel_filter = st.selectbox("Channel", ["All", "Email", "SMS"])
+        if channel_filter != "All":
+            log = log[log["channel"] == channel_filter]
+        if st.session_state.role == "Admin":
+            st.caption("As an Admin you can see every message the system sent.")
+        st.write(f"Showing the latest **{min(len(log), 30)}** of **{len(log)}** messages")
+        for _, r in log.sort_values("timestamp", ascending=False).head(30).iterrows():
+            st.markdown(notification_card(r), unsafe_allow_html=True)
+
+# ============================================================
 # SETTINGS
 # ============================================================
 elif page == "Settings":
@@ -1059,9 +1205,26 @@ elif page == "Settings":
                      key="lang_choice", on_change=set_language)
 
     with st.expander("Notification Preferences"):
-        st.checkbox("Email me when a new complaint is assigned to my department.", value=True)
-        st.checkbox("Send me a weekly performance summary.", value=False)
-        st.button("Save Preferences")
+        contact = get_contact(st.session_state.username)
+        channel = st.selectbox("How should we notify you?", CHANNEL_CHOICES,
+                               index=CHANNEL_CHOICES.index(contact["channel"]) if contact["channel"] in CHANNEL_CHOICES else 0,
+                               key="pref_channel")
+        email_value = st.text_input("Email address", value=contact["email"], key="pref_email")
+        phone_value = st.text_input("Phone number (for SMS)", value=contact["phone"], key="pref_phone")
+        p1, p2 = st.columns(2)
+        with p1:
+            if st.button("Save Preferences"):
+                save_contact(st.session_state.username, channel, email_value.strip(), phone_value.strip())
+                log_action(st.session_state.username, "CHANGE_NOTIFICATION_PREFS", f"Channel: {channel}")
+                st.success("✅ Preferences saved.")
+        with p2:
+            if st.button("Send me a test message"):
+                count = notify(st.session_state.username, "Test message", "—", "ILYASHI: This is a test notification.")
+                if count:
+                    st.success("📨 Test message sent (simulated). See Notifications.")
+                else:
+                    st.info("Notifications are switched off. Choose Email, SMS or Both and save first.")
+        st.caption("Messages are simulated for this prototype. Your contact details are kept only so the demo can show who a message would go to.")
 
 # ============================================================
 # HELP CENTER
@@ -1081,6 +1244,9 @@ Welcome to the ILYASHI Help Center. Here you can find answers to common question
 
 **Q: How do I know my complaint has been dealt with?**
 *A: Open "My Complaints" from the menu. Each complaint you submitted shows its status: Open (received), In Progress (being handled) or Resolved (dealt with), plus the date it last changed.*
+
+**Q: How will I be told about updates?**
+*A: The system sends a message by email or SMS (simulated in this prototype) when your complaint is received and whenever its status changes. Choose your channel in Settings and read the messages under Notifications.*
 
 **Q: Who can see my complaint?**
 *A: For this prototype, Administrators and Officers assigned to your specific department can view and update complaint details.*
