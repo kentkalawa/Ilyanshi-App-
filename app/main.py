@@ -67,6 +67,17 @@ FIX_CSS = """
     border-radius: 8px !important;
 }
 [data-testid="stSelectbox"] svg { fill: #0f1b2a !important; }
+/* ---- dropdown outline: always light blue, blue when clicked ---- */
+[data-testid="stSelectbox"] [data-baseweb="select"],
+[data-testid="stSelectbox"] [data-baseweb="select"] * {
+    border-color: #bfdbfe !important;
+    outline-color: #bfdbfe !important;
+}
+[data-testid="stSelectbox"] [data-baseweb="select"]:focus-within,
+[data-testid="stSelectbox"] [data-baseweb="select"] > div:focus-within {
+    border-color: #1f6feb !important;
+    outline-color: #1f6feb !important;
+}
 /* ---- number boxes ---- */
 [data-testid="stNumberInput"] [data-baseweb],
 [data-testid="stNumberInput"] input,
